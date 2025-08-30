@@ -8,7 +8,7 @@ function App() {
   useEffect(() => {
     // test get users
     axios
-      .get("http://127.0.0.1:8000/api/users")
+      .get("https://jsonplaceholder.typicode.com/users")
       .then((res) => {
         setUsers(res.data);
         console.log("Users:", res.data);
@@ -30,16 +30,28 @@ function App() {
   }, []);
 
   return (
-    <div p-4>
-      <h1 className="text-center text-red-500 text-xxl">{status}</h1>
+    <div>
       <h2 className="mt-4 front-bold">Danh sách Users:</h2>
-      <ul>
-        {users.map((u, i) => (
-          <li key={i}>
-            {u.id}: {u.name}
-          </li>
-        ))}
-      </ul>
+      <table className="table-auto border-collapse border border-slate-400 bg-danger">
+        <thead>
+          <tr>
+            <th className="border px-4 py-2 text-red-500">ID</th>
+            <th className="border px-4 py-2">Name</th>
+            <th className="border px-4 py-2">Username</th>
+            <th className="border px-4 py-2">Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((u, i) => (
+            <tr key={i}>
+              <td className="border px-4 py-2 text-red-500">{u.id}</td>
+              <td className="border px-4 py-2">{u.name}</td>
+              <td className="border px-4 py-2">{u.username}</td>
+              <td className="border px-4 py-2">{u.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <h2 className="mt-4 font-bold">Danh sách Products:</h2>
       <ul>
         {products.map((p, i) => (
