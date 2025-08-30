@@ -3,20 +3,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function App() {
-  const [status, setStatus] = useState("Đang kiểm tra kết nối...");
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    axios
-      // test API status
-      .get("http://127.0.0.1:8000/api/status")
-      .then((res) => {
-        setStatus(res.data.message);
-      })
-      .catch(() => {
-        setStatus("Kết nối thất bại");
-      });
-
     // test get users
     axios
       .get("http://127.0.0.1:8000/api/users")
