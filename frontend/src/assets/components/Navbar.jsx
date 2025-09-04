@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
-    <nav className="flex gap-6 border-b pb-2 mb">
+    <nav className="flex flex-col text-start gap-6  pb-2 mb">
       <Link to="/" className="hover:text-blue-600">
-        Home
+        Trang chủ
       </Link>
       <Link to="/experience" className="hover:text-blue-600">
         Kinh nghiệm

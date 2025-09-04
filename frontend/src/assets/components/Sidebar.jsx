@@ -1,7 +1,7 @@
 import React from "react";
 function Sidebar() {
   return (
-    <div className="text-center">
+    <div className="text-center max-vh-100">
       <img
         src="../../../public/1696433119267khunghinh.net.png"
         alt="Avatar"
@@ -9,10 +9,10 @@ function Sidebar() {
       />
       <h2 className="text-xl font-bold">Hạng A Tùng</h2>
       <p className="text-gray-400">Fullstack Developer</p>
-      <div className="mt-4 space-y-2 text-sm">
+      <div className="mt-4 space-y-2 text-sm text-start">
         <p>Email: toojhaam123@gmail.com</p>
-        <p>Phone: +84 123 456 789</p>
-        <p>Địa chỉ: Sơn La, Việt Nam</p>
+        <p>Phone: 0345-312-083</p>
+        <p>Địa chỉ: Sín Chải - Điện Biên</p>
       </div>
     </div>
   );

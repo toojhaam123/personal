@@ -14,21 +14,25 @@ function App() {
   return (
     <div className="flex h-screen">
       {/* Cột trái (3/10) */}
-      <div className="flex-[3] bg-gray-900 text-white p-6 flex flex-col items-center">
+      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl sidebar">
         <Sidebar />
       </div>
 
       {/* Cột phải (7/10) */}
-      <div className="flex-[7] p-8 overflow-y-auto">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/experience" element={<Experience />} />
-          <Route path="/skill" element={<Skill />} />
-          <Route path="/education" element={<Education />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+      <div className="flex-[8] p-5 overflow-y-auto bg-gray-900 rounded-3xl text-white ms-5 content flex-row flex gap-5">
+        <div className="flex-[2] border-r">
+          <Navbar />
+        </div>
+        <div className="flex-[12]">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/experience" element={<Experience />} />
+            <Route path="/skill" element={<Skill />} />
+            <Route path="/education" element={<Education />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );
