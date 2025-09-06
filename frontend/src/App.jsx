@@ -13,13 +13,11 @@ import Contact from "./assets/pages/Contact";
 function App() {
   return (
     <div className="flex h-screen">
-      {/* Cột trái (3/10) */}
-      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl sidebar">
+      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl">
         <Sidebar />
       </div>
 
-      {/* Cột phải (7/10) */}
-      <div className="flex-[8] p-5 overflow-y-auto bg-gray-900 rounded-3xl text-white ms-5 content flex-row flex gap-5">
+      <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
         <div className="flex-[2] border-r">
           <Navbar />
         </div>
