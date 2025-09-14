@@ -9,6 +9,7 @@ import Education from "./assets/pages/Education";
 import Portfolio from "./assets/pages/Portfolio";
 import Sidebar from "./assets/components/Sidebar";
 import Contact from "./assets/pages/Contact";
+import Notification from "./assets/pages/Notification";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
         <div className="flex-[2] border-r">
           <Navbar />
         </div>
-        <div className="flex-[12]">
+        <div className="flex-[12] overflow-y-auto">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/experience" element={<Experience />} />
@@ -29,6 +30,7 @@ function App() {
             <Route path="/education" element={<Education />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/notification" element={<Notification />} />
           </Routes>
         </div>
       </div>

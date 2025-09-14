@@ -11,24 +11,24 @@ function Sidebar() {
       <p className="text-gray-400">Lập trình viên Web Fullstack (Fresher)</p>
       <div className="mt-4 space-y-2 text-sm text-start">
         <p>
-          <i class="fa-solid fa-cake-candles"></i> Năm sinh: 11/6/2000
+          <i className="fa-solid fa-cake-candles"></i> Năm sinh: 11/6/2000
         </p>
         <p>
-          <i class="fa-solid fa-envelope"></i> Email:{" "}
+          <i className="fa-solid fa-envelope"></i> Email:{" "}
           <a href="mailto:toojhaam123@gmail.comm">toojhaam123@gmail.com</a>
         </p>
         <p>
-          <i class="fa-solid fa-phone"></i> Phone:{" "}
+          <i className="fa-solid fa-phone"></i> Phone:{" "}
           <a href="tel:0345-312-083">0345-312-083</a>
         </p>
         <p>
-          <i class="fa-solid fa-location-dot"></i> Địa chỉ:{" "}
+          <i className="fa-solid fa-location-dot"></i> Địa chỉ:{" "}
           <a href="https://maps.app.goo.gl/A374C8vxKxbDYLqV9" target="_blank">
             Sín Chải - Điện Biên
           </a>
         </p>
         <p>
-          <i class="fa-brands fa-github"></i> Github:{" "}
+          <i className="fa-brands fa-github"></i> Github:{" "}
           <a href="https://github.com/toojhaam123" target="_blank">
             github.com/toojhaam123
           </a>

@@ -3,7 +3,7 @@ function Home() {
   return (
     <section>
       <h1 className="text-3xl font-bold mb-4 text-red-600">
-        Xin chào <i class="fa-solid fa-hand"></i>
+        <i class="fa-solid fa-hand"></i> Xin chào
       </h1>
       <div className="flex">
         <div className="flex-[6]">
@@ -39,7 +39,7 @@ function Home() {
           <img
             src="../../public/laptop.svg"
             alt="Laptop"
-            className="w-32 h-32 ms-auto"
+            className="w-32 h-32 ms-auto mt-4 animate-bounce"
           />
         </div>
       </div>

@@ -52,6 +52,14 @@ function Navbar() {
       >
         <i className="fas fa-envelope"></i> Liên hệ
       </NavLink>
+      <NavLink
+        to="/notification"
+        className={({ isActive }) =>
+          `hover:text-blue-600 ${isActive ? "text-blue-600" : ""}`
+        }
+      >
+        <i className="fas fa-bell"></i> Thông báo
+      </NavLink>
     </nav>
   );
 }
