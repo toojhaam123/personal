@@ -9,6 +9,7 @@ function Contact() {
 
   const [loadding, setLoadding] = useState(false);
   const [status, setStatus] = useState(null); // Để lưu trạng thái gửi form
+  const isLoggedIn = localStorage.getItem("token");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +22,7 @@ function Contact() {
     setStatus(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/contact", {
+      const res = await fetch("http://127.0.0.1:8000/api/formcontact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,69 +98,68 @@ function Contact() {
           />
         </div>
       </div>
+      {!isLoggedIn && (
+        <div className="">
+          <p className="text-2xl">Form liên hệ</p>
 
-      <div className="">
-        <p className="text-2xl">Form liên hệ</p>
-
-        {status && (
-          <div
-            className={`mb-3 p-3 rounded ${
-              status.type === "success"
-                ? "bg-green-100 text-green-700 font-bold"
-                : "bg-red-100 text-red-700 font-bold"
-            }`}
-          >
-            {console.log("Status:", status) /* Debugging line */}
-            {status.message}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="name" className="float-start">
-            Họ và tên
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Họ và tên"
-            id="name"
-            className="w-full p-2 border rounded-lg bg-white text-black mb-2"
-          />
-          <label htmlFor="email" className="float-start">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            placeholder="Email"
-            onChange={handleChange}
-            id="email"
-            className="w-full p-2 border rounded-lg bg-white text-black mb-2"
-          />
-          <label htmlFor="content" className="float-start">
-            Nội dung tin nhắn
-          </label>
-          <textarea
-            name="message"
-            onChange={handleChange}
-            value={formData.message}
-            id="message"
-            className="w-full rounded-lg border p-2 bg-white text-black mb-2"
-            placeholder="Nội dung tin nhắn..."
-            rows={5}
-          ></textarea>
-          <button
-            type="submit"
-            disabled={loadding}
-            className="w-full text-white bg-blue-500 border hover:blue-600 hover:text-white hover:border-white rounded-lg px-4 py-2 transition duration-300"
-          >
-            {loadding ? "Đang gửi..." : "Gửi liên hệ"}
-          </button>
-        </form>
-      </div>
+          {status && (
+            <div
+              className={`mb-3 p-3 rounded ${
+                status.type === "success"
+                  ? "bg-green-100 text-green-700 font-bold"
+                  : "bg-red-100 text-red-700 font-bold"
+              }`}
+            >
+              {status.message}
+            </div>
+          )}
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="name" className="float-start">
+              Họ và tên
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Họ và tên"
+              id="name"
+              className="w-full p-2 border rounded-lg bg-white text-black mb-2"
+            />
+            <label htmlFor="email" className="float-start">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              placeholder="Email"
+              onChange={handleChange}
+              id="email"
+              className="w-full p-2 border rounded-lg bg-white text-black mb-2"
+            />
+            <label htmlFor="content" className="float-start">
+              Nội dung tin nhắn
+            </label>
+            <textarea
+              name="message"
+              onChange={handleChange}
+              value={formData.message}
+              id="message"
+              className="w-full rounded-lg border p-2 bg-white text-black mb-2"
+              placeholder="Nội dung tin nhắn..."
+              rows={5}
+            ></textarea>
+            <button
+              type="submit"
+              disabled={loadding}
+              className="w-full text-white bg-blue-500 border hover:blue-600 hover:text-white hover:border-white rounded-lg px-4 py-2 transition duration-300"
+            >
+              {loadding ? "Đang gửi..." : "Gửi liên hệ"}
+            </button>
+          </form>
+        </div>
+      )}
     </section>
   );
 }

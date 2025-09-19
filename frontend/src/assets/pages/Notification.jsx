@@ -1,10 +1,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { formatDateVN } from "../utils/dateUtils";
+import { truncatetext } from "../utils/stringUtils";
+import { Link } from "react-router-dom";
 function Notification() {
   // Lấy thông tin từ bằng contacts ra để hiện thị
   const [notifaction, setNotification] = useState([]);
-  const [selected, setSelected] = useState(null); // Lưu thông báo đang chọn
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/contacts")
@@ -27,25 +28,36 @@ function Notification() {
               {notifaction.map((item) => (
                 <li
                   key={item.id}
-                  onClick={() => setSelected(item)} // Khi click vào thì chọn item đó
-                  className="rounded-lg shadow-white text-start p-4 m-2 border-b-2 cursor-pointer hover:bg-gray-800 transition duration-500 shadow-sm"
+                  className="rounded-lg shadow-white text-start p-4 m-2 border-b-2 cursor-pointer hover:bg-gray-800 hover:text-white transition duration-500 shadow-sm"
                 >
-                  <p className="text-lg font-bold">
-                    {item.name} - đã gửi một liên hệ lúc{" "}
-                    {formatDateVN(item.created_at)}
+                  <p className="">
+                    <strong>{item.name}</strong> - đã gửi một liên hệ!{" "}
                   </p>
+                  <p>
+                    <strong>Nội dung:</strong> {truncatetext(item.message, 15)}
+                  </p>
+                  <p>
+                    <strong>Lúc:</strong> {formatDateVN(item.created_at)}
+                  </p>
+                  <Link
+                    className="text-blue-600 "
+                    to={`/notification_detail/${item.id}`}
+                  >
+                    Chi tiết <i className="fa-solid fa-arrow-right"></i>
+                  </Link>
                 </li>
               ))}
             </div>
           </div>
-          //   hiện thị chi tiết nếu chọn liên hệ
         )}
         <div className="flex-[3]">
-          <img
-            src="../../public/notifaction.png"
-            alt="Contact"
-            className="w-100% h-100% mx-auto mb-4 float-end"
-          />
+          <div>
+            <img
+              src="../../public/bell.svg"
+              alt="Contact"
+              className="w-100% h-100% mx-auto mb-4 float-end"
+            />
+          </div>
         </div>
       </div>
     </section>

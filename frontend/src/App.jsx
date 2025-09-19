@@ -10,6 +10,11 @@ import Portfolio from "./assets/pages/Portfolio";
 import Sidebar from "./assets/components/Sidebar";
 import Contact from "./assets/pages/Contact";
 import Notification from "./assets/pages/Notification";
+import Notification_Detail from "./assets/pages/Notification_Detail";
+import Login from "./assets/components/Login";
+import Register from "./assets/components/Register";
+import Logout from "./assets/components/Logout";
+import ProtectRoute from "./assets/components/ProtectRoute";
 
 function App() {
   return (
@@ -30,7 +35,26 @@ function App() {
             <Route path="/education" element={<Education />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/notification" element={<Notification />} />
+            {/* Nếu chưa login thì ko thể vào được qua đường link */}
+            <Route
+              path="/notifications"
+              element={
+                <ProtectRoute>
+                  <Notification />
+                </ProtectRoute>
+              }
+            />
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<Register />}></Route>
+            <Route path="/logout" element={<Logout />}></Route>
+            <Route
+              path="/notification_detail/:id"
+              element={
+                <ProtectRoute>
+                  <Notification_Detail />
+                </ProtectRoute>
+              }
+            />
           </Routes>
         </div>
       </div>

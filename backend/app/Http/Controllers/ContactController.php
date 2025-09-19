@@ -7,25 +7,23 @@ use App\Models\Contact;
 
 class ContactController extends Controller
 {
-    public function store(Request $request)
+    public function creatInformation(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'message' => 'required|string',
+            'information_contacts' => 'required|string|max:255',
         ]);
 
-        // Lưu vào DB 
+        // Lưu vào DB
         Contact::create($validated);
 
         return response()->json([
             'success' => true,
-            'message' => 'Gửi thành công! Trân trọng cảm ơn bạn đã liên hệ.',
+            'message' => "Đã tạo thông tin thành công",
         ]);
     }
 
-    public function index()
+    public function     index()
     {
-        return Contact::latest()->get();
+        return Contact::all();
     }
 }

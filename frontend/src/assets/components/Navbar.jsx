@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 function Navbar() {
+  const isLoggedIn = localStorage.getItem("token");
   return (
     <nav className="flex flex-col text-start gap-6  pb-2">
       <NavLink
@@ -52,14 +53,16 @@ function Navbar() {
       >
         <i className="fas fa-envelope"></i> Liên hệ
       </NavLink>
-      <NavLink
-        to="/notification"
-        className={({ isActive }) =>
-          `hover:text-blue-600 ${isActive ? "text-blue-600" : ""}`
-        }
-      >
-        <i className="fas fa-bell"></i> Thông báo
-      </NavLink>
+      {isLoggedIn && (
+        <NavLink
+          to="/notifications"
+          className={({ isActive }) =>
+            `hover:text-blue-600 ${isActive ? "text-blue-600" : ""}`
+          }
+        >
+          <i className="fas fa-bell"></i> Thông báo
+        </NavLink>
+      )}
     </nav>
   );
 }
