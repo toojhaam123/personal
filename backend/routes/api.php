@@ -2,10 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormContactController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AuthController;
 
 Route::post('/formcontact', [FormContactController::class, 'store']);
 Route::get('/contacts', [FormContactController::class, 'index']);
+Route::post('/information_contacts', [ContactController::class, 'creatInformation']);
+Route::get('/get_information_contacts', [ContactController::class, 'index']);
 Route::get('/notification_detail/{id}', [FormContactController::class, 'showDetail']);
 
 Route::post('/login', [AuthController::class, 'login']);

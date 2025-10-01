@@ -22,7 +22,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function     index()
+    public function index()
     {
         return Contact::all();
     }

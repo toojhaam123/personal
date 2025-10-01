@@ -1,5 +1,6 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 function Contact() {
   const [formData, setFormData] = useState({
     name: "",
@@ -7,9 +8,22 @@ function Contact() {
     message: "",
   });
 
+  const [contactInfo, setContactInfo] = useState([]);
   const [loadding, setLoadding] = useState(false);
   const [status, setStatus] = useState(null); // Để lưu trạng thái gửi form
   const isLoggedIn = localStorage.getItem("token");
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/get_information_contacts")
+      .then((res) => {
+        setContactInfo(res.data);
+        console.log("Api: ", res.data);
+      })
+      .catch((e) => {
+        console.error("Lỗi khi lấy dữ liêu", e);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,14 +36,17 @@ function Contact() {
     setStatus(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/formcontact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // Gửi Request Post tới API bằng axios
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/formcontact", // endpoint API Laravel
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json", // Khai báo kiểu dữ liệu
+            Accept: "application/json", // yêu cầu serve trả về json
+          },
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Có lỗi khi gửi liên hệ!");
@@ -60,34 +77,11 @@ function Contact() {
       <div className="flex">
         <div className="flex-[7]">
           <div className="space-y-4 mb-5">
-            <p className="text-start text-lg">
-              <i class="fa-solid fa-envelope"></i> Email:
-              <a href="mailto:toojhaam123@gmail.com" className="">
-                {" "}
-                Toojhaam123@gmail.com
-              </a>
-            </p>
-            <p className="text-start text-lg">
-              <i class="fa-solid fa-phone"></i> SĐT:{" "}
-              <a className="" href="tel:0345312083">
-                0345312083
-              </a>
-            </p>
-            <p className="text-start text-lg">
-              <i className="fa-brands fa-github"></i> Github:{" "}
-              <a href="https://github.com/toojhaam123" target="_blank">
-                github.com/toojhaam123
-              </a>
-            </p>
-            <p className="text-start text-lg">
-              <i className="fa-brands fa-linkedin-in"></i> Linkedin:{" "}
-              <a
-                href="https://www.linkedin.com/in/hangatung123/"
-                target="_blank"
-              >
-                linkedin.com/in/hangatung123/
-              </a>
-            </p>
+            {contactInfo.map((iterm) => (
+              <p key={iterm.id} className="text-start text-lg">
+                {iterm.information_contacts}
+              </p>
+            ))}
           </div>
         </div>
         <div className="flex-[3]">
