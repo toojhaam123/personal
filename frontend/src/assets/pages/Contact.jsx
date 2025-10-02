@@ -163,7 +163,10 @@ function Contact() {
             //  Nếu ko ở chế độ chỉnh sửa thì hiện thông tin
             <div className="space-y-4 mb-5">
               {contactInfo.map((iterm) => (
-                <p key={iterm.id} className="text-start text-lg">
+                <p
+                  key={iterm.id}
+                  className="text-start text-lg whitespace-pre-line"
+                >
                   {iterm.information_contacts}
                 </p>
               ))}
