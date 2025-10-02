@@ -9,20 +9,27 @@ function Contact() {
   });
 
   const [contactInfo, setContactInfo] = useState([]);
-  const [loadding, setLoadding] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null); // Để lưu trạng thái gửi form
   const isLoggedIn = localStorage.getItem("token");
+  const [editMode, setEditMode] = useState(false); // Trạng Thái chỉnh sửa
 
+  // Lấy API từ Laravel để hiện thị
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/get_information_contacts")
-      .then((res) => {
+    const fetchContactInfo = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          "http://127.0.0.1:8000/api/get_information_contacts"
+        );
         setContactInfo(res.data);
-        console.log("Api: ", res.data);
-      })
-      .catch((e) => {
-        console.error("Lỗi khi lấy dữ liêu", e);
-      });
+      } catch (e) {
+        console.error("Lỗi khi lấy dữ liệu", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContactInfo();
   }, []);
 
   const handleChange = (e) => {
@@ -30,37 +37,67 @@ function Contact() {
     setFormData({ ...formData, [name]: value });
   };
 
+  // xử lý khi nhập thông tin update
+  const handleChangeUpdateInfor = (e, id) => {
+    const newValue = e.target.value;
+
+    //Cập nhập thông tin với giá trị mới
+    setContactInfo((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, information_contacts: newValue } : item
+      )
+    );
+  };
+
+  // xử lý submit lưu thay đổi
+  const handleSubmitUpdateInfor = async (e) => {
+    e.preventDefault(); // Ngăn reload trang
+
+    try {
+      const i = contactInfo[0];
+      const res = await axios.put(
+        `http://127.0.0.1:8000/api/contacts/${i.id}`,
+        {
+          information_contacts: i.information_contacts,
+        }
+      );
+
+      setStatus({ type: "success", message: res.data.message });
+      setEditMode(false);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật", error.response?.data || error.message);
+      alert("Có lỗi khi cập nhật!");
+    }
+  };
+
+  // Gửi dữ liệu khi đăng liên hệ
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoadding(true);
+    setLoading(true);
     setStatus(null);
 
     try {
       // Gửi Request Post tới API bằng axios
       const res = await axios.post(
         "http://127.0.0.1:8000/api/formcontact", // endpoint API Laravel
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json", // Khai báo kiểu dữ liệu
-            Accept: "application/json", // yêu cầu serve trả về json
-          },
-        }
+        formData
       );
 
-      if (!res.ok) {
-        throw new Error("Có lỗi khi gửi liên hệ!");
-      }
-
-      const data = await res.json();
-      setStatus({ type: "success", message: data.message });
+      setStatus({ type: "success", message: res.data.message });
 
       // Reset form
       setFormData({ name: "", email: "", message: "" });
     } catch (e) {
-      setStatus({ type: "error", message: e.message });
+      if (e.response) {
+        setStatus({
+          type: "error",
+          message: e.response.data.message || "Có lỗi khi gửi liên hệ bạn ơi!",
+        });
+      } else {
+        setStatus({ type: "error", message: e.message });
+      }
     } finally {
-      setLoadding(false);
+      setLoading(false);
     }
   };
 
@@ -73,20 +110,70 @@ function Contact() {
         Nếu bạn quan tâm đến mình hoặc dự án của mình, hãy liên hệ qua các kênh
         dưới đây:
       </p>
-
       <div className="flex">
         <div className="flex-[7]">
-          <div className="space-y-4 mb-5">
-            {contactInfo.map((iterm) => (
-              <p key={iterm.id} className="text-start text-lg">
-                {iterm.information_contacts}
-              </p>
-            ))}
-          </div>
+          {status && (
+            <div
+              className={`mb-3 p-3 rounded ${
+                status.type === "success"
+                  ? "bg-green-100 text-green-700 font-bold"
+                  : "bg-red-100 text-red-700 font-bold"
+              }`}
+            >
+              {status.message}
+            </div>
+          )}
+          {/* Nút chỉnh sửa */}
+          {isLoggedIn && (
+            <div className="float-end">
+              <button
+                type="button"
+                onClick={() => setEditMode(!editMode)}
+                className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+              >
+                {editMode ? "Hủy" : "Chỉnh sửa"}
+              </button>
+            </div>
+          )}
+
+          {/* Nếu ở chế độ chinh sửa thì hiện form */}
+          {editMode ? (
+            <form onSubmit={handleSubmitUpdateInfor}>
+              {contactInfo.map((i) => (
+                <div key={i.id}>
+                  <textarea
+                    name=""
+                    id=""
+                    onChange={(e) => handleChangeUpdateInfor(e, i.id)}
+                    value={i.information_contacts}
+                    className="w-full p-2 border rounded-lg bg-white text-black mb-2"
+                    rows="5"
+                  ></textarea>
+                </div>
+              ))}
+              <button
+                className="bg-blue-600 hover:bg-blue-700 transition duration-500
+              "
+                disabled={loading}
+              >
+                {loading ? "Đang lưu..." : "Lưu"}
+              </button>
+            </form>
+          ) : (
+            //  Nếu ko ở chế độ chỉnh sửa thì hiện thông tin
+            <div className="space-y-4 mb-5">
+              {contactInfo.map((iterm) => (
+                <p key={iterm.id} className="text-start text-lg">
+                  {iterm.information_contacts}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
+        {/* Ảnh minh họa */}
         <div className="flex-[3]">
           <img
-            src="../../public/contact.png"
+            src="/contact.png"
             alt="Contact"
             className="w-100% h-100% mx-auto mb-4"
           />
@@ -146,10 +233,10 @@ function Contact() {
             ></textarea>
             <button
               type="submit"
-              disabled={loadding}
+              disabled={loading}
               className="w-full text-white bg-blue-500 border hover:blue-600 hover:text-white hover:border-white rounded-lg px-4 py-2 transition duration-300"
             >
-              {loadding ? "Đang gửi..." : "Gửi liên hệ"}
+              {loading ? "Đang gửi..." : "Gửi liên hệ"}
             </button>
           </form>
         </div>

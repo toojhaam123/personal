@@ -25,7 +25,9 @@ function Home() {
           <a
             href="/cv.pdf"
             target="_blank"
-            className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 hover:border-white float-end"
+            className="px-4 py-2 border border-blue-600 text-blue-600 
+            rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 
+            hover:border-white float-end"
           >
             Xem CV
           </a>
