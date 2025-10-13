@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormContactController;
 use App\Http\Controllers\ContactController;
+use App\http\Controllers\UserInfoController;
 use App\Http\Controllers\AuthController;
+use App\Models\UserInfo;
 
 Route::post('/formcontact', [FormContactController::class, 'store']);
 Route::get('/contacts', [FormContactController::class, 'index']);
@@ -18,3 +20,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+// UserInfo 
+Route::post('/creat_user_info', [UserInfoController::class, 'create']);
+Route::post('/update_user_info/{id}', [UserInfoController::class, 'update']);
+Route::get('get_user_info', [UserInfoController::class, 'index']);

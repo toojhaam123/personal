@@ -55,9 +55,9 @@ function Login() {
       >
         Đăng nhập
       </button>
-      <p className="mt-5">
+      {/* <p className="mt-5">
         <NavLink to="/register">Đăng ký tài khoản</NavLink>
-      </p>
+      </p> */}
     </form>
   );
 }

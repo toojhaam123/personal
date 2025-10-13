@@ -112,17 +112,6 @@ function Contact() {
       </p>
       <div className="flex">
         <div className="flex-[7]">
-          {status && (
-            <div
-              className={`mb-3 p-3 rounded ${
-                status.type === "success"
-                  ? "bg-green-100 text-green-700 font-bold"
-                  : "bg-red-100 text-red-700 font-bold"
-              }`}
-            >
-              {status.message}
-            </div>
-          )}
           {/* Nút chỉnh sửa */}
           {isLoggedIn && (
             <div className="float-end">

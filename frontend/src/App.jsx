@@ -19,7 +19,7 @@ import ProtectRoute from "./assets/components/ProtectRoute";
 function App() {
   return (
     <div className="flex h-screen">
-      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl">
+      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
         <Sidebar />
       </div>
 
@@ -27,7 +27,7 @@ function App() {
         <div className="flex-[2] border-r">
           <Navbar />
         </div>
-        <div className="flex-[12] overflow-y-auto">
+        <div className="flex-[12] overflow-y-auto scroll-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/experience" element={<Experience />} />
@@ -45,7 +45,7 @@ function App() {
               }
             />
             <Route path="/login" element={<Login />}></Route>
-            <Route path="/register" element={<Register />}></Route>
+            {/* <Route path="/register" element={<Register />}></Route>  */}
             <Route path="/logout" element={<Logout />}></Route>
             <Route
               path="/notification_detail/:id"

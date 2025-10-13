@@ -3,7 +3,7 @@ function Home() {
   return (
     <section>
       <h1 className="text-3xl font-bold mb-4 text-red-600">
-        <i class="fa-solid fa-hand"></i> Xin chào
+        <i className="fa-solid fa-hand"></i> Xin chào
       </h1>
       <div className="flex">
         <div className="flex-[6]">
