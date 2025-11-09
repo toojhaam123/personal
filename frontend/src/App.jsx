@@ -15,6 +15,7 @@ import Login from "./assets/components/Login";
 import Register from "./assets/components/Register";
 import Logout from "./assets/components/Logout";
 import ProtectRoute from "./assets/components/ProtectRoute";
+import PortfolioDetail from "./assets/pages/PortfolioDetail";
 
 function App() {
   return (
@@ -44,6 +45,10 @@ function App() {
                 </ProtectRoute>
               }
             />
+            <Route
+              path="/portfolio_detail/:id"
+              element={<PortfolioDetail></PortfolioDetail>}
+            ></Route>
             <Route path="/login" element={<Login />}></Route>
             {/* <Route path="/register" element={<Register />}></Route>  */}
             <Route path="/logout" element={<Logout />}></Route>

@@ -53,7 +53,7 @@ function Login() {
         type="submit"
         className="w-full bg-blue-600 text-white py-2 px-4 rounded mt-5"
       >
-        Đăng nhập
+        <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
       </button>
       {/* <p className="mt-5">
         <NavLink to="/register">Đăng ký tài khoản</NavLink>

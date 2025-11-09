@@ -34,7 +34,7 @@ function Logout() {
       onClick={handleLogout}
       className="bg-red-600 text-white py-2 px-4 rounded mt-5"
     >
-      Đăng xuất
+      <i className="fa-solid fa-right-from-bracket"></i> Đăng xuất
     </button>
   );
 }

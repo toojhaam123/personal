@@ -25,7 +25,7 @@ class ExperienceController extends Controller
     public function update(Request $request, $id)
     {
         $exp = $request->validate([
-            'exp_info' => 'nullable|string|max:255',
+            'exp_info' => 'nullable|string',
         ]);
 
         // Kiểm tra bản ghi 

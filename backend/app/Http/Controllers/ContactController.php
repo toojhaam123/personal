@@ -10,7 +10,7 @@ class ContactController extends Controller
     public function creatInformation(Request $request)
     {
         $validated = $request->validate([
-            'information_contacts' => 'required|string|max:255',
+            'information_contacts' => 'nullable|string',
         ]);
 
         // Lưu vào DB
@@ -31,7 +31,7 @@ class ContactController extends Controller
     {
         // Validate dữ liệu
         $validated = $request->validate([
-            'information_contacts' => 'required|string',
+            'information_contacts' => 'nullable|string',
         ]);
 
         // Tìm bản ghi theo id 

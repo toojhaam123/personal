@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import useStatus from "../hooks/useStatus";
 import axios from "axios";
 function Contact() {
   const [formData, setFormData] = useState({
@@ -10,9 +11,10 @@ function Contact() {
 
   const [contactInfo, setContactInfo] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(null); // Để lưu trạng thái gửi form
+  const { status, setStatus, visible } = useStatus(); // Để lưu trạng thái gửi form
   const isLoggedIn = localStorage.getItem("token");
   const [editMode, setEditMode] = useState(false); // Trạng Thái chỉnh sửa
+  const isLogedIn = localStorage.getItem("token");
 
   // Lấy API từ Laravel để hiện thị
   useEffect(() => {
@@ -52,7 +54,7 @@ function Contact() {
   // xử lý submit lưu thay đổi
   const handleSubmitUpdateInfor = async (e) => {
     e.preventDefault(); // Ngăn reload trang
-
+    setLoading(true);
     try {
       const i = contactInfo[0];
       const res = await axios.put(
@@ -67,6 +69,8 @@ function Contact() {
     } catch (error) {
       console.error("Lỗi khi cập nhật", error.response?.data || error.message);
       alert("Có lỗi khi cập nhật!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,25 +110,47 @@ function Contact() {
       <h1 className="font-bold text-red-600 text-3xl mb-4">
         <i className="fas fa-envelope"></i> Liên hệ
       </h1>
+      {status && (
+        <div
+          className={`mb-3 p-3 rounded transition-opacity duration-500
+                ${visible ? "opacity-100" : "opacity-0"}
+                ${
+                  status.type === "success"
+                    ? "bg-green-100 text-green-700 font-bold"
+                    : "bg-red-100 text-red-700 font-bold"
+                }`}
+        >
+          {status.message}
+        </div>
+      )}
       <p className=" text-lg mb-4">
         Nếu bạn quan tâm đến mình hoặc dự án của mình, hãy liên hệ qua các kênh
         dưới đây:
       </p>
+      <div className="flex gap-2">
+        {/* Nút chỉnh sửa  */}
+        {isLogedIn && (
+          <button
+            type="button"
+            onClick={() => setEditMode(!editMode)}
+            className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+          >
+            {editMode ? (
+              <>
+                {" "}
+                <i class="fa-solid fa-xmark"></i> Hủy
+              </>
+            ) : (
+              <>
+                {" "}
+                <i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+              </>
+            )}
+          </button>
+        )}
+      </div>
       <div className="flex">
         <div className="flex-[7]">
-          {/* Nút chỉnh sửa */}
-          {isLoggedIn && (
-            <div className="float-end">
-              <button
-                type="button"
-                onClick={() => setEditMode(!editMode)}
-                className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
-              >
-                {editMode ? "Hủy" : "Chỉnh sửa"}
-              </button>
-            </div>
-          )}
-
           {/* Nếu ở chế độ chinh sửa thì hiện form */}
           {editMode ? (
             <form onSubmit={handleSubmitUpdateInfor}>
@@ -141,13 +167,26 @@ function Contact() {
                 </div>
               ))}
               <button
-                className="bg-blue-600 hover:bg-blue-700 transition duration-500
-              "
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 transition duration-500 scroll-hidden"
                 disabled={loading}
               >
-                {loading ? "Đang lưu..." : "Lưu"}
+                {loading ? (
+                  <>
+                    <i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...
+                  </>
+                ) : (
+                  <>
+                    <i class="fa-solid fa-floppy-disk"></i> Lưu{" "}
+                  </>
+                )}
               </button>
             </form>
+          ) : loading ? (
+            <p>
+              <i class="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui lòng
+              chờ!
+            </p>
           ) : (
             //  Nếu ko ở chế độ chỉnh sửa thì hiện thông tin
             <div className="space-y-4 mb-5">
@@ -174,18 +213,6 @@ function Contact() {
       {!isLoggedIn && (
         <div className="">
           <p className="text-2xl">Form liên hệ</p>
-
-          {status && (
-            <div
-              className={`mb-3 p-3 rounded ${
-                status.type === "success"
-                  ? "bg-green-100 text-green-700 font-bold"
-                  : "bg-red-100 text-red-700 font-bold"
-              }`}
-            >
-              {status.message}
-            </div>
-          )}
           <form onSubmit={handleSubmit}>
             <label htmlFor="name" className="float-start">
               Họ và tên
@@ -228,7 +255,15 @@ function Contact() {
               disabled={loading}
               className="w-full text-white bg-blue-500 border hover:blue-600 hover:text-white hover:border-white rounded-lg px-4 py-2 transition duration-300"
             >
-              {loading ? "Đang gửi..." : "Gửi liên hệ"}
+              {loading ? (
+                <>
+                  <i class="fa-solid fa-spinner fa-spin"></i> Đang gửi...
+                </>
+              ) : (
+                <>
+                  <i class="fa-solid fa-arrow-right"></i> Gửi
+                </>
+              )}
             </button>
           </form>
         </div>
