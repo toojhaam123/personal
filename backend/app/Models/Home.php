@@ -9,5 +9,5 @@ class Home extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['home_info'];
+    protected $fillable = ['home_info', 'cv_path'];
 }

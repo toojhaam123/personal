@@ -7,12 +7,11 @@ function Home() {
   const [editMode, setEditMode] = useState(false);
   const isLogedIn = localStorage.getItem("token");
   const { userInfo } = useUserInfo();
-  const [CV, setCV] = useState([]);
-
   const { status, setStatus, visible } = useStatus();
 
   // Lấy thông tin trang chủ từ API
   const [homeInfo, setHomeInfo] = useState([]);
+
   // console.log("Thông tin trang chủ: ", useUserInfo);
   useEffect(() => {
     const fetchHomeInfo = async () => {
@@ -20,7 +19,7 @@ function Home() {
         setLoading(true);
         const res = await axios.get("http://127.0.0.1:8000/api/get_home_info");
         setHomeInfo(Array.isArray(res.data) ? res.data : [res.data]);
-        // console.log("Thôn tin trang chủ: ", res.data);
+        console.log("Thôn tin trang chủ: ", res.data);
       } catch (e) {
         console.log("Lỗi khi lấy thông tin trang chủ!", e);
       } finally {
@@ -29,7 +28,6 @@ function Home() {
     };
     fetchHomeInfo();
   }, []);
-
   //Hàm xử lý thay đối khi người dùng thông tin
   const handleChangeUpdatHomeInfo = (e, id) => {
     const newValue = e.target.value;
@@ -49,12 +47,22 @@ function Home() {
 
     try {
       const i = homeInfo[0];
+      const formData = new FormData();
+
+      formData.append("home_info", i.home_info);
+
+      const file = e.target.cv_path.files[0];
+
+      if (file) {
+        formData.append("cv_path", file);
+      }
+
       const res = await axios.post(
         `http://127.0.0.1:8000/api/update_home_info/${i.id}`,
-        {
-          home_info: i.home_info,
-        }
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
+
       setEditMode(false);
       setLoading(false);
       setStatus({
@@ -67,34 +75,6 @@ function Home() {
     }
   };
 
-  // Thêm CV
-  const handleUpLoadCV = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("cv", e.target.cv.files[0]);
-
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/upload-cv",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      setCV(res.data);
-      console.log("Kết quả CV:", res.data);
-      setStatus({
-        type: "success",
-        message: res.data.message,
-      });
-      setEditMode(false);
-    } catch (e) {
-      console.log("Lỗi tải CV", e);
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
     <section>
       <h1 className="text-3xl font-bold mb-4 text-red-600">
@@ -149,6 +129,16 @@ function Home() {
                       onChange={(e) => handleChangeUpdatHomeInfo(e, i.id)}
                       className="w-full bg-white text-black rounded-lg p-2 border text-lg"
                     ></textarea>
+                    <label htmlFor="cv" className="float-start">
+                      Thêm CV
+                    </label>
+                    <input
+                      className="w-full rounded bg-white text-black m-2"
+                      name="cv_path"
+                      id="cv_path"
+                      type="file"
+                      accept=".pdf, .doc"
+                    />
                   </div>
                 ))}
                 <button
@@ -164,34 +154,6 @@ function Home() {
                   ) : (
                     <>
                       <i className="fa-solid fa-floppy-disk"></i> Lưu{" "}
-                    </>
-                  )}
-                </button>
-              </form>
-              <form action="" onSubmit={handleUpLoadCV}>
-                <label htmlFor="cv" className="float-start">
-                  Thêm CV
-                </label>
-                <input
-                  className="w-full rounded bg-white text-black m-2"
-                  name="cv"
-                  id="cv"
-                  type="file"
-                  accept=".pdf, .doc"
-                />
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 transition duration-500 scroll-hidden"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <i className="fa-solid fa-spinner fa-spin"></i> Đang
-                      tải...
-                    </>
-                  ) : (
-                    <>
-                      <i className="fa-solid fa-floppy-disk"></i> Thêm{" "}
                     </>
                   )}
                 </button>
@@ -214,18 +176,21 @@ function Home() {
                   </p>
                 ))
               )}
+              {!editMode && homeInfo.length > 0
+                ? homeInfo.map((i) => (
+                    <a
+                      key={i.id}
+                      href={`http://127.0.0.1:8000${i.cv_path}`}
+                      target="_blank"
+                      className="px-4 py-2 border border-blue-600 text-white 
+                   rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 
+                     hover:border-white float-end"
+                    >
+                      <i className="fa-regular fa-file"></i> Xem CV
+                    </a>
+                  ))
+                : !loading && <p>Không có thông tin trang chủ</p>}
             </div>
-          )}
-          {!editMode && (
-            <a
-              href={`${CV.file_path}`}
-              target="_blank"
-              className="px-4 py-2 border border-blue-600 text-white 
-            rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 
-            hover:border-white float-end"
-            >
-              <i className="fa-regular fa-file"></i> Xem CV
-            </a>
           )}
         </div>
         <div className="flex-[4]">

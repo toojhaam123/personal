@@ -24,8 +24,9 @@ class UserInfoController extends Controller
     {
         // validate dữ liệu
         $validated = $request->validate([
-            'avatar' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'fullname' => 'nullable|string|max:255',
+            'job_title' => 'nullable|string|max:255',
             'birth' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'link_address' => 'nullable|string|max:255',
@@ -37,9 +38,18 @@ class UserInfoController extends Controller
             'link_github' => 'nullable|string|max:255',
         ]);
 
+        // nếu có files
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('avatars', $fileName, 'public');
+            $validated['avatar'] = $fileName;
+        }
+
         $userInfo = UserInfo::create([
             'avatar' => $validated['avatar'],
             'fullname' => $validated['fullname'],
+            'job_title' => $validated['job_title'],
             'birth' => $validated['birth'],
             'address' => $validated['address'],
             'link_address' => $validated['link_address'],
@@ -50,31 +60,10 @@ class UserInfoController extends Controller
             'github' => $validated['github'],
             'link_github' => $validated['link_github'],
         ]);
-        return response()->json(['message' => "Thêm thông tin người dùng thành công!"]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(UserInfo $userInfo)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(UserInfo $userInfo)
-    {
-        //
+        return response()->json([
+            'message' => "Thêm thông tin người dùng thành công!",
+            'date' => $userInfo,
+        ]);
     }
 
     /**
@@ -91,6 +80,7 @@ class UserInfoController extends Controller
             $validated = $request->validate([
                 'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
                 'fullname' => 'nullable|string|max:255',
+                'job_title' => 'nullable|string|max:255',
                 'birth' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:255',
                 'link_address' => 'nullable|string|max:255',
