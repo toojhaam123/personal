@@ -2,12 +2,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import useUserInfo from "../hooks/useUserInfo";
 import useStatus from "../hooks/useStatus";
+import FormCreatHomeInfo from "../components/FormCreatHomeInfo";
 function Home() {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const isLogedIn = localStorage.getItem("token");
   const { userInfo } = useUserInfo();
   const { status, setStatus, visible } = useStatus();
+  const [addMode, setAddMode] = useState(false);
 
   // Lấy thông tin trang chủ từ API
   const [homeInfo, setHomeInfo] = useState([]);
@@ -19,7 +21,7 @@ function Home() {
         setLoading(true);
         const res = await axios.get("http://127.0.0.1:8000/api/get_home_info");
         setHomeInfo(Array.isArray(res.data) ? res.data : [res.data]);
-        console.log("Thôn tin trang chủ: ", res.data);
+        // console.log("Thôn tin trang chủ: ", res.data);
       } catch (e) {
         console.log("Lỗi khi lấy thông tin trang chủ!", e);
       } finally {
@@ -69,6 +71,8 @@ function Home() {
         type: "success",
         message: res.data.message,
       });
+      // Cập nhật ngay sao khi update
+      setHomeInfo([res.data.data]);
     } catch (e) {
       console.log("Lỗi khi cập nhật thông tin trang chủ!", e);
       // alert("Có lỗi khi cập nhập thông tin trang chủ!", e);
@@ -93,14 +97,13 @@ function Home() {
         </div>
       )}
       <div className="flex gap-2">
-        {/* Nút chỉnh sửa  */}
-        {isLogedIn && (
+        {isLogedIn && (!homeInfo || homeInfo.length === 0) ? (
           <button
             type="button"
-            onClick={() => setEditMode(!editMode)}
+            onClick={() => setAddMode(!addMode)}
             className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
           >
-            {editMode ? (
+            {addMode ? (
               <>
                 {" "}
                 <i className="fa-solid fa-xmark"></i> Hủy
@@ -108,15 +111,44 @@ function Home() {
             ) : (
               <>
                 {" "}
-                <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                <i className="fa-solid fa-add"></i> Thêm
               </>
             )}
           </button>
+        ) : (
+          // {/* Nút chỉnh sửa  */}
+          isLogedIn && (
+            <button
+              type="button"
+              onClick={() => setEditMode(!editMode)}
+              className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+            >
+              {editMode ? (
+                <>
+                  {" "}
+                  <i className="fa-solid fa-xmark"></i> Hủy
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                </>
+              )}
+            </button>
+          )
         )}
       </div>
       <div className="flex">
         <div className="flex-[6]">
-          {editMode ? (
+          {addMode ? (
+            <FormCreatHomeInfo
+              setAddMode={setAddMode}
+              setStatus={setStatus}
+              setLoading={setLoading}
+              loading={loading}
+              setHomeInfo={setHomeInfo}
+            />
+          ) : editMode ? (
             <>
               <form action="" onSubmit={handleSubmitHomeInfo}>
                 {homeInfo.map((i) => (

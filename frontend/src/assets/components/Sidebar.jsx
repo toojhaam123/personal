@@ -163,6 +163,7 @@ function Sidebar() {
         }
       );
       setUserInfo(Array.isArray(res.data) ? res.data : [res.data]);
+
       // reset lại form
       setAddUserInfo({
         fullname: "",

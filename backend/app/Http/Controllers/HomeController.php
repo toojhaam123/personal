@@ -16,15 +16,33 @@ class HomeController extends Controller
     {
         $validated = $request->validate([
             'home_info' => 'nullable|string',
+            'cv_path' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
 
         ]);
 
-        Home::create($validated);
+        try {
+            // Nếu có file CV
+            if ($request->hasFile('cv_path')) { // Kiêm tra xem tro request có tên file cv_path hay ko, tránh người dùng ko gửi file mà backend vẫn xử lý 
+                $file = $request->file('cv_path'); // Lấy đối tượng file từ request
+                $fileName = time() . '_' . $file->getClientOriginalName(); // Tạo tên file mới để lưu, time() giúp tên file duy nhất, lấy tên file gốc
+                $file->storeAs('cv', $fileName); // lưu trong storage/app/public/cv
+                $validated['cv_path'] = '/storage/cv/' . $fileName;
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Tạo thông tin trang chủ thành công!',
-        ]);
+            // Tạo bản ghi Home
+            $homeInfo = Home::create($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tạo thông tin trang chủ thành công!',
+                'data'    => $homeInfo,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi tạo thông tin: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
@@ -44,9 +62,13 @@ class HomeController extends Controller
         // nếu có file mới 
         if ($request->hasFile('cv_path')) {
             $file = $request->file('cv_path');
+
             // Xóa file cũ nếu có
-            if ($homeInfo->cv_path && Storage::exists('public' . $homeInfo->cv_path)) {
-                Storage::delete('public' . $homeInfo->cv_path);
+            if (!empty($homeInfo->cv_path)) {
+                $oldFile = str_replace('/storage', 'public', $homeInfo->cv_path);
+                if (Storage::exists($oldFile)) {
+                    Storage::delete($oldFile);
+                }
             }
 
             // Lưu file mới 
