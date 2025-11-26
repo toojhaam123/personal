@@ -88,12 +88,12 @@ function Education() {
             {editMode ? (
               <>
                 {" "}
-                <i class="fa-solid fa-xmark"></i> Hủy
+                <i className="fa-solid fa-xmark"></i> Hủy
               </>
             ) : (
               <>
                 {" "}
-                <i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
               </>
             )}
           </button>
@@ -121,11 +121,11 @@ function Education() {
               >
                 {loading ? (
                   <>
-                    <i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...
+                    <i className="fa-solid fa-spinner fa-spin"></i> Đang lưu...
                   </>
                 ) : (
                   <>
-                    <i class="fa-solid fa-floppy-disk"></i> Lưu{" "}
+                    <i className="fa-solid fa-floppy-disk"></i> Lưu{" "}
                   </>
                 )}
               </button>
@@ -134,8 +134,8 @@ function Education() {
             <div className="edu_info">
               {loading ? (
                 <p>
-                  <i class="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui
-                  lòng chờ!
+                  <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
+                  Vui lòng chờ!
                 </p>
               ) : (
                 eduInfo.map((edu) => (

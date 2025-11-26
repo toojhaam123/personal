@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./assets/components/Navbar";
@@ -12,12 +12,17 @@ import Contact from "./assets/pages/Contact";
 import Notification from "./assets/pages/Notification";
 import Notification_Detail from "./assets/pages/Notification_Detail";
 import Login from "./assets/components/Login";
-import Register from "./assets/components/Register";
+// import Register from "./assets/components/Register";
 import Logout from "./assets/components/Logout";
 import ProtectRoute from "./assets/components/ProtectRoute";
 import PortfolioDetail from "./assets/pages/PortfolioDetail";
-
+import useStatus from "./assets/hooks/useStatus";
 function App() {
+  const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const isLogedIn = localStorage.getItem("token");
+  const { status, setStatus, visible } = useStatus();
+  const [addMode, setAddMode] = useState(false);
   return (
     <div className="flex h-screen">
       <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
@@ -30,7 +35,23 @@ function App() {
         </div>
         <div className="flex-[12] overflow-y-auto scroll-hidden">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={
+                <Home
+                  loading={loading}
+                  setLoading={setLoading}
+                  editMode={editMode}
+                  setEditMode={setEditMode}
+                  isLogedIn={isLogedIn}
+                  status={status}
+                  setStatus={setStatus}
+                  visible={visible}
+                  addMode={addMode}
+                  setAddMode={setAddMode}
+                />
+              }
+            />
             <Route path="/experience" element={<Experience />} />
             <Route path="/skill" element={<Skill />} />
             <Route path="/education" element={<Education />} />

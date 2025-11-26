@@ -138,12 +138,12 @@ function Contact() {
             {editMode ? (
               <>
                 {" "}
-                <i class="fa-solid fa-xmark"></i> Hủy
+                <i className="fa-solid fa-xmark"></i> Hủy
               </>
             ) : (
               <>
                 {" "}
-                <i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
               </>
             )}
           </button>
@@ -173,19 +173,19 @@ function Contact() {
               >
                 {loading ? (
                   <>
-                    <i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...
+                    <i className="fa-solid fa-spinner fa-spin"></i> Đang lưu...
                   </>
                 ) : (
                   <>
-                    <i class="fa-solid fa-floppy-disk"></i> Lưu{" "}
+                    <i className="fa-solid fa-floppy-disk"></i> Lưu{" "}
                   </>
                 )}
               </button>
             </form>
           ) : loading ? (
             <p>
-              <i class="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui lòng
-              chờ!
+              <i className="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui
+              lòng chờ!
             </p>
           ) : (
             //  Nếu ko ở chế độ chỉnh sửa thì hiện thông tin
@@ -257,11 +257,11 @@ function Contact() {
             >
               {loading ? (
                 <>
-                  <i class="fa-solid fa-spinner fa-spin"></i> Đang gửi...
+                  <i className="fa-solid fa-spinner fa-spin"></i> Đang gửi...
                 </>
               ) : (
                 <>
-                  <i class="fa-solid fa-arrow-right"></i> Gửi
+                  <i className="fa-solid fa-arrow-right"></i> Gửi
                 </>
               )}
             </button>

@@ -162,7 +162,7 @@ function Sidebar() {
           headers: { "Content-Type": "multpart/form-data" },
         }
       );
-      setUserInfo(Array.isArray(res.data) ? res.data : [res.data]);
+      setUserInfo((prev) => [res.data.data, ...prev]);
 
       // reset lại form
       setAddUserInfo({
@@ -195,6 +195,31 @@ function Sidebar() {
     }
   };
 
+  // Hàm xử lý xóa thông tin người dùng
+  const handleDeleteUserInfo = async (id) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa không!")) return;
+    setLoading(true);
+    try {
+      const res = await axios.delete(
+        `http://127.0.0.1:8000/api/delete_user_info/${id}`
+      );
+      setUserInfo((prev) => prev.filter((item) => item.id !== id));
+      setStatus({
+        type: "success",
+        message: res.data.message,
+      });
+      setEditMode(false);
+    } catch (err) {
+      setStatus({
+        type: "error",
+        message: "Lỗi khi xóa thông tin người dùng!",
+        err,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="text-center max-vh-100 flex flex-col">
       <div className="flex gap-2 text-center justify-center">
@@ -220,23 +245,41 @@ function Sidebar() {
         ) : (
           // {/* Nút chỉnh sửa  */}
           isLogedIn && (
-            <button
-              type="button"
-              onClick={() => setEditMode(!editMode)}
-              className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
-            >
-              {editMode ? (
-                <>
-                  {" "}
-                  <i className="fa-solid fa-xmark"></i> Hủy
-                </>
-              ) : (
-                <>
-                  {" "}
-                  <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
-                </>
+            <>
+              <button
+                type="button"
+                onClick={() => setEditMode(!editMode)}
+                className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+              >
+                {editMode ? (
+                  <>
+                    {" "}
+                    <i className="fa-solid fa-xmark"></i> Hủy
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                  </>
+                )}
+              </button>
+              {editMode && (
+                <button
+                  onClick={() => handleDeleteUserInfo(userInfo[0].id)}
+                  className="border bg-red-600 hover:bg-red-700 transition duration-500 mb-3"
+                >
+                  {loading ? (
+                    <>
+                      <i className="fa-solid fa-delete-left"></i> Đang xóa
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-delete-left"></i> Xóa
+                    </>
+                  )}
+                </button>
               )}
-            </button>
+            </>
           )
         )}
       </div>

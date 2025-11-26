@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserInfoController extends Controller
 {
@@ -62,7 +63,7 @@ class UserInfoController extends Controller
         ]);
         return response()->json([
             'message' => "Thêm thông tin người dùng thành công!",
-            'date' => $userInfo,
+            'data' => $userInfo,
         ]);
     }
 
@@ -126,8 +127,34 @@ class UserInfoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserInfo $userInfo)
+    public function destroy($id)
     {
-        //
+        // Tìm bản ghi cần xóa 
+        $userInfo = UserInfo::findOrFail($id);
+
+        if (!$userInfo) {
+            return response()->json([
+                'success' => false,
+                'message' => "Không tìm thấy ID người dùng!",
+            ]);
+        }
+        // Xóa ảnh avatar nếu có
+        if (!empty($userInfo->avatar)) {
+            $filePath = str_replace('/storage', 'public', $userInfo->avatar);
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+        }
+
+        // Xóa bản ghi trong DB 
+        $userInfo->delete();
+
+        // Trả kết quả Json 
+        return response()->json(
+            [
+                'success' => true,
+                'message' => "Xóa thông tin người dùng thành công!",
+            ]
+        );
     }
 }

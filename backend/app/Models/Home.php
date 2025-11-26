@@ -8,6 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Home extends Model
 {
     use HasFactory;
-
     protected $fillable = ['home_info', 'cv_path'];
 }

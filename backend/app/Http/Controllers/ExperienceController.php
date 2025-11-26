@@ -10,15 +10,16 @@ class ExperienceController extends Controller
     // Tạo thông tin Exp 
     public function store(Request $request)
     {
-        $exp = $request->validate([
+        $validated = $request->validate([
             'exp_info' => 'nullable|string|max:255',
         ]);
 
-        Experience::create($exp);
+        $exp = Experience::create($validated);
 
         return response()->json([
             'success' => true,
             'message' => 'Tạo thông tin kinh nghiệm thành công!',
+            'data' => $exp,
         ]);
     }
 
@@ -53,5 +54,29 @@ class ExperienceController extends Controller
     public function index(Request $request)
     {
         return Experience::latest()->get();
+    }
+
+    // Hàm xóa
+    public function destroy($id)
+    {
+        // tìm bản ghi cần xóa
+        $exp = Experience::findOrFail($id);
+
+        if (!$exp) {
+            return response()->json([
+                'success' => false,
+                'message' => "Lỗi khi xóa thông tin kinh nghiệm!",
+            ]);
+        }
+
+        //  Xóa bản ghi trong DB
+        $exp->delete();
+
+        // Trả về status 
+        return response()->json([
+            'success' => true,
+            'message' => "Xóa thông tin kinh nghiệm thành công!",
+            'data' => $exp,
+        ]);
     }
 }

@@ -88,12 +88,12 @@ function Skill() {
             {editMode ? (
               <>
                 {" "}
-                <i class="fa-solid fa-xmark"></i> Hủy
+                <i className="fa-solid fa-xmark"></i> Hủy
               </>
             ) : (
               <>
                 {" "}
-                <i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
               </>
             )}
           </button>
@@ -122,19 +122,19 @@ function Skill() {
               >
                 {loading ? (
                   <>
-                    <i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...
+                    <i className="fa-solid fa-spinner fa-spin"></i> Đang lưu...
                   </>
                 ) : (
                   <>
-                    <i class="fa-solid fa-floppy-disk"></i> Lưu{" "}
+                    <i className="fa-solid fa-floppy-disk"></i> Lưu{" "}
                   </>
                 )}
               </button>
             </form>
           ) : loading ? (
             <p>
-              <i class="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui lòng
-              chờ!
+              <i className="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui
+              lòng chờ!
             </p>
           ) : (
             <div className="skill_info">

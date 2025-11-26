@@ -33,17 +33,19 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/creat_user_info', [UserInfoController::class, 'create']);
 Route::post('/update_user_info/{id}', [UserInfoController::class, 'update']);
 Route::get('get_user_info', [UserInfoController::class, 'index']);
+Route::delete('delete_user_info/{id}', [UserInfoController::class, 'destroy']);
 
 // Home 
 Route::post('creat_home_info', [HomeController::class, 'store']);
 Route::get('get_home_info', [HomeController::class, 'index']);
 Route::post('update_home_info/{id}', [HomeController::class, 'update']);
-Route::post('upload-cv', [HomeController::class, 'uploadCV']);
+Route::delete('delete_home_info/{id}', [HomeController::class, 'destroy']);
 
 // Experiences
 Route::post('creat_exp_info', [ExperienceController::class, 'store']);
 Route::get('get_exp_info', [ExperienceController::class, 'index']);
 Route::post('update_exp_info/{id}', [ExperienceController::class, 'update']);
+Route::delete('delete_exp_info/{id}', [ExperienceController::class, 'destroy']);
 
 // Skills 
 Route::post('creat_skill_info', [SkillController::class, 'store']);

@@ -93,4 +93,28 @@ class HomeController extends Controller
     {
         return Home::latest()->get();
     }
+
+    // Xóa thông tin trang chủ 
+    public function destroy($id)
+    {
+        // Tìm bản ghi
+        $homeInfo = Home::findOrFail($id);
+
+        // Xóa file CV nếu có
+        if (!empty($homeInfo->cv_path)) {
+            $filePath = str_replace('/storage', 'public', $homeInfo->cv_path);
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+        }
+
+        // Xóa bản ghi trong DB
+        $homeInfo->delete();
+
+        // Trả kết quả JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã xóa thông tin thành công!',
+        ]);
+    }
 }
