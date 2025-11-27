@@ -60,4 +60,29 @@ class EducationController extends Controller
     {
         return Education::latest()->get();
     }
+
+    // Xóa thông học vấn 
+    public function destroy($id)
+    {
+        // Tìm bản ghi cần xóa 
+        $edu = Education::findOrFail($id);
+
+        // Nếu ko tìm thấy 
+        if (!$edu) {
+            return response()->json([
+                'success' => false,
+                'message' => "Không tìm thấy bản ghi học vấn!",
+            ]);
+        }
+
+        // Xóa bản ghi học vấn trong DB 
+        $edu->delete();
+
+        // Trả về kết quả 
+        return response()->json([
+            'success' => true,
+            'message' => 'Xóa thông tin học vấn thành công!',
+            'data' => $edu,
+        ]);
+    }
 }

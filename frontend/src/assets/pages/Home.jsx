@@ -188,7 +188,7 @@ function Home({
                       <i className="fa-regular fa-file"></i> Xem CV
                     </a>
                   )
-                : !loading && <p>Không có thông tin trang chủ</p>}
+                : !loading && <p>Không có thông tin trang chủ nào!</p>}
             </div>
           )}
         </div>

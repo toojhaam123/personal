@@ -56,4 +56,29 @@ class ContactController extends Controller
             'data' => $contact,
         ]);
     }
+
+    // xóa thông tin liên hệ 
+    public function destroy($id)
+    {
+        // Tìm bản ghi cần xóa 
+        $infoContacts = Contact::findOrFail($id);
+
+        // Nếu ko tìm thấy 
+        if (!$infoContacts) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy bản ghi liên hệ!',
+            ]);
+        }
+
+        // xóa bản ghi trong DB 
+        $infoContacts->delete();
+
+        // Trả về kết quả 
+        return response()->json([
+            'success' => true,
+            'message' => "Xóa thông tin liên hệ thành công!",
+            'data' => $infoContacts,
+        ]);
+    }
 }

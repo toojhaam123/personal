@@ -163,7 +163,6 @@ function Experience() {
                       <i className="fa-solid fa-delete-left"></i> Xóa
                     </>
                   )}
-                  <> </>
                 </button>
               )}
             </>
@@ -172,7 +171,7 @@ function Experience() {
       </div>
       <div className="flex">
         <div className="flex-[7]">
-          {/* Hiênj thị form thêm thông tin trang chủ */}
+          {/* Hiênj thị form thêm thông tin kinh nghiệm */}
           {addMode ? (
             <FormAddExpInfo
               setAddMode={setAddMode}
@@ -182,6 +181,7 @@ function Experience() {
               setExpInfo={setExpInfo}
             ></FormAddExpInfo>
           ) : editMode ? (
+            // Chế độ chỉnh sửa
             <form action="" onSubmit={handleSubmitUpdateExpInfo} method="post">
               {expInfo.map((item) => (
                 <div key={item.id}>
@@ -218,6 +218,10 @@ function Experience() {
                 <p>
                   <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
                   Vui lòng chờ!
+                </p>
+              ) : expInfo.length === 0 ? (
+                <p className="text-center">
+                  Không có thông tin kinh nghiệm nào!
                 </p>
               ) : (
                 expInfo[0]?.exp_info && (

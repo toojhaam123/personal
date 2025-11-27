@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import useStatus from "../hooks/useStatus";
 import axios from "axios";
+import FormAddSkillInfo from "../components/form/FormAddSkillInfo";
 function Skill() {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const { status, setStatus, visible } = useStatus();
   const [skillInfo, setSkillInfo] = useState([]);
   const isLogedIn = localStorage.getItem("token");
+  const [addMode, setAddMode] = useState(false);
 
   useEffect(() => {
     const fetchSkillInfo = async () => {
@@ -59,6 +61,33 @@ function Skill() {
       setLoading(false);
     }
   };
+
+  // Hàm xử lý xóa thông tin kỹ năng
+  const handleDeleteSkillInffo = async (id) => {
+    if (!window.confirm("Bạn có chắc muốn xóa không!")) return;
+    setLoading(true);
+
+    try {
+      const res = await axios.delete(
+        `http://127.0.0.1:8000/api/delete_skill_info/${id}`
+      );
+
+      setSkillInfo((prev) => prev.filter((item) => item.id != id));
+      setStatus({
+        type: "success",
+        message: res.data.message,
+      });
+      setEditMode(false);
+    } catch (e) {
+      setStatus({
+        type: "error",
+        message: "Xóa thông tin kỹ năng thất bại!",
+        e,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <section>
       <h1 className="text-3xl font-bold mb-4 text-red-600">
@@ -78,30 +107,81 @@ function Skill() {
         </div>
       )}
       <div className="flex gap-2">
-        {/* Nút chỉnh sửa  */}
-        {isLogedIn && (
-          <button
-            type="button"
-            onClick={() => setEditMode(!editMode)}
-            className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
-          >
-            {editMode ? (
-              <>
-                {" "}
-                <i className="fa-solid fa-xmark"></i> Hủy
-              </>
-            ) : (
-              <>
-                {" "}
-                <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
-              </>
-            )}
-          </button>
+        {/* Nút thêm thông tin kỹ năng */}
+        {isLogedIn && (!skillInfo || skillInfo.length === 0) ? (
+          <>
+            <button
+              type="button"
+              onClick={() => setAddMode(!addMode)}
+              className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+            >
+              {addMode ? (
+                <>
+                  {" "}
+                  <i className="fa-solid fa-xmark"></i> Hủy
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <i className="fa-solid fa-add"></i> Thêm
+                </>
+              )}
+            </button>
+          </>
+        ) : (
+          /* Nút chỉnh sửa  */
+          isLogedIn && (
+            <>
+              <button
+                type="button"
+                onClick={() => setEditMode(!editMode)}
+                className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+              >
+                {editMode ? (
+                  <>
+                    {" "}
+                    <i className="fa-solid fa-xmark"></i> Hủy
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                  </>
+                )}
+              </button>
+              {editMode && (
+                <button
+                  onClick={() => handleDeleteSkillInffo(skillInfo[0].id)}
+                  className="bg-red-600 border hover:bg-red-700 mb-3 transition duration-500"
+                >
+                  {loading ? (
+                    <>
+                      <i className="fa-solid fa-delete-left"></i> Đang xóa
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-delete-left"></i> Xóa
+                    </>
+                  )}
+                </button>
+              )}
+            </>
+          )
         )}
       </div>
       <div className="flex">
         <div className="flex-[7]">
-          {editMode ? (
+          {/* Hiện thị form thêm thông tin kỹ năng */}
+          {addMode ? (
+            <FormAddSkillInfo
+              setAddMode={setAddMode}
+              setStatus={setStatus}
+              setLoading={setLoading}
+              loading={loading}
+              setSkillInfo={setSkillInfo}
+            ></FormAddSkillInfo>
+          ) : editMode ? (
+            // Chế độ chỉnh sửa
             <form action="" method="post" onSubmit={handleSubmitSkillInfo}>
               {skillInfo.map((item) => (
                 <div key={item.id}>
@@ -131,21 +211,25 @@ function Skill() {
                 )}
               </button>
             </form>
-          ) : loading ? (
-            <p>
-              <i className="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui
-              lòng chờ!
-            </p>
           ) : (
             <div className="skill_info">
-              {skillInfo.map((item) => (
-                <p
-                  key={item.id}
-                  className="text-lg mb-4 text-start whitespace-pre-line"
-                >
-                  {item.skill_info}
+              {loading ? (
+                <p>
+                  <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
+                  Vui lòng chờ!
                 </p>
-              ))}
+              ) : skillInfo.length === 0 ? (
+                <p className="text-center">Không có thông tin kỹ năng nào!</p>
+              ) : (
+                skillInfo?.[0]?.skill_info && (
+                  <p
+                    key={skillInfo[0].id}
+                    className="text-lg mb-4 text-start whitespace-pre-line"
+                  >
+                    {skillInfo[0].skill_info}
+                  </p>
+                )
+              )}
             </div>
           )}
         </div>

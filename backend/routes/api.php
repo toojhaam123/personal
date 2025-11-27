@@ -12,6 +12,7 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SkillController;
 use App\Models\Education;
 use App\Models\Portfolio;
+use App\Models\Skill;
 
 // Contact and notification
 Route::post('/formcontact', [FormContactController::class, 'store']);
@@ -20,6 +21,7 @@ Route::put('/contacts/{id}', [ContactController::class, 'updateInfor']);
 Route::post('/information_contacts', [ContactController::class, 'creatInformation']);
 Route::get('/get_information_contacts', [ContactController::class, 'index']);
 Route::get('/notification_detail/{id}', [FormContactController::class, 'showDetail']);
+Route::delete('delete_info_contacts', [ContactController::class, 'destroy']);
 
 // Login 
 Route::post('/login', [AuthController::class, 'login']);
@@ -51,11 +53,13 @@ Route::delete('delete_exp_info/{id}', [ExperienceController::class, 'destroy']);
 Route::post('creat_skill_info', [SkillController::class, 'store']);
 Route::get('get_skill_info', [SkillController::class, 'index']);
 Route::post('update_skill_info/{id}', [SkillController::class, 'update']);
+Route::delete('delete_skill_info/{id}', [SkillController::class, 'destroy']);
 
 // Education
 Route::post('creat_edu_info', [EducationController::class, 'store']);
 Route::get('get_edu_info', [EducationController::class, 'index']);
 Route::post('update_edu_info/{id}', [EducationController::class, 'update']);
+Route::delete('delete_edu_info/{id}', [Education::class, 'destroy']);
 
 // Portfolio 
 Route::post('creat_portfolio_info', [PortfolioController::class, 'store']);

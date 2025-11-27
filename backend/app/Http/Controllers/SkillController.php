@@ -10,15 +10,16 @@ class SkillController extends Controller
     // Thêm thông tin skill 
     public function store(Request $request)
     {
-        $skill = $request->validate([
+        $validated = $request->validate([
             'skill_info' => 'string|nullable',
         ]);
         // Tạo thông tin
-        Skill::create($skill);
+        $skill = Skill::create($validated);
 
         return response()->json([
             'success' => true,
             'message' => 'Thêm thông tin kỹ năng thành công!',
+            'data' => $skill,
         ]);
     }
 
@@ -55,5 +56,22 @@ class SkillController extends Controller
     public function index()
     {
         return Skill::latest()->get();
+    }
+
+    // Xóa thông tin kỹ năng
+    public function destroy($id)
+    {
+        // Tìm bản ghi cần xóa
+        $skill = Skill::findOrFail($id);
+
+        // Xóa bản ghi trong DB 
+        $skill->delete();
+
+        // Trả về kết quả
+        return response()->json([
+            'success' => true,
+            'message' => "Xóa thông tin kỹ năng thành công!",
+            'data' => $skill,
+        ]);
     }
 }
