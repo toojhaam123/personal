@@ -1,14 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import useStatus from "../hooks/useStatus";
 import FormAddExpInfo from "../components/form/FormAddExpInfo";
-function Experience() {
-  const [editMode, setEditMode] = useState(false);
-  const isLogedIn = localStorage.getItem("token");
-  const [loading, setLoading] = useState(false);
+function Experience({
+  loading,
+  setLoading,
+  editMode,
+  setEditMode,
+  isLogedIn,
+  setStatus,
+  addMode,
+  setAddMode,
+}) {
   const [expInfo, setExpInfo] = useState([]);
-  const { status, setStatus, visible } = useStatus();
-  const [addMode, setAddMode] = useState(false);
 
   useEffect(() => {
     // Lấy thông tin kinh nghiệm từ API gửi về
@@ -94,20 +97,6 @@ function Experience() {
       <h1 className="text-3xl font-bold mb-4 text-red-600">
         <i className="fas fa-briefcase"></i> Kinh nghiệm
       </h1>
-      {status && (
-        <div
-          className={`mb-3 rounded transition-opacity duration-500 p-3
-            ${visible ? "opacity-100" : "opacity-0"}
-            ${
-              status.type === "success"
-                ? "bg-green-100 text-green-700 font-bolt"
-                : "bg-red-100 text-red-700 font-bolt"
-            }
-          `}
-        >
-          {status.message}
-        </div>
-      )}
       <div className="flex gap-2">
         {/* Nú thêm thông tin người dùng */}
         {isLogedIn && (!expInfo || expInfo.length === 0) ? (

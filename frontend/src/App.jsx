@@ -24,67 +24,111 @@ function App() {
   const { status, setStatus, visible } = useStatus();
   const [addMode, setAddMode] = useState(false);
   return (
-    <div className="flex h-screen">
-      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
-        <Sidebar />
-      </div>
+    <>
+      {status && (
+        <div
+          className={`mb-3 p-3 rounded transition-opacity duration-100 
+            ${visible ? "opacity-100" : "opacity-0"} ${
+            status.type === "success"
+              ? "bg-green-100 text-green-700 font-bold"
+              : "bg-red-100 text-red-700 font-bold"
+          }`}
+        >
+          {status.message}
+        </div>
+      )}
+      <div className="flex h-screen">
+        <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
+          <Sidebar />
+        </div>
 
-      <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
-        <div className="flex-[2] border-r">
-          <Navbar />
-        </div>
-        <div className="flex-[12] overflow-y-auto scroll-hidden">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Home
-                  loading={loading}
-                  setLoading={setLoading}
-                  editMode={editMode}
-                  setEditMode={setEditMode}
-                  isLogedIn={isLogedIn}
-                  status={status}
-                  setStatus={setStatus}
-                  visible={visible}
-                  addMode={addMode}
-                  setAddMode={setAddMode}
-                />
-              }
-            />
-            <Route path="/experience" element={<Experience />} />
-            <Route path="/skill" element={<Skill />} />
-            <Route path="/education" element={<Education />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/contact" element={<Contact />} />
-            {/* Nếu chưa login thì ko thể vào được qua đường link */}
-            <Route
-              path="/notifications"
-              element={
-                <ProtectRoute>
-                  <Notification />
-                </ProtectRoute>
-              }
-            />
-            <Route
-              path="/portfolio_detail/:id"
-              element={<PortfolioDetail></PortfolioDetail>}
-            ></Route>
-            <Route path="/login" element={<Login />}></Route>
-            {/* <Route path="/register" element={<Register />}></Route>  */}
-            <Route path="/logout" element={<Logout />}></Route>
-            <Route
-              path="/notification_detail/:id"
-              element={
-                <ProtectRoute>
-                  <Notification_Detail />
-                </ProtectRoute>
-              }
-            />
-          </Routes>
+        <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
+          <div className="flex-[2] border-r">
+            <Navbar />
+          </div>
+          <div className="flex-[12] overflow-y-auto scroll-hidden">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Home
+                    loading={loading}
+                    setLoading={setLoading}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
+                    isLogedIn={isLogedIn}
+                    setStatus={setStatus}
+                    addMode={addMode}
+                    setAddMode={setAddMode}
+                  />
+                }
+              />
+              <Route
+                path="/experience"
+                element={
+                  <Experience
+                    loading={loading}
+                    setLoading={setLoading}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
+                    isLogedIn={isLogedIn}
+                    setStatus={setStatus}
+                    addMode={addMode}
+                    setAddMode={setAddMode}
+                  />
+                }
+              />
+              <Route path="/skill" element={<Skill />} />
+              <Route path="/education" element={<Education />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/contact" element={<Contact />} />
+              {/* Nếu chưa login thì ko thể vào được qua đường link */}
+              <Route
+                path="/notifications"
+                element={
+                  <ProtectRoute>
+                    <Notification />
+                  </ProtectRoute>
+                }
+              />
+              <Route
+                path="/portfolio_detail/:id"
+                element={
+                  <PortfolioDetail
+                    loading={loading}
+                    setLoading={setLoading}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
+                    isLogedIn={isLogedIn}
+                    setStatus={setStatus}
+                  ></PortfolioDetail>
+                }
+              ></Route>
+              <Route path="/login" element={<Login />}></Route>
+              {/* <Route path="/register" element={<Register />}></Route>  */}
+              <Route path="/logout" element={<Logout />}></Route>
+              <Route
+                path="/notification_detail/:id"
+                element={
+                  <ProtectRoute>
+                    <Notification_Detail
+                      loading={loading}
+                      setLoading={setLoading}
+                      editMode={editMode}
+                      setEditMode={setEditMode}
+                      isLogedIn={isLogedIn}
+                      setStatus={setStatus}
+                      addMode={addMode}
+                      setAddMode={setAddMode}
+                    />
+                  </ProtectRoute>
+                }
+              />
+            </Routes>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

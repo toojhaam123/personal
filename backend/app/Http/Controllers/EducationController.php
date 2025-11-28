@@ -10,18 +10,19 @@ class EducationController extends Controller
     // Thông tin education 
     public function store(Request $request)
     {
-        $edu = $request->validate([
+        $validated = $request->validate([
             'edu_info' => 'string|nullable',
         ]);
 
         // Thêm bảng ghi vào 
 
-        Education::create($edu);
+        $edu = Education::create($validated);
 
         // Trả về kết quả 
         return response()->json([
             'success' => true,
             'message' => 'Thêm thông tin học vấn thành công!',
+            'data' => $edu,
         ]);
     }
 

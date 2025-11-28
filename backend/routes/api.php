@@ -59,7 +59,7 @@ Route::delete('delete_skill_info/{id}', [SkillController::class, 'destroy']);
 Route::post('creat_edu_info', [EducationController::class, 'store']);
 Route::get('get_edu_info', [EducationController::class, 'index']);
 Route::post('update_edu_info/{id}', [EducationController::class, 'update']);
-Route::delete('delete_edu_info/{id}', [Education::class, 'destroy']);
+Route::delete('delete_edu_info/{id}', [EducationController::class, 'destroy']);
 
 // Portfolio 
 Route::post('creat_portfolio_info', [PortfolioController::class, 'store']);

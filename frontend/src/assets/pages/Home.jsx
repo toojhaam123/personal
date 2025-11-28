@@ -9,9 +9,7 @@ function Home({
   editMode,
   setEditMode,
   isLogedIn,
-  status,
   setStatus,
-  visible,
   addMode,
   setAddMode,
 }) {
@@ -65,18 +63,6 @@ function Home({
       <h1 className="text-3xl font-bold mb-4 text-red-600">
         <i className="fa-solid fa-hand"></i> Xin chào
       </h1>
-      {status && (
-        <div
-          className={`mb-3 p-3 rounded transition-opacity duration-100 
-            ${visible ? "opacity-100" : "opacity-0"} ${
-            status.type === "success"
-              ? "bg-green-100 text-green-700 font-bold"
-              : "bg-red-100 text-red-700 font-bold"
-          }`}
-        >
-          {status.message}
-        </div>
-      )}
       <div className="flex gap-2">
         {/* Thêm thông tin trang chủ */}
         {isLogedIn && (!homeInfo || homeInfo.length === 0) ? (

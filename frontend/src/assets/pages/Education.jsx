@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import useStatus from "../hooks/useStatus";
 import axios from "axios";
+import FormAddEduInfo from "../components/form/FormAddEduInfo";
 function Education() {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const { status, setStatus, visible } = useStatus();
   const [eduInfo, setEduInfo] = useState([]);
   const isLogedIn = localStorage.getItem("token");
+  const [addMode, setAddMode] = useState(false);
 
   useEffect(() => {
     const fetchEduInfo = async () => {
@@ -59,6 +61,33 @@ function Education() {
       setLoading(false);
     }
   };
+
+  // Xử lý xóa thông tin học vấn
+  const handleDeleteEduInffo = async (id) => {
+    if (!window.confirm("Bạn có chắc muốn xóa không!")) return;
+    setLoading(true);
+
+    try {
+      const res = await axios.delete(
+        `http://127.0.0.1:8000/api/delete_edu_info/${id}`
+      );
+
+      setEduInfo((prev) => prev.filter((item) => item.id != id));
+      setEditMode(false);
+      setStatus({
+        type: "success",
+        message: res.data.message,
+      });
+    } catch (e) {
+      setStatus({
+        type: "error",
+        message: "Xóa thông tin học vấn thất bại!",
+        e,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <section>
       <h1 className="text-3xl font-bold mb-4 text-red-600">
@@ -78,14 +107,14 @@ function Education() {
         </div>
       )}
       <div className="flex gap-2">
-        {/* Nút chỉnh sửa  */}
-        {isLogedIn && (
+        {/* Nút thêm */}
+        {isLogedIn && (!eduInfo || eduInfo.length === 0) ? (
           <button
             type="button"
-            onClick={() => setEditMode(!editMode)}
+            onClick={() => setAddMode(!addMode)}
             className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
           >
-            {editMode ? (
+            {addMode ? (
               <>
                 {" "}
                 <i className="fa-solid fa-xmark"></i> Hủy
@@ -93,15 +122,63 @@ function Education() {
             ) : (
               <>
                 {" "}
-                <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                <i className="fa-solid fa-add"></i> Thêm
               </>
             )}
           </button>
+        ) : (
+          /* Nút chỉnh sửa  */
+          isLogedIn && (
+            <>
+              <button
+                type="button"
+                onClick={() => setEditMode(!editMode)}
+                className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+              >
+                {editMode ? (
+                  <>
+                    {" "}
+                    <i className="fa-solid fa-xmark"></i> Hủy
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                  </>
+                )}
+              </button>
+              {editMode && (
+                <button
+                  onClick={() => handleDeleteEduInffo(eduInfo[0].id)}
+                  className="bg-red-600 border hover:bg-red-700 mb-3 transition duration-500"
+                >
+                  {loading ? (
+                    <>
+                      <i className="fa-solid fa-delete-left"></i> Đang xóa
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-delete-left"></i> Xóa
+                    </>
+                  )}
+                </button>
+              )}
+            </>
+          )
         )}
       </div>
       <div className="flex">
         <div className="flex-[7]">
-          {editMode ? (
+          {/* Form thêm thông tin học vấn */}
+          {addMode ? (
+            <FormAddEduInfo
+              setAddMode={setAddMode}
+              setStatus={setStatus}
+              setLoading={setLoading}
+              loading={loading}
+              setEduInfo={setEduInfo}
+            ></FormAddEduInfo>
+          ) : editMode ? (
             <form action="" method="post" onSubmit={handleSubmitEduInfoUpdate}>
               {eduInfo.map((edu) => (
                 <textarea

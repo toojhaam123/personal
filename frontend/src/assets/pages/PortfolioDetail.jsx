@@ -1,17 +1,21 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import useStatus from "../hooks/useStatus";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import FormUpdatePortfolio from "../components/form/FormUpdatePortfolio";
 
-export default function PortfolioDetail() {
+function PortfolioDetail({
+  loading,
+  setLoading,
+  editMode,
+  setEditMode,
+  isLogedIn,
+  setStatus,
+}) {
   const { id } = useParams();
-  const isLogedIn = localStorage.getItem("token");
   const [portfolioDetail, setPortfolioDetail] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
-  const { status, setStatus, visible } = useStatus();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,65 +26,6 @@ export default function PortfolioDetail() {
   }, [id]);
 
   if (!portfolioDetail) return <p>Đang tải...</p>;
-
-  // Xử lý gửi cập nhật thông tin dự án
-  const handleSubmitPortfolioUpdate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const formData = new FormData();
-
-      // Nếu có ảnh cũ thì append, không thì bỏ qua
-      if (portfolioDetail.avatarPort instanceof File) {
-        formData.append("avatarPort", portfolioDetail.avatarPort);
-      }
-
-      // Append các trường khác
-      Object.keys(portfolioDetail).forEach((key) => {
-        if (key !== "avatarPort") {
-          formData.append(key, portfolioDetail[key]);
-        }
-      });
-      // console.log("Dữ liệu gửi đi:", Object.fromEntries(formData.entries()));
-      const res = await axios.post(
-        `http://127.0.0.1:8000/api/update_portfolio_info/${portfolioDetail.id}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      // Cập nhật lại state
-      setPortfolioDetail(res.data.data);
-      setStatus({
-        type: "success",
-        message: "Cập nhật thông tin dự án thành công!",
-      });
-      // console.log("Cập nhật thành công!");
-    } catch (e) {
-      console.log("Lỗi khi chỉnh sửa thông tin dự án!", e);
-    } finally {
-      setLoading(false);
-      setEditMode(false);
-    }
-  };
-
-  // Xử lý thay đôi khi cập nhật
-  const handleChangeUpdatePort = (e) => {
-    const { name, value, files } = e.target;
-    const file = files && files.length > 0 ? files[0] : null;
-
-    setPortfolioDetail((prev) => ({
-      ...prev,
-      [name]: file || value,
-    }));
-
-    // nếu là input file thì tạo URL preview
-    if (name === "avatarPort" && file) {
-      setPreviewImage(URL.createObjectURL(file));
-    }
-  };
 
   // Xử lý xóa dự án
   const handleDeletePortfolio = async (id) => {
@@ -115,18 +60,6 @@ export default function PortfolioDetail() {
   return (
     <section>
       <h1 className="font-bolt text-3xl, text-red-600 mb-4">Chi tiết dự án</h1>
-      {status && (
-        <div
-          className={`mb-3 p-3 rounded transition-opacity duration-100 
-            ${visible ? "opacity-100" : "opacity-0"} ${
-            status.type === "success"
-              ? "bg-green-100 text-green-700 font-bold"
-              : "bg-red-100 text-red-700 font-bold"
-          }`}
-        >
-          {status.message}
-        </div>
-      )}
       {isLogedIn && (
         <div className="btn flex gap-2">
           {/* Nút chỉnh sửa */}
@@ -136,7 +69,7 @@ export default function PortfolioDetail() {
           >
             {editMode ? (
               <>
-                <i class="fa-solid fa-xmark"></i> Hủy
+                <i className="fa-solid fa-xmark"></i> Hủy
               </>
             ) : (
               <>
@@ -149,7 +82,7 @@ export default function PortfolioDetail() {
             !editMode && (
               <button
                 onClick={() => handleDeletePortfolio(portfolioDetail.id)}
-                className="bg-blue-600 hover:bg-blue-700 border mb-1 rounded transition duration-500"
+                className="bg-red-600 hover:bg-red-700 border mb-1 rounded transition duration-500"
               >
                 <i className="fa-solid fa-trash"></i> Xóa
               </button>
@@ -160,81 +93,20 @@ export default function PortfolioDetail() {
       <div className="flex">
         <div className="flex-[7]">
           {editMode ? (
-            <form
-              action=""
-              onSubmit={handleSubmitPortfolioUpdate}
-              method="post"
-              className="p-2 rounded"
-            >
-              <label className="float-start text-lg p-2" htmlFor="avatarPort">
-                Ảnh dự án
-              </label>
-              <input
-                key={editMode ? "editOn" : "editOff"} // reset input khi thoát edit
-                type="file"
-                id="avatarPort"
-                name="avatarPort"
-                onChange={(e) => handleChangeUpdatePort(e)}
-                className="w-full bg-white text-black rounded text-lg p-2"
-              />
-              <label className="float-start text-lg mt-1 p-2" htmlFor="title">
-                Tiêu đề
-              </label>
-              <input
-                className="w-full bg-white text-black mt-1 text-lg rounded p-2"
-                type="text"
-                name="title"
-                onChange={(e) => handleChangeUpdatePort(e)}
-                value={portfolioDetail.title || ""}
-                id="title"
-              />
-              <label
-                htmlFor="description"
-                id="description"
-                className="text-lg float-start mt-1"
-              >
-                Nội dung
-              </label>
-              <textarea
-                name="description"
-                id="description"
-                onChange={(e) => handleChangeUpdatePort(e)}
-                value={portfolioDetail.description || ""}
-                rows={10}
-                className="text-black bg-white w-full mt-1 text-lg p-2 rounded"
-              ></textarea>
-              <label
-                htmlFor="description"
-                id="description"
-                className="text-lg float-start mt-1"
-              >
-                Link
-              </label>
-              <input
-                name="link"
-                id="link"
-                onChange={(e) => handleChangeUpdatePort(e)}
-                value={portfolioDetail.link || ""}
-                className="w-full bg-white text-black mt-1 text-lg rounded p-2"
-                type="text"
-              />
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 transition duration-500 mt-2 scroll-hidden"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...
-                  </>
-                ) : (
-                  <>
-                    <i class="fa-solid fa-floppy-disk"></i> Lưu{" "}
-                  </>
-                )}
-              </button>
-            </form>
+            // Form chỉnh sửa dự án
+            <FormUpdatePortfolio
+              id={id}
+              loading={loading}
+              setLoading={setLoading}
+              editMode={editMode}
+              setEditMode={setEditMode}
+              setStatus={setStatus}
+              portfolioDetail={portfolioDetail}
+              setPortfolioDetail={setPortfolioDetail}
+              setPreviewImage={setPreviewImage}
+            ></FormUpdatePortfolio>
           ) : (
+            // Hiện thị thông tun dự án
             <div className="portfolioDetail">
               {loading ? (
                 <p>
@@ -296,3 +168,4 @@ export default function PortfolioDetail() {
     </section>
   );
 }
+export default PortfolioDetail;
