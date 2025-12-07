@@ -1,0 +1,275 @@
+import axios from "axios";
+import React from "react";
+
+function FormUpdateUserInfo({
+  loading,
+  setLoading,
+  setStatus,
+  setEditMode,
+  userInfo,
+  setUserInfo,
+  previewImage,
+  setPreviewImage,
+}) {
+  // Hàm xử lý thay đổi khi nhập cập nhập thông tin
+  const handleChangeUdateUserInfo = (e, index) => {
+    const { name, value, files } = e.target;
+    setUserInfo((prev) => {
+      const updated = [...prev];
+      const file = files && files.length > 0 ? files[0] : value;
+      updated[index][name] = file || value;
+      return updated;
+    });
+
+    // nếu là input file tạo preview
+    if (name === "avatar" && files && files.length > 0) {
+      setPreviewImage((prev) => ({
+        ...prev,
+        [index]: URL.createObjectURL(files[0]),
+      }));
+    }
+  };
+
+  // Hàm xử lý chỉnh sửa thông tin người dùng
+  const handleUpdateUserInfo = async (e, id) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const userToUpdate = userInfo.find((u) => u.id == id);
+      const formData = new FormData();
+
+      // Duyệt tất cả các key trong userToUpdate để gửi
+      Object.keys(userToUpdate).forEach((key) => {
+        let value = userToUpdate[key];
+
+        if (key === "avatar") {
+          if (value instanceof File) {
+            formData.append("avatar", value);
+          }
+        } else if (value != null && value !== "null") {
+          formData.append(key, value);
+        }
+      });
+      const res = await axios.post(
+        `http://127.0.0.1:8000/api/update_user_info/${id}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      // cập nhập ngay ảnh mới
+      setUserInfo((prev) =>
+        prev.map((u) =>
+          u.id === id ? { ...u, avatar: res.data.data.avatar } : u
+        )
+      );
+
+      setStatus({
+        type: "success",
+        message: res.data.message,
+      });
+      setEditMode(false);
+    } catch (e) {
+      setStatus({
+        type: "error",
+        message: "Cập nhật bị lỗi!",
+        e,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {userInfo.length !== 0 &&
+        userInfo.map((item, index) => (
+          <form
+            key={item.id || index}
+            onSubmit={(e) => handleUpdateUserInfo(e, item.id)}
+            method="post"
+          >
+            {previewImage[index] ? (
+              <img
+                src={previewImage[index]}
+                alt="Avatar"
+                className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+              />
+            ) : (
+              <img
+                src={`http://127.0.0.1:8000/storage/avatars/${item.avatar}`}
+                alt="Avatar"
+                className="w-32 h-32 rounded-full mx-auto mb-4"
+              />
+            )}
+            <label htmlFor="avatar" className="float-start">
+              Chọn ảnh
+            </label>
+            <input
+              type="file"
+              name="avatar"
+              id="avatar"
+              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              className="w-full p-2 border bg-white text-black mb-2 rounded-lg"
+            />
+            <label htmlFor="fullname" className="float-start">
+              Họ và tên
+            </label>
+            <input
+              id="fullname"
+              name="fullname"
+              className="w-full p-2 border rounded-lg bg-white text-black mb-2"
+              type="text"
+              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              value={item.fullname ? item.fullname : ""}
+              placeholder="Họ và tên"
+            />
+            <label htmlFor="jobtitle" className="float-start">
+              Chức danh
+            </label>
+            <input
+              id="jobtitle"
+              name="job_title"
+              className="w-full p-2 border rounded-lg bg-white text-black mb-2"
+              type="text"
+              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              value={item.job_title ? item.job_title : ""}
+              placeholder="Chức danh"
+            />
+            <label htmlFor="birth" className="float-start">
+              Năm sinh
+            </label>
+            <input
+              type="text"
+              id="birth"
+              name="birth"
+              placeholder="Năm sinh"
+              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              value={item.birth ? item.birth : ""}
+              className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+            />
+            <div className="border border-white p-2 rounded-lg">
+              <label htmlFor="address" className="float-start">
+                Địa chỉ
+              </label>
+              <input
+                type="text"
+                name="address"
+                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+                id="address"
+                value={item.address ? item.address : ""}
+                placeholder="Địa chi"
+              />
+              <label htmlFor="link_address" className="float-start">
+                Link
+              </label>
+              <input
+                type="text"
+                name="link_address"
+                id="link_address"
+                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                value={item.link_address ? item.link_address : ""}
+                className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+                placeholder="Link địa chỉ"
+              />
+            </div>
+            <label htmlFor="email" className="float-start">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="email"
+              id="email"
+              name="email"
+              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              value={item.email ? item.email : ""}
+              className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+            />
+            <label htmlFor="phone" className="float-start">
+              Phone
+            </label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              value={item.phone ? item.phone : ""}
+              placeholder="Số điện thoại"
+              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+            />
+            <div className="border border-white p-2 rounded-lg">
+              <label htmlFor="facebook" className="float-start">
+                Facebook
+              </label>
+              <input
+                type="text"
+                name="facebook"
+                value={item.facebook ? item.facebook : ""}
+                className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+                id="facebook"
+                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                placeholder="Facebook"
+              />
+              <label htmlFor="" className="float-start">
+                Link
+              </label>
+              <input
+                type="text"
+                id="link_facebook"
+                name="link_facebook"
+                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                value={item.link_facebook ? item.link_facebook : ""}
+                className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+                placeholder="Link facebook"
+              />
+            </div>
+            <div className="border border-white p-2 rounded-lg my-2">
+              <label htmlFor="github" className="float-start">
+                Github
+              </label>
+              <input
+                type="text"
+                name="github"
+                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                value={item.github ? item.github : ""}
+                className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+                id="github"
+                placeholder="Github"
+              />
+              <label htmlFor="" className="float-start">
+                Link
+              </label>
+              <input
+                type="text"
+                id="link_github"
+                name="link_github"
+                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                value={item.link_github ? item.link_github : ""}
+                className="w-full p-2 rounded-lg border text-black bg-white mb-2"
+                placeholder="Link github"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 transition duration-500 scroll-hidden"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <i className="fa-solid fa-spinner fa-spin"></i> Đang lưu...
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-floppy-disk"></i> Lưu{" "}
+                </>
+              )}
+            </button>
+          </form>
+        ))}
+    </>
+  );
+}
+
+export default FormUpdateUserInfo;

@@ -21,22 +21,32 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const isLogedIn = localStorage.getItem("token");
-  const { status, setStatus, visible } = useStatus();
+  const { status, setStatus, visible, setVisible } = useStatus();
   const [addMode, setAddMode] = useState(false);
   return (
     <>
-      {status && (
-        <div
-          className={`mb-3 p-3 rounded transition-opacity duration-100 
+      <div className="status">
+        {status && (
+          <div
+            className={`mb-2 pl-2 rounded-lg transition-opacity duration-100 border flex justify-between items-center
             ${visible ? "opacity-100" : "opacity-0"} ${
-            status.type === "success"
-              ? "bg-green-100 text-green-700 font-bold"
-              : "bg-red-100 text-red-700 font-bold"
-          }`}
-        >
-          {status.message}
-        </div>
-      )}
+              status.type === "success"
+                ? "bg-green-100 text-green-700 font-bold"
+                : "bg-red-100 text-red-700 font-bold"
+            }`}
+          >
+            <span>{status.message}</span>
+            <button
+              onClick={() => setVisible(false)}
+              className={`fonlt-bolt text-black hover:text-red-500 transition duration-500 float-end ${
+                status.type === "success" ? "bg-green-100" : "bg-red-100"
+              } border-0 hover:border-0`}
+            >
+              <i className="fa-regular fa-circle-xmark text-xl"></i>
+            </button>
+          </div>
+        )}
+      </div>
       <div className="flex h-screen">
         <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
           <Sidebar />

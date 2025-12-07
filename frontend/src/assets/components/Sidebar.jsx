@@ -283,19 +283,6 @@ function Sidebar() {
           )
         )}
       </div>
-      {status && (
-        <div
-          className={`mb-3 p-3 rounded transition-opacity duration-500
-            ${visible ? "opacity-500" : "opacity-0"}
-        ${
-          status.type === "success"
-            ? "bg-green-100 text-green-700 folt-bold "
-            : "bg-red-100 text-red-700 folt-bolt"
-        }`}
-        >
-          {status.message}
-        </div>
-      )}
       {/* Nếu ở chế độ thêm thì hiện form thêm thông tin người dùng */}
       {addMode ? (
         <form

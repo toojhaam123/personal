@@ -14,7 +14,7 @@ const useStatus = () => {
 
       const removeTimer = setTimeout(() => {
         setStatus(null);
-      }, 5000);
+      }, 10000);
       return () => {
         clearTimeout(fadeTimer);
         clearTimeout(removeTimer);
