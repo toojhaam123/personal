@@ -16,9 +16,9 @@ function Login() {
         email,
         password,
       });
+      alert("Đã đăng nhập thành công!");
       // Lưu token vào localStorage
       localStorage.setItem("token", res.data.token);
-      alert("Đăng nhập thành công!");
       window.location.href = "/";
     } catch (error) {
       setError(error.response?.data?.message || "Lỗi đăng nhập!");

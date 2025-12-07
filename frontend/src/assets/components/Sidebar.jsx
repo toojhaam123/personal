@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Logout from "./Logout";
 import { Form, NavLink } from "react-router-dom";
-import useStatus from "../hooks/useStatus";
 import { formatDateVN } from "../utils/dateUtils";
 import axios from "axios";
-function Sidebar() {
+function Sidebar({ setStatus }) {
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const isLogedIn = localStorage.getItem("token"); // Lấy token ra
-  const { status, setStatus, visible } = useStatus();
   const [previewImage, setPreviewImage] = useState({});
 
   // Lấy thông tin người dùng từ API về hiện thị
@@ -700,7 +698,7 @@ function Sidebar() {
                   </p>
                 )}
                 {item.updated_at && (
-                  <p className="float-end text-[10px]">
+                  <p className="text-[10px]">
                     <i>Cập nhật lần cuối: {formatDateVN(item.updated_at)}</i>
                   </p>
                 )}

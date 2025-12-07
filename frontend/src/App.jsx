@@ -49,7 +49,7 @@ function App() {
       </div>
       <div className="flex h-screen">
         <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
-          <Sidebar />
+          <Sidebar setStatus={setStatus} />
         </div>
 
         <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
