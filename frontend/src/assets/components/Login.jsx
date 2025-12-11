@@ -3,13 +3,14 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 
 function Login() {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       //   Gửi request đăng nhập
       const res = await axios.post("http://127.0.0.1:8000/api/login", {
@@ -22,6 +23,8 @@ function Login() {
       window.location.href = "/";
     } catch (error) {
       setError(error.response?.data?.message || "Lỗi đăng nhập!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,7 +56,15 @@ function Login() {
         type="submit"
         className="w-full bg-blue-600 text-white py-2 px-4 rounded mt-5"
       >
-        <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+        <>
+          {loading ? (
+            <i className="fa-solid fa-spinner fa-spin"></i>
+          ) : (
+            <>
+              <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+            </>
+          )}
+        </>
       </button>
       {/* <p className="mt-5">
         <NavLink to="/register">Đăng ký tài khoản</NavLink>

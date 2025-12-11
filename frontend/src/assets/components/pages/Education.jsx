@@ -19,9 +19,8 @@ function Education({
     const fetchEduInfo = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://127.0.0.1:8000/api/get_edu_info");
+        const res = await axios.get("http:///127.0.0.1:8000/api/get_edu_info");
         setEduInfo(res.data);
-        console.log("Thông tin học vấn: ", res.data);
       } catch (e) {
         console.log("Có lỗi khi lấy thông tin học vấn!", e);
       } finally {
