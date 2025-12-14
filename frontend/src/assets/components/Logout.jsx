@@ -1,13 +1,11 @@
 import React from "react";
 import axios from "axios";
-function Logout(isLogedIn) {
+function Logout({ isLogedIn }) {
   const handleLogout = async () => {
     if (!isLogedIn) {
       alert("Bạn chưa đăng nhập!");
       return;
     }
-    localStorage.removeItem("token");
-    console.log("TOKEN LOGOUT:", isLogedIn);
     try {
       await axios.post(
         "http://127.0.0.1:8000/api/logout",
@@ -21,6 +19,7 @@ function Logout(isLogedIn) {
       );
 
       // Xóa token khỏi localStorage
+      localStorage.removeItem("token");
       alert("Đăng xuất thành công!");
       window.location.href = "/"; // Chuyển về trang chủ
     } catch (error) {

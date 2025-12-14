@@ -61,7 +61,7 @@ function Login() {
             <i className="fa-solid fa-spinner fa-spin"></i>
           ) : (
             <>
-              <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+              <i className="fa-solid fa-right-to-bracket"></i> Đăng nhập
             </>
           )}
         </>

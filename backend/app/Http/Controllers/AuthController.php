@@ -48,7 +48,6 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Đăng nhập thành công!',
             'token' => $token,
-            'user' => $user
         ]);
     }
 
@@ -61,8 +60,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function user(Request $request)
-    {
-        return response()->json($request->user());
-    }
+    // public function user(Request $request)
+    // {
+    //     return response()->json($request->user());
+    // }
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import FormContact from "../../components/form/FormContact";
 import FormAddContactInfo from "../../components/form/FormAddContactInfo";
-function Contact({ isLogedIn, setStatus }) {
+function Contact({ setStatus }) {
   const [loading, setLoading] = useState(false);
 
   return (
@@ -17,8 +17,6 @@ function Contact({ isLogedIn, setStatus }) {
 
       <div className="flex">
         <div className="flex-[7]">
-          {/* {!isLogedIn && (
-          )} */}
           <div>
             <p className="text-2xl">Form liên hệ</p>
             <FormContact

@@ -5,7 +5,6 @@ import Navbar from "./assets/components/Navbar";
 import Sidebar from "./assets/components/Sidebar";
 import Login from "./assets/components/Login";
 // import Register from "./assets/components/Register";
-import Logout from "./assets/components/Logout";
 import ProtectRoute from "./assets/components/ProtectRoute";
 import useStatus from "./assets/hooks/useStatus";
 // Các pages
@@ -21,7 +20,6 @@ import Notification_Detail from "./assets/components/pages/Notification_Detail";
 function App() {
   const isLogedIn = localStorage.getItem("token");
   const { status, setStatus, visible, setVisible } = useStatus();
-  console.log("Token:", isLogedIn);
   return (
     <>
       <div className="status">
@@ -84,9 +82,7 @@ function App() {
               />
               <Route
                 path="/contact"
-                element={
-                  <Contact isLogedIn={isLogedIn} setStatus={setStatus} />
-                }
+                element={<Contact setStatus={setStatus} />}
               />
               {/* Nếu chưa login thì ko thể vào được qua đường link */}
               <Route
@@ -107,8 +103,7 @@ function App() {
                 }
               ></Route>
               <Route path="/login" element={<Login />}></Route>
-              {/* <Route path="/register" element={<Register />}></Route>  */}
-              <Route path="/logout" element={<Logout />}></Route>
+              {/* <Route path="/register" element={<Register />}></Route> */}
               <Route
                 path="/notification_detail/:id"
                 element={
