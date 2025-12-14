@@ -2,16 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FormAddSkillInfo from "../form/FormAddSkillInfo";
 import FormUpdateSkillInfo from "../form/FormUpdateSkillInfo";
-function Skill({
-  loading,
-  setLoading,
-  editMode,
-  setEditMode,
-  isLogedIn,
-  setStatus,
-  addMode,
-  setAddMode,
-}) {
+function Skill({ isLogedIn, setStatus }) {
+  const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const [skillInfo, setSkillInfo] = useState([]);
 
   useEffect(() => {

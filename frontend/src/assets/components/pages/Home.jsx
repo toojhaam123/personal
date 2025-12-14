@@ -3,16 +3,10 @@ import React, { useEffect, useState } from "react";
 import useUserInfo from "../../../hooks/useUserInfo";
 import FormAddHomeInfo from "../../components/form/FormAddHomeInfo";
 import FormUpdateHomeInfo from "../../components/form/FormUpdateHomeInfo";
-function Home({
-  loading,
-  setLoading,
-  editMode,
-  setEditMode,
-  isLogedIn,
-  setStatus,
-  addMode,
-  setAddMode,
-}) {
+function Home({ isLogedIn, setStatus }) {
+  const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const { userInfo } = useUserInfo(); // Thông tin người dùng
   // Lấy thông tin trang chủ từ API
   const [homeInfo, setHomeInfo] = useState([]);

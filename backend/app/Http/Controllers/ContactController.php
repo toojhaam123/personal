@@ -7,55 +7,62 @@ use App\Models\Contact;
 
 class ContactController extends Controller
 {
-    public function creatInformation(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'information_contacts' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'message' => 'required|string',
         ]);
 
-        // Lưu vào DB
+        // Lưu vào DB 
         Contact::create($validated);
 
         return response()->json([
             'success' => true,
-            'message' => "Đã tạo thông tin thành công",
+            'message' => 'Gửi thành công! Trân trọng cảm ơn bạn đã liên hệ.',
         ]);
     }
 
     public function index()
     {
-        return Contact::all();
+        return Contact::latest()->get();
     }
-
-    public function updateInfor(Request $request, $id)
+    public function showDetail($id)
     {
-        // Validate dữ liệu
-        $validated = $request->validate([
-            'information_contacts' => 'nullable|string',
-        ]);
-
-        // Tìm bản ghi theo id 
-        $contact = Contact::findOrFail($id);
-
-        if (!$contact) {
-            return response()->json([
-                'seccess' => false,
-                'message' => "Không tìm thấy thông tin liên hệ!",
-            ], 404);
-        }
-
-        // Cập nhập bản ghi
-        $contact->update([
-            'information_contacts' => $request->information_contacts,
-        ]);
-
-        // Trả về json response 
-        return response()->json([
-            'success' => true,
-            'message' => 'Cập nhập thành công rồi bạn nhé!',
-            'data' => $contact,
-        ]);
+        $detailNotification = Contact::findOrFail($id);
+        return response()->json($detailNotification);
     }
+
+    // public function updateInfor(Request $request, $id)
+    // {
+    //     // Validate dữ liệu
+    //     $validated = $request->validate([
+    //         'information_contacts' => 'nullable|string',
+    //     ]);
+
+    //     // Tìm bản ghi theo id 
+    //     $contact = Contact::findOrFail($id);
+
+    //     if (!$contact) {
+    //         return response()->json([
+    //             'seccess' => false,
+    //             'message' => "Không tìm thấy thông tin liên hệ!",
+    //         ], 404);
+    //     }
+
+    //     // Cập nhập bản ghi
+    //     $contact->update([
+    //         'information_contacts' => $request->information_contacts,
+    //     ]);
+
+    //     // Trả về json response 
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Cập nhập thành công rồi bạn nhé!',
+    //         'data' => $contact,
+    //     ]);
+    // }
 
     // xóa thông tin liên hệ 
     public function destroy($id)

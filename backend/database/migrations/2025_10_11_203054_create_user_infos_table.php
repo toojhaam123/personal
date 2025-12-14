@@ -25,8 +25,6 @@ return new class extends Migration
             $table->string('link_facebook')->nullable();
             $table->string('github')->nullable();
             $table->string('link_github')->nullable();
-            $table->string('website')->nullable();
-            $table->string('link_website')->nullable();
             $table->timestamps();
         });
     }

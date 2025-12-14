@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('homes', function (Blueprint $table) {
             $table->id();
             $table->text('home_info')->nullable();
+            $table->text('cv_path')->nullable();
             $table->timestamps();
         });
     }

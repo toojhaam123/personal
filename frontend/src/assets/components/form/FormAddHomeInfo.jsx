@@ -47,12 +47,7 @@ function FormAddHomeInfo({
 
       const res = await axios.post(
         "http://127.0.0.1:8000/api/creat_home_info",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
 
       // reset lại form

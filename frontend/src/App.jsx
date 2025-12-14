@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./assets/components/Navbar";
@@ -19,11 +19,9 @@ import Contact from "./assets/components/pages/Contact";
 import Notification from "./assets/components/pages/Notification";
 import Notification_Detail from "./assets/components/pages/Notification_Detail";
 function App() {
-  const [loading, setLoading] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const isLogedIn = localStorage.getItem("token");
   const { status, setStatus, visible, setVisible } = useStatus();
-  const [addMode, setAddMode] = useState(false);
+  console.log("Token:", isLogedIn);
   return (
     <>
       <div className="status">
@@ -50,7 +48,7 @@ function App() {
       </div>
       <div className="flex h-screen">
         <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
-          <Sidebar setStatus={setStatus} />
+          <Sidebar setStatus={setStatus} isLogedIn={isLogedIn} />
         </div>
         <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
           <div className="flex-[2] border-r">
@@ -60,38 +58,36 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={
-                  <Home
-                    loading={loading}
-                    setLoading={setLoading}
-                    editMode={editMode}
-                    setEditMode={setEditMode}
-                    isLogedIn={isLogedIn}
-                    setStatus={setStatus}
-                    addMode={addMode}
-                    setAddMode={setAddMode}
-                  />
-                }
+                element={<Home isLogedIn={isLogedIn} setStatus={setStatus} />}
               />
               <Route
                 path="/experience"
                 element={
-                  <Experience
-                    loading={loading}
-                    setLoading={setLoading}
-                    editMode={editMode}
-                    setEditMode={setEditMode}
-                    isLogedIn={isLogedIn}
-                    setStatus={setStatus}
-                    addMode={addMode}
-                    setAddMode={setAddMode}
-                  />
+                  <Experience isLogedIn={isLogedIn} setStatus={setStatus} />
                 }
               />
-              <Route path="/skill" element={<Skill />} />
-              <Route path="/education" element={<Education />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/contact" element={<Contact />} />
+              <Route
+                path="/skill"
+                element={<Skill isLogedIn={isLogedIn} setStatus={setStatus} />}
+              />
+              <Route
+                path="/education"
+                element={
+                  <Education isLogedIn={isLogedIn} setStatus={setStatus} />
+                }
+              />
+              <Route
+                path="/portfolio"
+                element={
+                  <Portfolio isLogedIn={isLogedIn} setStatus={setStatus} />
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <Contact isLogedIn={isLogedIn} setStatus={setStatus} />
+                }
+              />
               {/* Nếu chưa login thì ko thể vào được qua đường link */}
               <Route
                 path="/notifications"
@@ -105,10 +101,6 @@ function App() {
                 path="/portfolio_detail/:id"
                 element={
                   <PortfolioDetail
-                    loading={loading}
-                    setLoading={setLoading}
-                    editMode={editMode}
-                    setEditMode={setEditMode}
                     isLogedIn={isLogedIn}
                     setStatus={setStatus}
                   ></PortfolioDetail>
@@ -121,16 +113,7 @@ function App() {
                 path="/notification_detail/:id"
                 element={
                   <ProtectRoute>
-                    <Notification_Detail
-                      loading={loading}
-                      setLoading={setLoading}
-                      editMode={editMode}
-                      setEditMode={setEditMode}
-                      isLogedIn={isLogedIn}
-                      setStatus={setStatus}
-                      addMode={addMode}
-                      setAddMode={setAddMode}
-                    />
+                    <Notification_Detail />
                   </ProtectRoute>
                 }
               />

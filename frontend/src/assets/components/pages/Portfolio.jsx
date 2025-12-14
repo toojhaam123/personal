@@ -2,17 +2,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FormAddPortfolio from "../form/FormAddPortfolio";
-function Portfolio({
-  loading,
-  setLoading,
-  isLogedIn,
-  addMode,
-  setAddMode,
-  setStatus,
-}) {
+function Portfolio({ isLogedIn, setStatus }) {
+  const [loading, setLoading] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const [port, setPort] = useState([]); // Lấy danh sách các dự án
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
-  console.log("ABC");
   useEffect(() => {
     const fetchPort = async () => {
       setLoading(true);
@@ -78,23 +72,29 @@ function Portfolio({
           ) : (
             // Hiện thị danh sách dự án
             <div className="portfolio text-white">
-              <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 ">
-                {port.map((item) => (
-                  <Link key={item.id} to={`/portfolio_detail/${item.id}`}>
-                    <div
-                      className="shadow-xl cursor-pointer pb-4 rounded-lg hover:bg-gray-800 m-2 transition duration-500"
-                      key={item.id}
-                    >
-                      <img
-                        src={`http://127.0.0.1:8000/storage/avatarPort/${item.avatarPort}`}
-                        alt=""
-                        className="border h-[190px] w-[100%] mx-auto rounded object-cover m-1"
-                      />
-                      <h2 className="font-bold text-lg mb-1">{item.title}</h2>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              {loading ? (
+                <p>Đang tải...</p>
+              ) : port.length == 0 ? (
+                <p className="text-center ">Không có dự án nào!</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 ">
+                  {port.map((item) => (
+                    <Link key={item.id} to={`/portfolio_detail/${item.id}`}>
+                      <div
+                        className="shadow-xl cursor-pointer pb-4 rounded-lg hover:bg-gray-800 m-2 transition duration-500"
+                        key={item.id}
+                      >
+                        <img
+                          src={`http://127.0.0.1:8000/storage/avatarPort/${item.avatarPort}`}
+                          alt=""
+                          className="border h-[190px] w-[100%] mx-auto rounded object-cover m-1"
+                        />
+                        <h2 className="font-bold text-lg mb-1">{item.title}</h2>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

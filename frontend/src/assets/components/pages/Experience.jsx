@@ -2,16 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import FormAddExpInfo from "../../components/form/FormAddExpInfo";
 import FormUpdateExpInfo from "../../components/form/FormUpdateExpInfo";
-function Experience({
-  loading,
-  setLoading,
-  editMode,
-  setEditMode,
-  isLogedIn,
-  setStatus,
-  addMode,
-  setAddMode,
-}) {
+function Experience({ isLogedIn, setStatus }) {
+  const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const [expInfo, setExpInfo] = useState([]);
   useEffect(() => {
     // Lấy thông tin kinh nghiệm từ API gửi về

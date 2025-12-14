@@ -21,7 +21,7 @@ function FormContact({ loading, setLoading, setStatus }) {
     try {
       // Gửi Request Post tới API bằng axios
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/formcontact", // endpoint API Laravel
+        "http://127.0.0.1:8000/api/contacts", // endpoint API Laravel
         formContact
       );
 

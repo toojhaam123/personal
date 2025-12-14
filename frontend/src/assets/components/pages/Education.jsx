@@ -2,16 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FormAddEduInfo from "../../components/form/FormAddEduInfo";
 import FormUpdateEduInfo from "../form/FormUpdateEduInfo";
-function Education({
-  loading,
-  setLoading,
-  editMode,
-  setEditMode,
-  isLogedIn,
-  setStatus,
-  addMode,
-  setAddMode,
-}) {
+function Education({ isLogedIn, setStatus }) {
+  const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const [eduInfo, setEduInfo] = useState([]);
 
   // Gọi API thông tin học vấn

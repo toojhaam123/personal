@@ -3,11 +3,10 @@ import Logout from "./Logout";
 import { Form, NavLink } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 import axios from "axios";
-function Sidebar({ setStatus }) {
+function Sidebar({ setStatus, isLogedIn }) {
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isLogedIn = localStorage.getItem("token"); // Lấy token ra
   const [previewImage, setPreviewImage] = useState({});
 
   // Lấy thông tin người dùng từ API về hiện thị
@@ -720,12 +719,12 @@ function Sidebar({ setStatus }) {
                     }`
                   }
                 >
-                  <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+                  <i className="fa-solid fa-right-to-bracket"></i> Đăng nhập
                 </NavLink>
               </div>
             )}
           </div>
-          {isLogedIn && <Logout />}
+          {isLogedIn && <Logout isLogedIn={isLogedIn} />}
         </div>
       )}
     </div>
