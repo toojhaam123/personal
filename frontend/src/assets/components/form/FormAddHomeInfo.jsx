@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function FormCreatHomeInfo({
-  setAddMode,
+function FormAddHomeInfo({
   loading,
   setLoading,
+  setAddMode,
   setStatus,
   setHomeInfo,
 }) {
@@ -124,4 +124,4 @@ function FormCreatHomeInfo({
   );
 }
 
-export default FormCreatHomeInfo;
+export default FormAddHomeInfo;

@@ -12,7 +12,6 @@ function Sidebar({ setStatus }) {
 
   // Lấy thông tin người dùng từ API về hiện thị
   const [userInfo, setUserInfo] = useState([]);
-
   // Thêm người dùng
   const [addUserInfo, setAddUserInfo] = useState({
     fullname: "",

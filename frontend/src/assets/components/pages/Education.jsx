@@ -59,7 +59,7 @@ function Education({
   return (
     <section>
       <h1 className="text-3xl font-bold mb-4 text-red-600">
-        <i className="fas fa-graduation-cap"></i> Học vấn
+        <i className="fas fa-graduation-cap"></i> Học vấn ok
       </h1>
       <div className="flex gap-2">
         {/* Nút thêm */}

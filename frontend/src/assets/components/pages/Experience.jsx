@@ -13,7 +13,6 @@ function Experience({
   setAddMode,
 }) {
   const [expInfo, setExpInfo] = useState([]);
-
   useEffect(() => {
     // Lấy thông tin kinh nghiệm từ API gửi về
     const fetcExpInfo = async () => {

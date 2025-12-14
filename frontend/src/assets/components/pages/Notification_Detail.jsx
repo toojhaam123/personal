@@ -5,7 +5,6 @@ import axios from "axios";
 export default function Notification_Details() {
   const { id } = useParams();
   const [notifactionDetail, setNotificationDetail] = useState(null);
-
   useEffect(() => {
     axios
       .get(`http://127.0.0.1:8000/api/notification_detail/${id}`)

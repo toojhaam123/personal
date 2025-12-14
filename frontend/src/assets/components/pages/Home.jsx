@@ -16,7 +16,6 @@ function Home({
   const { userInfo } = useUserInfo(); // Thông tin người dùng
   // Lấy thông tin trang chủ từ API
   const [homeInfo, setHomeInfo] = useState([]);
-
   // console.log("Thông tin trang chủ: ", useUserInfo);
   useEffect(() => {
     const fetchHomeInfo = async () => {
@@ -62,7 +61,7 @@ function Home({
   return (
     <section>
       <h1 className="text-3xl font-bold mb-4 text-red-600">
-        <i className="fa-solid fa-hand"></i> Xin chào
+        <i className="fa-solid fa-hand"></i> Xin chào ABC
       </h1>
       <div className="flex gap-2">
         {/* Thêm thông tin trang chủ */}
@@ -131,10 +130,10 @@ function Home({
           {/* Form thêm thông tin trang chủ */}
           {addMode ? (
             <FormAddHomeInfo
+              loading={loading}
+              setLoading={setLoading}
               setAddMode={setAddMode}
               setStatus={setStatus}
-              setLoading={setLoading}
-              loading={loading}
               setHomeInfo={setHomeInfo}
             />
           ) : editMode ? (
@@ -170,8 +169,8 @@ function Home({
                       href={`http://127.0.0.1:8000${homeInfo[0].cv_path}`}
                       target="_blank"
                       className="px-4 py-2 border border-blue-600 text-white 
-                   rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 
-                     hover:border-white float-end"
+                    rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 
+                      hover:border-white float-end"
                     >
                       <i className="fa-regular fa-file"></i> Xem CV
                     </a>

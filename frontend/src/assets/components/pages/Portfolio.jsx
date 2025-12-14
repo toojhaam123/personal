@@ -12,6 +12,7 @@ function Portfolio({
 }) {
   const [port, setPort] = useState([]); // Lấy danh sách các dự án
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
+  console.log("ABC");
   useEffect(() => {
     const fetchPort = async () => {
       setLoading(true);
