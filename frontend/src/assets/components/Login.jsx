@@ -8,6 +8,46 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const minPw = 6;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isDisabled =
+    loading ||
+    !email ||
+    !emailRegex.test(email) ||
+    !password ||
+    password.length < minPw;
+  const handleChangeLogin = async (e) => {
+    const { name, value } = e.target;
+
+    if (name === "email") {
+      setEmail(value);
+    }
+    if (name === "password") {
+      setPassword(value);
+    }
+
+    const currentPassword = name === "password" ? value : password;
+    const currentEmail = name === "email" ? value : email;
+
+    // Validate
+    if (!currentEmail) {
+      setError("Nhập đầy đủ email!");
+      return;
+    }
+    if (!emailRegex.test(currentEmail)) {
+      setError("Nhập đúng định dạng email!");
+      return;
+    }
+    if (!currentPassword) {
+      setError("Nhập đầy đủ mật khẩu!");
+      return;
+    }
+    if (currentPassword.length < minPw) {
+      setError("Mật khẩu ít nhất 6 ký tự!");
+      return;
+    }
+    setError("");
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -17,9 +57,16 @@ function Login() {
         email,
         password,
       });
-      alert("Đã đăng nhập thành công!");
+
+      const token = res.data?.token;
+
+      if (!token) {
+        setError("Đăng nhập thất bại, không nhận được token!");
+        return;
+      }
       // Lưu token vào localStorage
       localStorage.setItem("token", res.data.token);
+      alert("Đã đăng nhập thành công!");
       window.location.href = "/";
     } catch (error) {
       setError(error.response?.data?.message || "Lỗi đăng nhập!");
@@ -32,7 +79,7 @@ function Login() {
     <form
       action=""
       method="POST"
-      className="p-6 border rounded-md mx-auto my-auto p-4 w-80"
+      className="p-6 w-[100%] border rounded-md mx-auto my-auto p-4 w-80"
       onSubmit={handleLogin}
     >
       <h1 className="text-2xl font-bold mb-4">Đăng nhập</h1>
@@ -42,19 +89,25 @@ function Login() {
         name="email"
         placeholder="Email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-2 border mb-2 bg-gray-700"
+        onChange={handleChangeLogin}
+        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
       />
       <input
         type="password"
         placeholder="Mật khẩu"
+        name="password"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full p-2 border mb-2 bg-gray-700"
+        onChange={handleChangeLogin}
+        className="w-full rounded-lg p-2 border mb-2 bg-gray-700"
       />
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded mt-5"
+        disabled={isDisabled}
+        className={`w-full text-white py-2 px-4 rounded mt-5 ${
+          isDisabled
+            ? "bg-blue-200 cursor-not-allowed text-black"
+            : "bg-blue-600"
+        }`}
       >
         <>
           {loading ? (

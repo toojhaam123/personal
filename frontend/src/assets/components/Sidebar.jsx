@@ -724,7 +724,7 @@ function Sidebar({ setStatus, isLogedIn }) {
               </div>
             )}
           </div>
-          {isLogedIn && <Logout isLogedIn={isLogedIn} />}
+          {isLogedIn && <Logout />}
         </div>
       )}
     </div>

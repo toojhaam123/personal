@@ -1,8 +1,9 @@
 import React from "react";
 import axios from "axios";
-function Logout({ isLogedIn }) {
+function Logout() {
+  const token = localStorage.getItem("token");
   const handleLogout = async () => {
-    if (!isLogedIn) {
+    if (!token) {
       alert("Bạn chưa đăng nhập!");
       return;
     }
@@ -12,19 +13,19 @@ function Logout({ isLogedIn }) {
         {},
         {
           headers: {
-            Authorization: `Bearer ${isLogedIn}`,
+            Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
         }
       );
-
+    } catch (error) {
+      console.error(error);
+      alert("Có lỗi khi đăng xuất!");
+    } finally {
       // Xóa token khỏi localStorage
       localStorage.removeItem("token");
       alert("Đăng xuất thành công!");
       window.location.href = "/"; // Chuyển về trang chủ
-    } catch (error) {
-      console.error(error);
-      alert("Có lỗi khi đăng xuất!");
     }
   };
 

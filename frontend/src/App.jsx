@@ -20,6 +20,7 @@ import Notification_Detail from "./assets/components/pages/Notification_Detail";
 function App() {
   const isLogedIn = localStorage.getItem("token");
   const { status, setStatus, visible, setVisible } = useStatus();
+
   return (
     <>
       <div className="status">
@@ -52,7 +53,7 @@ function App() {
           <div className="flex-[2] border-r">
             <Navbar />
           </div>
-          <div className="flex-[12] overflow-y-auto scroll-hidden">
+          <div className="flex-[12] overflow-y-auto scroll-hidden p-1">
             <Routes>
               <Route
                 path="/"
