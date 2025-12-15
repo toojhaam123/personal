@@ -99,7 +99,7 @@ class PortfolioController extends Controller
     }
 
     // Xem chi tiết dự án 
-    public function detail($id)
+    public function portfolioDetail($id)
     {
         $detailPort = Portfolio::findOrFail($id);
         return response()->json($detailPort);

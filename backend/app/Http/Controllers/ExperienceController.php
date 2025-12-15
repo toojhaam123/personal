@@ -18,9 +18,9 @@ class ExperienceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Tạo thông tin kinh nghiệm thành công!',
+            'message' => 'Thêm thông tin kinh nghiệm thành công!',
             'data' => $exp,
-        ]);
+        ], 200);
     }
 
     public function update(Request $request, $id)

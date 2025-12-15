@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 
 function FormAddExpInfo({
+  token,
   setAddMode,
   loading,
   setLoading,
@@ -20,15 +21,21 @@ function FormAddExpInfo({
     });
   };
 
-  // hàm xử lý submit thông tin kinh nghiệm
+  // hàm xử lý submit thêm thông tin kinh nghiệm
   const handleSubmitAddExpInfo = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/creat_exp_info",
-        addExpInfo
+        "http://127.0.0.1:8000/api/experiences",
+        addExpInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
       );
 
       // Reset form

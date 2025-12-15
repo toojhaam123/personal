@@ -6,7 +6,7 @@ import Sidebar from "./assets/components/Sidebar";
 import Login from "./assets/components/Login";
 // import Register from "./assets/components/Register";
 import ProtectRoute from "./assets/components/ProtectRoute";
-import useStatus from "./assets/hooks/useStatus";
+import useStatus from "./hooks/useStatus";
 // Các pages
 import Home from "./assets/components/pages/Home";
 import Experience from "./assets/components/pages/Experience";
@@ -18,7 +18,7 @@ import Contact from "./assets/components/pages/Contact";
 import Notification from "./assets/components/pages/Notification";
 import Notification_Detail from "./assets/components/pages/Notification_Detail";
 function App() {
-  const isLogedIn = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const { status, setStatus, visible, setVisible } = useStatus();
 
   return (
@@ -47,7 +47,7 @@ function App() {
       </div>
       <div className="flex h-screen">
         <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
-          <Sidebar setStatus={setStatus} isLogedIn={isLogedIn} />
+          <Sidebar setStatus={setStatus} token={token} />
         </div>
         <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
           <div className="flex-[2] border-r">
@@ -57,29 +57,23 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={<Home isLogedIn={isLogedIn} setStatus={setStatus} />}
+                element={<Home token={token} setStatus={setStatus} />}
               />
               <Route
                 path="/experience"
-                element={
-                  <Experience isLogedIn={isLogedIn} setStatus={setStatus} />
-                }
+                element={<Experience token={token} setStatus={setStatus} />}
               />
               <Route
                 path="/skill"
-                element={<Skill isLogedIn={isLogedIn} setStatus={setStatus} />}
+                element={<Skill token={token} setStatus={setStatus} />}
               />
               <Route
                 path="/education"
-                element={
-                  <Education isLogedIn={isLogedIn} setStatus={setStatus} />
-                }
+                element={<Education token={token} setStatus={setStatus} />}
               />
               <Route
                 path="/portfolio"
-                element={
-                  <Portfolio isLogedIn={isLogedIn} setStatus={setStatus} />
-                }
+                element={<Portfolio token={token} setStatus={setStatus} />}
               />
               <Route
                 path="/contact"
@@ -98,12 +92,15 @@ function App() {
                 path="/portfolio_detail/:id"
                 element={
                   <PortfolioDetail
-                    isLogedIn={isLogedIn}
+                    token={token}
                     setStatus={setStatus}
                   ></PortfolioDetail>
                 }
               ></Route>
-              <Route path="/login" element={<Login />}></Route>
+              <Route
+                path="/login"
+                element={<Login setStatus={setStatus} />}
+              ></Route>
               {/* <Route path="/register" element={<Register />}></Route> */}
               <Route
                 path="/notification_detail/:id"

@@ -45,10 +45,7 @@ function FormAddHomeInfo({
         formData.append(key, addHomeInfo[key]);
       }
 
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/creat_home_info",
-        formData
-      );
+      const res = await axios.post("http://127.0.0.1:8000/api/home", formData);
 
       // reset lại form
       setAddHomeInfo({

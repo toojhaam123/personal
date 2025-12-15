@@ -15,53 +15,92 @@ use App\Models\Portfolio;
 use App\Models\Skill;
 
 // Contact and notification
-Route::post('contacts', [ContactController::class, 'store']);
-Route::get('contacts', [ContactController::class, 'index']);
-Route::get('notification_detail/{id}', [ContactController::class, 'showDetail']);
-// Route::put('/contacts/{id}', [ContactController::class, 'update']);
-// Route::delete('delete_info_contacts', [ContactController::class, 'destroy']);
-
-// Login 
-Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('user', [AuthController::class, 'user']);
-    Route::post('logout', [AuthController::class, 'logout']);
+Route::prefix('contacts')->group(function () {
+    // Gửi liên hệ
+    Route::post('/', [ContactController::class, 'store']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/', [ContactController::class, 'index']);
+        Route::get('{id}', [ContactController::class, 'showDetail']);
+    });
 });
 
+// user và login
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
+
+    // Các route cần token 
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('me', [AuthController::class, 'user']);
+        Route::post('logout', [AuthController::class, 'logout']);
+    });
+});
+
+
+
 // UserInfo / Sidebar
-Route::post('/creat_user_info', [UserInfoController::class, 'create']);
-Route::post('/update_user_info/{id}', [UserInfoController::class, 'update']);
-Route::get('get_user_info', [UserInfoController::class, 'index']);
-Route::delete('delete_user_info/{id}', [UserInfoController::class, 'destroy']);
+Route::prefix('user-info')->group(function () {
+    Route::get('/', [UserInfoController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [UserInfoController::class, 'store']);
+        Route::post('{id}', [UserInfoController::class, 'update']);
+        Route::delete('{id}', [UserInfoController::class, 'destroy']);
+    });
+});
 
 // Home 
-Route::post('creat_home_info', [HomeController::class, 'store']);
-Route::get('get_home_info', [HomeController::class, 'index']);
-Route::post('update_home_info/{id}', [HomeController::class, 'update']);
-Route::delete('delete_home_info/{id}', [HomeController::class, 'destroy']);
+Route::prefix('home')->group(function () {
+    Route::get('/', [HomeController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [HomeController::class, 'store']);
+        Route::post('{id}', [HomeController::class, 'update']);
+        Route::delete('/{id}', [HomeController::class, 'destroy']);
+    });
+});
 
 // Experiences
-Route::post('creat_exp_info', [ExperienceController::class, 'store']);
-Route::get('get_exp_info', [ExperienceController::class, 'index']);
-Route::post('update_exp_info/{id}', [ExperienceController::class, 'update']);
-Route::delete('delete_exp_info/{id}', [ExperienceController::class, 'destroy']);
+Route::prefix('experiences')->group(function () {
+    Route::get('/', [ExperienceController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [ExperienceController::class, 'store']);
+        Route::post('{id}', [ExperienceController::class, 'update']);
+        Route::delete('/{id}', [ExperienceController::class, 'destroy']);
+    });
+});
 
 // Skills 
-Route::post('creat_skill_info', [SkillController::class, 'store']);
-Route::get('get_skill_info', [SkillController::class, 'index']);
-Route::post('update_skill_info/{id}', [SkillController::class, 'update']);
-Route::delete('delete_skill_info/{id}', [SkillController::class, 'destroy']);
+Route::prefix('skills')->group(function () {
+    Route::get('/', [SkillController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [SkillController::class, 'store']);
+        Route::post('{id}', [SkillController::class, 'update']);
+        Route::delete('{id}', [SkillController::class, 'destroy']);
+    });
+});
 
 // Education
-Route::post('creat_edu_info', [EducationController::class, 'store']);
-Route::get('get_edu_info', [EducationController::class, 'index']);
-Route::post('update_edu_info/{id}', [EducationController::class, 'update']);
-Route::delete('delete_edu_info/{id}', [EducationController::class, 'destroy']);
+Route::prefix('educations')->group(function () {
+    Route::get('/', [EducationController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [EducationController::class, 'store']);
+        Route::post('{id}', [EducationController::class, 'update']);
+        Route::delete('{id}', [EducationController::class, 'destroy']);
+    });
+});
 
 // Portfolio 
-Route::post('creat_portfolio_info', [PortfolioController::class, 'store']);
-Route::get('get_portfolio_info', [PortfolioController::class, 'index']);
-Route::post('update_portfolio_info/{id}', [PortfolioController::class, 'update']);
-Route::get('portfolio_detail/{id}', [PortfolioController::class, 'detail']);
-Route::delete('delete_portfolio_info/{id}', [PortfolioController::class, 'destroy']);
+Route::prefix('portfolios')->group(function () {
+    Route::get('/', [PortfolioController::class, 'index']);
+    Route::get('{id}', [PortfolioController::class, 'portfolioDetail']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('', [PortfolioController::class, 'store']);
+        Route::post('{id}', [PortfolioController::class, 'update']);
+        Route::delete('{id}', [PortfolioController::class, 'destroy']);
+    });
+});

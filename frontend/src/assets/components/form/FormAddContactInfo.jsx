@@ -19,14 +19,14 @@ function FormAddContactInfo({
     setKey(e.target.value);
   };
 
-  //   Xử lý submit thêm thông tin
+  //   Xử lý submit thêm thông tin liên hệ
   const handleSubmitAddInfor = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/information_contacts",
+        "http://127.0.0.1:8000/api/contacts",
         addContactInfo
       );
 
@@ -36,7 +36,6 @@ function FormAddContactInfo({
       });
 
       setContactInfo((prev) => [res.data.data, ...prev]);
-      console.log(res.data.data);
 
       setAddMode(false);
       setStatus({

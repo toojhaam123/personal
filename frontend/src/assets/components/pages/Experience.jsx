@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import FormAddExpInfo from "../../components/form/FormAddExpInfo";
 import FormUpdateExpInfo from "../../components/form/FormUpdateExpInfo";
-function Experience({ isLogedIn, setStatus }) {
+function Experience({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
@@ -12,7 +12,7 @@ function Experience({ isLogedIn, setStatus }) {
     const fetcExpInfo = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/get_exp_info");
+        const res = await axios.get("http://127.0.0.1:8000/api/experiences");
         setExpInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Thông tin kinh nghiệm", res.data);
       } catch (e) {
@@ -30,7 +30,13 @@ function Experience({ isLogedIn, setStatus }) {
     setLoading(true);
     try {
       const res = await axios.delete(
-        `http://127.0.0.1:8000/api/delete_exp_info/${id}`
+        `http://127.0.0.1:8000/api/experiences/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
       );
       setExpInfo((prev) => prev.filter((item) => item.id != id));
       setStatus({
@@ -56,7 +62,7 @@ function Experience({ isLogedIn, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Nú thêm thông tin người dùng */}
-        {isLogedIn && (!expInfo || expInfo.length === 0) ? (
+        {token && (!expInfo || expInfo.length === 0) ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -76,7 +82,7 @@ function Experience({ isLogedIn, setStatus }) {
           </button>
         ) : (
           /* Nút chỉnh sửa  */
-          isLogedIn && (
+          token && (
             <>
               <button
                 type="button"
@@ -120,6 +126,7 @@ function Experience({ isLogedIn, setStatus }) {
           {/* Hiện thị form thêm thông tin kinh nghiệm */}
           {addMode ? (
             <FormAddExpInfo
+              token={token}
               setAddMode={setAddMode}
               setStatus={setStatus}
               setLoading={setLoading}
@@ -129,7 +136,7 @@ function Experience({ isLogedIn, setStatus }) {
           ) : editMode ? (
             // Chế độ chỉnh sửa thì hiện thị form chỉnh sửa
             <FormUpdateExpInfo
-              loading={loading}
+              token={token}
               setLoading={setLoading}
               setEditMode={setEditMode}
               setStatus={setStatus}

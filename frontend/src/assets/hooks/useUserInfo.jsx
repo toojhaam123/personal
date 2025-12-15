@@ -8,7 +8,7 @@ const useUserInfo = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/get_user_info");
+        const res = await axios.get("http://127.0.0.1:8000/api/user-info");
         setUserInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Dữ liệu nhận đc:", res.data);
       } catch (e) {

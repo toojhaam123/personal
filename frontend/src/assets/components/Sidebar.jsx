@@ -3,7 +3,7 @@ import Logout from "./Logout";
 import { Form, NavLink } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 import axios from "axios";
-function Sidebar({ setStatus, isLogedIn }) {
+function Sidebar({ setStatus, token }) {
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ function Sidebar({ setStatus, isLogedIn }) {
     const fetchUserInfo = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://127.0.0.1:8000/api/get_user_info");
+        const res = await axios.get("http://127.0.0.1:8000/api/user-info");
         setUserInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Dữ liệu nhận đc:", res.data);
       } catch (e) {
@@ -88,7 +88,7 @@ function Sidebar({ setStatus, isLogedIn }) {
         }
       });
       const res = await axios.post(
-        `http://127.0.0.1:8000/api/update_user_info/${id}`,
+        `http://127.0.0.1:8000/api/user-info/${id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -152,7 +152,7 @@ function Sidebar({ setStatus, isLogedIn }) {
       }
 
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/creat_user_info",
+        "http://127.0.0.1:8000/api/user-info",
         formData,
         {
           headers: { "Content-Type": "multpart/form-data" },
@@ -197,7 +197,7 @@ function Sidebar({ setStatus, isLogedIn }) {
     setLoading(true);
     try {
       const res = await axios.delete(
-        `http://127.0.0.1:8000/api/delete_user_info/${id}`
+        `http://127.0.0.1:8000/api/user-info/${id}`
       );
       setUserInfo((prev) => prev.filter((item) => item.id !== id));
       setStatus({
@@ -220,7 +220,7 @@ function Sidebar({ setStatus, isLogedIn }) {
     <div className="text-center max-vh-100 flex flex-col">
       <div className="flex gap-2 text-center justify-center">
         {/* Nút thêm thông tin người dùng */}
-        {isLogedIn && (!userInfo || userInfo.length === 0) ? (
+        {token && (!userInfo || userInfo.length === 0) ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -240,7 +240,7 @@ function Sidebar({ setStatus, isLogedIn }) {
           </button>
         ) : (
           // {/* Nút chỉnh sửa  */}
-          isLogedIn && (
+          token && (
             <>
               <button
                 type="button"
@@ -707,7 +707,7 @@ function Sidebar({ setStatus, isLogedIn }) {
           )}
 
           <div className="mt-5">
-            {!isLogedIn && (
+            {!token && (
               <div className="login">
                 <NavLink
                   to="/login"
@@ -724,7 +724,7 @@ function Sidebar({ setStatus, isLogedIn }) {
               </div>
             )}
           </div>
-          {isLogedIn && <Logout />}
+          {token && <Logout setStatus={setStatus} />}
         </div>
       )}
     </div>

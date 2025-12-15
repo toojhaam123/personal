@@ -21,7 +21,7 @@ class UserInfoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         // validate dữ liệu
         $validated = $request->validate([

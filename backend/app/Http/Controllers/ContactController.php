@@ -20,7 +20,7 @@ class ContactController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Gửi thành công! Trân trọng cảm ơn bạn đã liên hệ.',
+            'message' => 'Gửi thành công! Trân trọng cảm ơn bạn đã liên hệ!',
         ]);
     }
 
@@ -34,35 +34,6 @@ class ContactController extends Controller
         return response()->json($detailNotification);
     }
 
-    // public function updateInfor(Request $request, $id)
-    // {
-    //     // Validate dữ liệu
-    //     $validated = $request->validate([
-    //         'information_contacts' => 'nullable|string',
-    //     ]);
-
-    //     // Tìm bản ghi theo id 
-    //     $contact = Contact::findOrFail($id);
-
-    //     if (!$contact) {
-    //         return response()->json([
-    //             'seccess' => false,
-    //             'message' => "Không tìm thấy thông tin liên hệ!",
-    //         ], 404);
-    //     }
-
-    //     // Cập nhập bản ghi
-    //     $contact->update([
-    //         'information_contacts' => $request->information_contacts,
-    //     ]);
-
-    //     // Trả về json response 
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Cập nhập thành công rồi bạn nhé!',
-    //         'data' => $contact,
-    //     ]);
-    // }
 
     // xóa thông tin liên hệ 
     public function destroy($id)

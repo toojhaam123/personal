@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
-function Logout() {
+import { useNavigate } from "react-router-dom";
+function Logout({ setStatus }) {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const handleLogout = async () => {
     if (!token) {
@@ -9,7 +11,7 @@ function Logout() {
     }
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/logout",
+        "http://127.0.0.1:8000/api/auth/logout",
         {},
         {
           headers: {
@@ -20,12 +22,18 @@ function Logout() {
       );
     } catch (error) {
       console.error(error);
-      alert("Có lỗi khi đăng xuất!");
+      setStatus({
+        type: "error",
+        message: "Có lỗi khi đăng xuất!",
+      });
     } finally {
       // Xóa token khỏi localStorage
       localStorage.removeItem("token");
-      alert("Đăng xuất thành công!");
-      window.location.href = "/"; // Chuyển về trang chủ
+      setStatus({
+        type: "success",
+        message: "Đã đăng xuất!",
+      });
+      navigate("/"); // Chuyển về trang chủ
     }
   };
 

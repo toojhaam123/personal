@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import useUserInfo from "../../../hooks/useUserInfo";
+import useUserInfo from "../../hooks/useUserInfo";
 import FormAddHomeInfo from "../../components/form/FormAddHomeInfo";
 import FormUpdateHomeInfo from "../../components/form/FormUpdateHomeInfo";
 function Home({ isLogedIn, setStatus }) {
@@ -8,6 +8,7 @@ function Home({ isLogedIn, setStatus }) {
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const { userInfo } = useUserInfo(); // Thông tin người dùng
+
   // Lấy thông tin trang chủ từ API
   const [homeInfo, setHomeInfo] = useState([]);
   // console.log("Thông tin trang chủ: ", useUserInfo);
@@ -15,7 +16,7 @@ function Home({ isLogedIn, setStatus }) {
     const fetchHomeInfo = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/get_home_info");
+        const res = await axios.get("http://127.0.0.1:8000/api/home");
         setHomeInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Thôn tin trang chủ: ", res.data);
       } catch (e) {
@@ -32,9 +33,12 @@ function Home({ isLogedIn, setStatus }) {
     if (!window.confirm("Bạn chắc chắn muốn xóa không!")) return;
     setLoading(true);
     try {
-      const res = await axios.delete(
-        `http://127.0.0.1:8000/api/delete_home_info/${id}`
-      );
+      const res = await axios.delete(`http://127.0.0.1:8000/api/home/${id}`, {
+        headers: {
+          Authorization: `Bearer ${isLogedIn}`,
+          Accept: "application/json",
+        },
+      });
       setHomeInfo((prev) => prev.filter((item) => item.id !== id));
       setStatus({
         type: "success",

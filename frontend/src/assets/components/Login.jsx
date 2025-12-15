@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login({ setStatus }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const minPw = 6;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -53,7 +55,7 @@ function Login() {
     setLoading(true);
     try {
       //   Gửi request đăng nhập
-      const res = await axios.post("http://127.0.0.1:8000/api/login", {
+      const res = await axios.post("http://127.0.0.1:8000/api/auth/login", {
         email,
         password,
       });
@@ -66,10 +68,25 @@ function Login() {
       }
       // Lưu token vào localStorage
       localStorage.setItem("token", res.data.token);
-      alert("Đã đăng nhập thành công!");
-      window.location.href = "/";
+
+      // Gắn token cho axios
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      setStatus({
+        type: "success",
+        message: res.data.message,
+      });
+      navigate("/");
     } catch (error) {
-      setError(error.response?.data?.message || "Lỗi đăng nhập!");
+      const status = error.response?.status;
+
+      if (status === 401) {
+        setError("Thông tị đăng nhập không chính xác");
+      } else if (status === 429) {
+        setError("Đăng nhập quá nhiều lần, thử lại sau!");
+      } else {
+        setError("Lỗi hệ thống, thử lại sau nhé!");
+      }
     } finally {
       setLoading(false);
     }
