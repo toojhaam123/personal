@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FormAddSkillInfo from "../form/FormAddSkillInfo";
 import FormUpdateSkillInfo from "../form/FormUpdateSkillInfo";
-function Skill({ isLogedIn, setStatus }) {
+function Skill({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
@@ -12,7 +12,7 @@ function Skill({ isLogedIn, setStatus }) {
     const fetchSkillInfo = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://127.0.0.1:8000/api/get_skill_info");
+        const res = await axios.get("http://127.0.0.1:8000/api/skills");
         setSkillInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Thông tin kỹ năng: ", res.data);
       } catch (e) {
@@ -30,9 +30,11 @@ function Skill({ isLogedIn, setStatus }) {
     setLoading(true);
 
     try {
-      const res = await axios.delete(
-        `http://127.0.0.1:8000/api/delete_skill_info/${id}`
-      );
+      const res = await axios.delete(`http://127.0.0.1:8000/api/skills/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setSkillInfo((prev) => prev.filter((item) => item.id != id));
       setStatus({
@@ -57,7 +59,7 @@ function Skill({ isLogedIn, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Nút thêm thông tin kỹ năng */}
-        {isLogedIn && (!skillInfo || skillInfo.length === 0) ? (
+        {token && (!skillInfo || skillInfo.length === 0) ? (
           <>
             <button
               type="button"
@@ -79,7 +81,7 @@ function Skill({ isLogedIn, setStatus }) {
           </>
         ) : (
           /* Nút chỉnh sửa  */
-          isLogedIn && (
+          token && (
             <>
               <button
                 type="button"
@@ -123,6 +125,7 @@ function Skill({ isLogedIn, setStatus }) {
           {/* Hiện thị form thêm thông tin kỹ năng */}
           {addMode ? (
             <FormAddSkillInfo
+              token={token}
               setAddMode={setAddMode}
               setStatus={setStatus}
               setLoading={setLoading}
@@ -132,6 +135,7 @@ function Skill({ isLogedIn, setStatus }) {
           ) : editMode ? (
             // Chế độ chỉnh sửa
             <FormUpdateSkillInfo
+              token={token}
               loading={loading}
               setLoading={setLoading}
               setEditMode={setEditMode}

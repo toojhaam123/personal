@@ -50,6 +50,7 @@ function Login({ setStatus }) {
     }
     setError("");
   };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -61,6 +62,7 @@ function Login({ setStatus }) {
       });
 
       const token = res.data?.token;
+      const expireAt = Date.now() + 24 * 60 * 60 * 1000;
 
       if (!token) {
         setError("Đăng nhập thất bại, không nhận được token!");
@@ -68,7 +70,7 @@ function Login({ setStatus }) {
       }
       // Lưu token vào localStorage
       localStorage.setItem("token", res.data.token);
-
+      localStorage.setItem("expireAt", expireAt);
       // Gắn token cho axios
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 

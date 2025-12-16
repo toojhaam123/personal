@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 
 function FormUpdateSkillInfo({
+  token,
   loading,
   setLoading,
   setEditMode,
@@ -28,9 +29,14 @@ function FormUpdateSkillInfo({
     try {
       const skill = skillInfo[0];
       const res = await axios.post(
-        `http://127.0.0.1:8000/api/update_skill_info/${skill.id}`,
+        `http://127.0.0.1:8000/api/skills/${skill.id}`,
         {
           skill_info: skill.skill_info,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setEditMode(false);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FormAddEduInfo from "../../components/form/FormAddEduInfo";
 import FormUpdateEduInfo from "../form/FormUpdateEduInfo";
-function Education({ isLogedIn, setStatus }) {
+function Education({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
@@ -13,7 +13,7 @@ function Education({ isLogedIn, setStatus }) {
     const fetchEduInfo = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http:///127.0.0.1:8000/api/get_edu_info");
+        const res = await axios.get("http:///127.0.0.1:8000/api/educations");
         setEduInfo(res.data);
       } catch (e) {
         console.log("Có lỗi khi lấy thông tin học vấn!", e);
@@ -31,7 +31,12 @@ function Education({ isLogedIn, setStatus }) {
 
     try {
       const res = await axios.delete(
-        `http://127.0.0.1:8000/api/delete_edu_info/${id}`
+        `http://127.0.0.1:8000/api/educations/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       setEduInfo((prev) => prev.filter((item) => item.id != id));
@@ -57,7 +62,7 @@ function Education({ isLogedIn, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Nút thêm */}
-        {isLogedIn && (!eduInfo || eduInfo.length === 0) ? (
+        {token && (!eduInfo || eduInfo.length === 0) ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -77,7 +82,7 @@ function Education({ isLogedIn, setStatus }) {
           </button>
         ) : (
           /* Nút chỉnh sửa  */
-          isLogedIn && (
+          token && (
             <>
               <button
                 type="button"
@@ -121,6 +126,7 @@ function Education({ isLogedIn, setStatus }) {
           {/* Form thêm thông tin học vấn */}
           {addMode ? (
             <FormAddEduInfo
+              token={token}
               setAddMode={setAddMode}
               setStatus={setStatus}
               setLoading={setLoading}
@@ -130,6 +136,7 @@ function Education({ isLogedIn, setStatus }) {
           ) : editMode ? (
             // Form chỉnh sửa
             <FormUpdateEduInfo
+              token={token}
               loading={loading}
               setLoading={setLoading}
               setEditMode={setEditMode}

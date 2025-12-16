@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 
 function FormUpdateUserInfo({
+  token,
   loading,
   setLoading,
   setStatus,
@@ -51,11 +52,15 @@ function FormUpdateUserInfo({
           formData.append(key, value);
         }
       });
+
       const res = await axios.post(
-        `http://127.0.0.1:8000/api/update_user_info/${id}`,
+        `http://127.0.0.1:8000/api/user-info/${id}`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       // cập nhập ngay ảnh mới
@@ -163,10 +168,10 @@ function FormUpdateUserInfo({
                 placeholder="Địa chi"
               />
               <label htmlFor="link_address" className="float-start">
-                Link
+                Link Google Map
               </label>
               <input
-                type="text"
+                type="url"
                 name="link_address"
                 id="link_address"
                 onChange={(e) => handleChangeUdateUserInfo(e, index)}
@@ -213,10 +218,10 @@ function FormUpdateUserInfo({
                 placeholder="Facebook"
               />
               <label htmlFor="" className="float-start">
-                Link
+                Link Facebook
               </label>
               <input
-                type="text"
+                type="url"
                 id="link_facebook"
                 name="link_facebook"
                 onChange={(e) => handleChangeUdateUserInfo(e, index)}
@@ -239,10 +244,10 @@ function FormUpdateUserInfo({
                 placeholder="Github"
               />
               <label htmlFor="" className="float-start">
-                Link
+                Link github
               </label>
               <input
-                type="text"
+                type="url"
                 id="link_github"
                 name="link_github"
                 onChange={(e) => handleChangeUdateUserInfo(e, index)}

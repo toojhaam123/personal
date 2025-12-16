@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
 function FormUpdatePortfolio({
+  token,
   loading,
   setLoading,
   editMode,
@@ -47,10 +48,13 @@ function FormUpdatePortfolio({
       });
       // console.log("Dữ liệu gửi đi:", Object.fromEntries(formData.entries()));
       const res = await axios.post(
-        `http://127.0.0.1:8000/api/update_portfolio_info/${portfolioDetail.id}`,
+        `http://127.0.0.1:8000/api/portfolios/${portfolioDetail.id}`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -126,7 +130,7 @@ function FormUpdatePortfolio({
         onChange={(e) => handleChangeUpdatePort(e)}
         value={portfolioDetail.link || ""}
         className="w-full bg-white text-black mt-1 text-lg rounded p-2"
-        type="text"
+        type="url"
       />
       <button
         type="submit"

@@ -29,6 +29,7 @@ function Logout({ setStatus }) {
     } finally {
       // Xóa token khỏi localStorage
       localStorage.removeItem("token");
+      delete axios.defaults.headers.common["Authorization"];
       setStatus({
         type: "success",
         message: "Đã đăng xuất!",

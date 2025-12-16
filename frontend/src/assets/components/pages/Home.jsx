@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import useUserInfo from "../../hooks/useUserInfo";
 import FormAddHomeInfo from "../../components/form/FormAddHomeInfo";
 import FormUpdateHomeInfo from "../../components/form/FormUpdateHomeInfo";
-function Home({ isLogedIn, setStatus }) {
+function Home({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
@@ -35,7 +35,7 @@ function Home({ isLogedIn, setStatus }) {
     try {
       const res = await axios.delete(`http://127.0.0.1:8000/api/home/${id}`, {
         headers: {
-          Authorization: `Bearer ${isLogedIn}`,
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
@@ -63,7 +63,7 @@ function Home({ isLogedIn, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Thêm thông tin trang chủ */}
-        {isLogedIn && (!homeInfo || homeInfo.length === 0) ? (
+        {token && (!homeInfo || homeInfo.length === 0) ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -83,7 +83,7 @@ function Home({ isLogedIn, setStatus }) {
           </button>
         ) : (
           // {/* Nút chỉnh sửa  */}
-          isLogedIn && (
+          token && (
             <>
               <button
                 type="button"
@@ -128,6 +128,7 @@ function Home({ isLogedIn, setStatus }) {
           {/* Form thêm thông tin trang chủ */}
           {addMode ? (
             <FormAddHomeInfo
+              token={token}
               loading={loading}
               setLoading={setLoading}
               setAddMode={setAddMode}
@@ -138,6 +139,7 @@ function Home({ isLogedIn, setStatus }) {
             <>
               {/* Form update thông tin trang chủ */}
               <FormUpdateHomeInfo
+                token={token}
                 loading={loading}
                 setLoading={setLoading}
                 setEditMode={setEditMode}

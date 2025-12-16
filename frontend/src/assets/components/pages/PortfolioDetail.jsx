@@ -4,22 +4,35 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FormUpdatePortfolio from "../form/FormUpdatePortfolio";
-function PortfolioDetail({ isLogedIn, setStatus }) {
+function PortfolioDetail({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const { id } = useParams();
-  const [portfolioDetail, setPortfolioDetail] = useState(null);
+  const [portfolioDetail, setPortfolioDetail] = useState({
+    avatarPort: "",
+    title: "",
+    description: "",
+    link: "",
+  });
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/api/portfolio_detail/${id}`)
-      .then((res) => setPortfolioDetail(res.data))
-      .catch((e) => console(console.log("Lỗi khi lấy chi tiết dự án!", e)));
+    const fetchPortfolioDetail = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/api/portfolios/${id}`
+        );
+        setPortfolioDetail(res.data);
+      } catch (e) {
+        console.log("Lỗi khi lấy chi tiết dự án!", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPortfolioDetail();
   }, [id]);
-
-  if (!portfolioDetail) return <p>Đang tải...</p>;
 
   // Xử lý xóa dự án
   const handleDeletePortfolio = async (id) => {
@@ -32,7 +45,12 @@ function PortfolioDetail({ isLogedIn, setStatus }) {
     try {
       setLoading(true);
       const res = await axios.delete(
-        `http://127.0.0.1:8000/api/delete_portfolio_info/${id}`
+        `http://127.0.0.1:8000/api/portfolios/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (res.data.success) {
         setStatus({
@@ -54,7 +72,7 @@ function PortfolioDetail({ isLogedIn, setStatus }) {
   return (
     <section>
       <h1 className="font-bolt text-3xl, text-red-600 mb-4">Chi tiết dự án</h1>
-      {isLogedIn && (
+      {token && (
         <div className="btn flex gap-2">
           {/* Nút chỉnh sửa */}
           <button
@@ -97,7 +115,7 @@ function PortfolioDetail({ isLogedIn, setStatus }) {
           {editMode ? (
             // Form chỉnh sửa dự án
             <FormUpdatePortfolio
-              id={id}
+              token={token}
               loading={loading}
               setLoading={setLoading}
               editMode={editMode}
@@ -110,20 +128,24 @@ function PortfolioDetail({ isLogedIn, setStatus }) {
           ) : (
             // Hiện thị thông tun dự án
             <div className="portfolioDetail">
-              {loading ? (
-                <p>
-                  <i class="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui
-                  lòng chờ!
-                </p>
-              ) : (
-                <>
-                  <h1 className="text-3xl font-bolt">
-                    {portfolioDetail.title}
-                  </h1>
-                  <p className="text-lg text-start my-2 whitespace-pre-line">
-                    {portfolioDetail.description}
+              {portfolioDetail ? (
+                loading ? (
+                  <p>
+                    <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
+                    Vui lòng chờ!
                   </p>
-                </>
+                ) : (
+                  <>
+                    <h1 className="text-3xl font-bolt">
+                      {portfolioDetail.title}
+                    </h1>
+                    <p className="text-lg text-start my-2 whitespace-pre-line">
+                      {portfolioDetail.description}
+                    </p>
+                  </>
+                )
+              ) : (
+                <p>Không có dự án nào!</p>
               )}
             </div>
           )}
@@ -145,23 +167,17 @@ function PortfolioDetail({ isLogedIn, setStatus }) {
                   title="Hình ảnh dự án"
                   className="border w-100 rounded mb-5"
                 />
-                <a
-                  href={portfolioDetail.link}
-                  target="_blank"
-                  onClick={(e) => {
-                    if (!portfolioDetail.link || portfolioDetail.link === 0) {
-                      e.preventDefault();
-                      setStatus({
-                        type: "error",
-                        message: "Không có link github!",
-                      });
-                    }
-                  }}
-                  className="border border-blue-600 text-white rounded-lg hover:bg-blue-600 hover:text-white 
+                {portfolioDetail?.link && (
+                  <a
+                    href={portfolioDetail.link}
+                    target="_blank"
+                    className="border border-blue-600 text-white rounded-lg hover:bg-blue-600 hover:text-white 
                   transition duration-500 hover:border-white px-2 mt-5 py-1"
-                >
-                  <i className="fa-brands fa-github"></i> Xem dự án trên github
-                </a>
+                  >
+                    <i className="fa-brands fa-github"></i> Xem dự án trên
+                    github
+                  </a>
+                )}
               </>
             )}
           </div>

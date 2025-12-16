@@ -1,6 +1,11 @@
-import { React } from "react";
+import { React, useEffect } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import Navbar from "./assets/components/Navbar";
 import Sidebar from "./assets/components/Sidebar";
 import Login from "./assets/components/Login";
@@ -17,9 +22,27 @@ import PortfolioDetail from "./assets/components/pages/PortfolioDetail";
 import Contact from "./assets/components/pages/Contact";
 import Notification from "./assets/components/pages/Notification";
 import Notification_Detail from "./assets/components/pages/Notification_Detail";
+import axios from "axios";
 function App() {
   const token = localStorage.getItem("token");
   const { status, setStatus, visible, setVisible } = useStatus();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const expireAt = localStorage.getItem("expireAt");
+
+    // nếu chưa login thì thôi
+    if (!token || !expireAt) return;
+
+    // Hết hạn login, logout ngay
+    if (Date.now() > Number(expireAt)) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("expireAt");
+      delete axios.defaults.headers.common["Authorization"];
+      navigate("/");
+    }
+  });
 
   return (
     <>
@@ -47,7 +70,7 @@ function App() {
       </div>
       <div className="flex h-screen">
         <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
-          <Sidebar setStatus={setStatus} token={token} />
+          <Sidebar token={token} setStatus={setStatus} />
         </div>
         <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
           <div className="flex-[2] border-r">

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 
 function FormAddSkillInfo({
+  token,
   setAddMode,
   loading,
   setLoading,
@@ -27,8 +28,13 @@ function FormAddSkillInfo({
 
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/creat_skill_info",
-        addSkillInfo
+        "http://127.0.0.1:8000/api/skills",
+        addSkillInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       // Reset lại form

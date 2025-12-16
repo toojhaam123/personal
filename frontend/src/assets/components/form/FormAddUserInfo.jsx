@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 
 function FormAddUserInfo({
+  token,
   loading,
   setLoading,
   setAddMode,
@@ -50,7 +51,7 @@ function FormAddUserInfo({
     }
   };
 
-  // Hàm xử lý thêm thông tin
+  // Hàm xử lý thêm thông tin người dùng
   const handleAddUserInfo = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -59,12 +60,14 @@ function FormAddUserInfo({
       for (let key in addUserInfo) {
         formData.append(key, addUserInfo[key]);
       }
-
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/creat_user_info",
+        "http://127.0.0.1:8000/api/user-info",
         formData,
         {
-          headers: { "Content-Type": "multpart/form-data" },
+          headers: {
+            "Content-Type": "multpart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setUserInfo((prev) => [res.data.data, ...prev]);
@@ -171,7 +174,7 @@ function FormAddUserInfo({
           Link
         </label>
         <input
-          type="text"
+          type="url"
           name="link_address"
           id="link_address"
           onChange={handleChangeAddUserInfo}
@@ -213,11 +216,11 @@ function FormAddUserInfo({
           id="facebook"
           placeholder="Facebook"
         />
-        <label htmlFor="" className="float-start">
+        <label htmlFor="link_facebook" className="float-start">
           Link
         </label>
         <input
-          type="text"
+          type="url"
           id="link_facebook"
           name="link_facebook"
           onChange={handleChangeAddUserInfo}
@@ -241,7 +244,7 @@ function FormAddUserInfo({
           Link
         </label>
         <input
-          type="text"
+          type="url"
           id="link_github"
           name="link_github"
           onChange={handleChangeAddUserInfo}

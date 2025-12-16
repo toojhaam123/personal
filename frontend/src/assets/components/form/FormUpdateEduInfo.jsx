@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 
 function FormUpdateEduInfo({
+  token,
   loading,
   setLoading,
   setEditMode,
@@ -21,16 +22,21 @@ function FormUpdateEduInfo({
     );
   };
 
-  // Xử lý thông tin submit khi cập nhập
+  // Xử lý thông tin submit khi chỉnh sửa thoogn tin học vând
   const handleSubmitEduInfoUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const edu = eduInfo[0];
       const res = await axios.post(
-        `http://127.0.0.1:8000/api/update_edu_info/${edu.id}`,
+        `http://127.0.0.1:8000/api/educations/${edu.id}`,
         {
           edu_info: edu.edu_info,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setEditMode(false);
@@ -39,7 +45,7 @@ function FormUpdateEduInfo({
         message: res.data.message,
       });
     } catch (e) {
-      console.log("Lỗi khi lấy thông tin học vấn: ", e);
+      console.log("Lỗi khi chỉnh sửa thông tin học vấn!", e);
     } finally {
       setLoading(false);
     }

@@ -2,19 +2,17 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FormAddPortfolio from "../form/FormAddPortfolio";
-function Portfolio({ isLogedIn, setStatus }) {
+function Portfolio({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [addMode, setAddMode] = useState(false);
-  const [port, setPort] = useState([]); // Lấy danh sách các dự án
+  const [portfolio, setPortfolio] = useState([]); // Lấy danh sách các dự án
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
   useEffect(() => {
-    const fetchPort = async () => {
+    const fetchPortfolio = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(
-          "http://127.0.0.1:8000/api/get_portfolio_info"
-        );
-        setPort(res.data.data);
+        const res = await axios.get("http://127.0.0.1:8000/api/portfolios");
+        setPortfolio(res.data.data);
         // console.log("Thông tin dự án: ", res.data.data);
       } catch (e) {
         console.log("Lỗi khi lấy thông tin dự án: ", e);
@@ -22,7 +20,7 @@ function Portfolio({ isLogedIn, setStatus }) {
         setLoading(false);
       }
     };
-    fetchPort();
+    fetchPortfolio();
   }, []);
 
   return (
@@ -31,7 +29,7 @@ function Portfolio({ isLogedIn, setStatus }) {
         <i className="fas fa-folder-open"></i> Dự án
       </h1>
       <div className="flex">
-        {isLogedIn && (
+        {token && (
           /* Nút thêm dự án */
           <button
             onClick={() => setAddMode(!addMode)}
@@ -60,12 +58,13 @@ function Portfolio({ isLogedIn, setStatus }) {
           ) : addMode ? (
             // Form thêm dự án mới
             <FormAddPortfolio
+              token={token}
               loading={loading}
               setLoading={setLoading}
               addMode={addMode}
               setAddMode={setAddMode}
               setStatus={setStatus}
-              setPort={setPort}
+              setPort={setPortfolio}
               previewImage={previewImage}
               setPreviewImage={setPreviewImage}
             ></FormAddPortfolio>
@@ -74,16 +73,16 @@ function Portfolio({ isLogedIn, setStatus }) {
             <div className="portfolio text-white">
               {loading ? (
                 <p>Đang tải...</p>
-              ) : port.length == 0 ? (
+              ) : portfolio.length == 0 ? (
                 <p className="text-center ">Không có dự án nào!</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 ">
-                  {port.map((item) => (
-                    <Link key={item.id} to={`/portfolio_detail/${item.id}`}>
-                      <div
-                        className="shadow-xl cursor-pointer pb-4 rounded-lg hover:bg-gray-800 m-2 transition duration-500"
-                        key={item.id}
-                      >
+                  {portfolio.map((item, index) => (
+                    <Link
+                      key={`item.id ?? "STT-" ${index}`}
+                      to={`/portfolio_detail/${item.id}`}
+                    >
+                      <div className="shadow-xl cursor-pointer pb-4 rounded-lg hover:bg-gray-800 m-2 transition duration-500">
                         <img
                           src={`http://127.0.0.1:8000/storage/avatarPort/${item.avatarPort}`}
                           alt=""

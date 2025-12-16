@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 function FormAddPortfolio({
+  token,
   loading,
   setLoading,
   addMode,
@@ -42,10 +43,11 @@ function FormAddPortfolio({
       });
 
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/creat_portfolio_info",
+        "http://127.0.0.1:8000/api/portfolios",
         data,
         {
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
@@ -76,12 +78,14 @@ function FormAddPortfolio({
       method="post"
       className="p-2 rounded"
     >
-      <img
-        src={previewImage}
-        // src="../../public/1696433119267khunghinh.net.png"
-        alt=""
-        className="border rounded w-[50%] mx-auto object-cover"
-      />
+      {previewImage && (
+        <img
+          src={previewImage}
+          // src="../../public/1696433119267khunghinh.net.png"
+          alt=""
+          className="border rounded w-[30%] mx-auto object-cover"
+        />
+      )}
       <label className="float-start text-lg p-2" htmlFor="avatarPort">
         Ảnh dự án
       </label>
@@ -129,7 +133,7 @@ function FormAddPortfolio({
         id="link"
         onChange={(e) => handleChangePortfolio(e)}
         className="w-full bg-white text-black mt-1 text-lg rounded p-2"
-        type="text"
+        type="url"
       />
       <button
         type="submit"

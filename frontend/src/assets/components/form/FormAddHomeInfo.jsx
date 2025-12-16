@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function FormAddHomeInfo({
+  token,
   loading,
   setLoading,
   setAddMode,
@@ -45,7 +46,11 @@ function FormAddHomeInfo({
         formData.append(key, addHomeInfo[key]);
       }
 
-      const res = await axios.post("http://127.0.0.1:8000/api/home", formData);
+      const res = await axios.post("http://127.0.0.1:8000/api/home", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       // reset lại form
       setAddHomeInfo({
