@@ -4,7 +4,7 @@ import { Form, NavLink } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 import FormAddUserInfo from "./form/FormAddUserInfo";
 import FormUpdateUserInfo from "./form/FormUpdateUserInfo";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 function Sidebar({ token, setStatus }) {
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
@@ -18,7 +18,7 @@ function Sidebar({ token, setStatus }) {
     const fetchUserInfo = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://127.0.0.1:8000/api/user-info");
+        const res = await axiosInstance.get("/user-info");
         setUserInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Dữ liệu nhận đc:", res.data);
       } catch (e) {
@@ -39,14 +39,7 @@ function Sidebar({ token, setStatus }) {
     if (!window.confirm("Bạn có chắc chắn muốn xóa không!")) return;
     setLoading(true);
     try {
-      const res = await axios.delete(
-        `http://127.0.0.1:8000/api/user-info/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.delete(`/user-info/${id}`);
       setUserInfo((prev) => prev.filter((item) => item.id !== id));
       setStatus({
         type: "success",
@@ -130,7 +123,6 @@ function Sidebar({ token, setStatus }) {
       {/* Nếu ở chế độ thêm thì hiện form thêm thông tin người dùng */}
       {addMode ? (
         <FormAddUserInfo
-          token={token}
           loading={loading}
           setLoading={setLoading}
           setAddMode={setAddMode}

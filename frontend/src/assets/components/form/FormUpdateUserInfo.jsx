@@ -1,8 +1,7 @@
-import axios from "axios";
+import axiosInstance from "../../../config/axios";
 import React from "react";
 
 function FormUpdateUserInfo({
-  token,
   loading,
   setLoading,
   setStatus,
@@ -53,16 +52,7 @@ function FormUpdateUserInfo({
         }
       });
 
-      const res = await axios.post(
-        `http://127.0.0.1:8000/api/user-info/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post(`user-info/${id}`, formData);
       // cập nhập ngay ảnh mới
       setUserInfo((prev) =>
         prev.map((u) =>

@@ -37,11 +37,10 @@ function App() {
 
       // Hết hạn login, logout ngay
       if (Date.now() > Number(expireAt)) {
+        window.confirm("Hết thời gian đăng nhập, đăng nhập lại!");
         localStorage.removeItem("token");
         localStorage.removeItem("expireAt");
-        if (!window.confirm("Bạn đã bị đăng xuất do hết thời gian đăng nhập!"))
-          return;
-        navigate("/");
+        navigate("/login");
       }
     };
     // Check thời gian đăng nhập khi App load
@@ -82,7 +81,7 @@ function App() {
         </div>
         <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
           <div className="flex-[2] border-r">
-            <Navbar />
+            <Navbar token={token} />
           </div>
           <div className="flex-[12] overflow-y-auto scroll-hidden p-1">
             <Routes>

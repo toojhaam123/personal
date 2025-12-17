@@ -1,8 +1,7 @@
-import axios from "axios";
+import axiosInstance from "../../../config/axios";
 import React, { useState } from "react";
 
 function FormAddUserInfo({
-  token,
   loading,
   setLoading,
   setAddMode,
@@ -60,16 +59,7 @@ function FormAddUserInfo({
       for (let key in addUserInfo) {
         formData.append(key, addUserInfo[key]);
       }
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/user-info",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multpart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post("user-info", formData);
       setUserInfo((prev) => [res.data.data, ...prev]);
 
       // reset lại form

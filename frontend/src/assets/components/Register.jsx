@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { NavLink } from "react-router-dom";
+import axiosInstance from "../../config/axios";
+import { NavLink, Navigate } from "react-router-dom";
 function Register() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -11,20 +11,20 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/register", {
+      await axiosInstance.post("http://127.0.0.1:8000/api/register", {
         username,
         email,
         password,
       });
       alert("Đã đăng ký thành công! Quay lại đăng nhập!");
+      Navigate("/login");
     } catch (error) {
       setError(error.response?.data?.message || "Lỗi đăng ký");
     }
   };
   return (
     <form
-      action=""
-      method="POST"
+      method="post"
       onSubmit={handleRegister}
       className="p-6 border rounded-md mx-auto my-auto w-80"
     >
