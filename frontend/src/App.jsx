@@ -22,27 +22,35 @@ import PortfolioDetail from "./assets/components/pages/PortfolioDetail";
 import Contact from "./assets/components/pages/Contact";
 import Notification from "./assets/components/pages/Notification";
 import Notification_Detail from "./assets/components/pages/Notification_Detail";
-import axios from "axios";
 function App() {
   const token = localStorage.getItem("token");
   const { status, setStatus, visible, setVisible } = useStatus();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const expireAt = localStorage.getItem("expireAt");
+    const checkExpire = () => {
+      const token = localStorage.getItem("token");
+      const expireAt = localStorage.getItem("expireAt");
 
-    // nếu chưa login thì thôi
-    if (!token || !expireAt) return;
+      // nếu chưa login thì thôi
+      if (!token || !expireAt) return;
 
-    // Hết hạn login, logout ngay
-    if (Date.now() > Number(expireAt)) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("expireAt");
-      delete axios.defaults.headers.common["Authorization"];
-      navigate("/");
-    }
-  });
+      // Hết hạn login, logout ngay
+      if (Date.now() > Number(expireAt)) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("expireAt");
+        if (!window.confirm("Bạn đã bị đăng xuất do hết thời gian đăng nhập!"))
+          return;
+        navigate("/");
+      }
+    };
+    // Check thời gian đăng nhập khi App load
+    checkExpire();
+
+    const intervalId = setInterval(checkExpire, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [navigate]);
 
   return (
     <>

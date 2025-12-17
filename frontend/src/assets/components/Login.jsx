@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ function Login({ setStatus }) {
     !emailRegex.test(email) ||
     !password ||
     password.length < minPw;
-  const handleChangeLogin = async (e) => {
+  const handleChangeLogin = (e) => {
     const { name, value } = e.target;
 
     if (name === "email") {
@@ -56,7 +56,7 @@ function Login({ setStatus }) {
     setLoading(true);
     try {
       //   Gửi request đăng nhập
-      const res = await axios.post("http://127.0.0.1:8000/api/auth/login", {
+      const res = await axiosInstance.post("auth/login", {
         email,
         password,
       });
@@ -71,8 +71,6 @@ function Login({ setStatus }) {
       // Lưu token vào localStorage
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("expireAt", expireAt);
-      // Gắn token cho axios
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       setStatus({
         type: "success",

@@ -1,25 +1,18 @@
 import React from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 function Logout({ setStatus }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const handleLogout = async () => {
     if (!token) {
-      alert("Bạn chưa đăng nhập!");
-      return;
+      setStatus({
+        type: "error",
+        message: "Bạn chưa đăng nhập!",
+      });
     }
     try {
-      await axios.post(
-        "http://127.0.0.1:8000/api/auth/logout",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      await axiosInstance.post("auth/logout");
     } catch (error) {
       console.error(error);
       setStatus({
@@ -29,7 +22,7 @@ function Logout({ setStatus }) {
     } finally {
       // Xóa token khỏi localStorage
       localStorage.removeItem("token");
-      delete axios.defaults.headers.common["Authorization"];
+      localStorage.removeItem("expireAt");
       setStatus({
         type: "success",
         message: "Đã đăng xuất!",
