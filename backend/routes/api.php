@@ -54,8 +54,8 @@ Route::prefix('home')->group(function () {
     Route::get('/', [HomeController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/', [HomeController::class, 'store']);
         Route::post('{id}', [HomeController::class, 'update']);
+        Route::post('/', [HomeController::class, 'store']);
         Route::delete('/{id}', [HomeController::class, 'destroy']);
     });
 });

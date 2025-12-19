@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import axiosInstance from "../../../config/axios";
+import { useEffect, useState } from "react";
 import FormAddExpInfo from "../../components/form/FormAddExpInfo";
 import FormUpdateExpInfo from "../../components/form/FormUpdateExpInfo";
 function Experience({ token, setStatus }) {
@@ -12,9 +12,8 @@ function Experience({ token, setStatus }) {
     const fetcExpInfo = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/experiences");
+        const res = await axiosInstance.get("experiences");
         setExpInfo(Array.isArray(res.data) ? res.data : [res.data]);
-        // console.log("Thông tin kinh nghiệm", res.data);
       } catch (e) {
         console.log("Có lỗi khi lấy thông tin kinh nghiệm!", e);
       } finally {
@@ -29,15 +28,7 @@ function Experience({ token, setStatus }) {
     if (!window.confirm("Bạn có chắc muốn xóa không!")) return;
     setLoading(true);
     try {
-      const res = await axios.delete(
-        `http://127.0.0.1:8000/api/experiences/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      const res = await axiosInstance.delete(`experiences/${id}`);
       setExpInfo((prev) => prev.filter((item) => item.id != id));
       setStatus({
         type: "success",
@@ -126,7 +117,6 @@ function Experience({ token, setStatus }) {
           {/* Hiện thị form thêm thông tin kinh nghiệm */}
           {addMode ? (
             <FormAddExpInfo
-              token={token}
               setAddMode={setAddMode}
               setStatus={setStatus}
               setLoading={setLoading}
@@ -136,7 +126,6 @@ function Experience({ token, setStatus }) {
           ) : editMode ? (
             // Chế độ chỉnh sửa thì hiện thị form chỉnh sửa
             <FormUpdateExpInfo
-              token={token}
               setLoading={setLoading}
               setEditMode={setEditMode}
               setStatus={setStatus}

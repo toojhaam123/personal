@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../../config/axios";
 import FormAddEduInfo from "../../components/form/FormAddEduInfo";
 import FormUpdateEduInfo from "../form/FormUpdateEduInfo";
 function Education({ token, setStatus }) {
@@ -13,7 +13,7 @@ function Education({ token, setStatus }) {
     const fetchEduInfo = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http:///127.0.0.1:8000/api/educations");
+        const res = await axiosInstance.get("educations");
         setEduInfo(res.data);
       } catch (e) {
         console.log("Có lỗi khi lấy thông tin học vấn!", e);
@@ -30,14 +30,7 @@ function Education({ token, setStatus }) {
     setLoading(true);
 
     try {
-      const res = await axios.delete(
-        `http://127.0.0.1:8000/api/educations/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.delete(`educations/${id}`);
 
       setEduInfo((prev) => prev.filter((item) => item.id != id));
       setEditMode(false);
@@ -126,7 +119,6 @@ function Education({ token, setStatus }) {
           {/* Form thêm thông tin học vấn */}
           {addMode ? (
             <FormAddEduInfo
-              token={token}
               setAddMode={setAddMode}
               setStatus={setStatus}
               setLoading={setLoading}
@@ -136,7 +128,6 @@ function Education({ token, setStatus }) {
           ) : editMode ? (
             // Form chỉnh sửa
             <FormUpdateEduInfo
-              token={token}
               loading={loading}
               setLoading={setLoading}
               setEditMode={setEditMode}

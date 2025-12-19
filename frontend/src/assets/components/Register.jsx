@@ -11,7 +11,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axiosInstance.post("http://127.0.0.1:8000/api/register", {
+      await axiosInstance.post("register", {
         username,
         email,
         password,

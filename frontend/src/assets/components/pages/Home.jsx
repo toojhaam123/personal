@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import axiosInstance from "../../../config/axios";
+import { useEffect, useState } from "react";
 import useUserInfo from "../../hooks/useUserInfo";
 import FormAddHomeInfo from "../../components/form/FormAddHomeInfo";
 import FormUpdateHomeInfo from "../../components/form/FormUpdateHomeInfo";
@@ -16,7 +16,7 @@ function Home({ token, setStatus }) {
     const fetchHomeInfo = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/home");
+        const res = await axiosInstance.get("home");
         setHomeInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Thôn tin trang chủ: ", res.data);
       } catch (e) {
@@ -33,12 +33,7 @@ function Home({ token, setStatus }) {
     if (!window.confirm("Bạn chắc chắn muốn xóa không!")) return;
     setLoading(true);
     try {
-      const res = await axios.delete(`http://127.0.0.1:8000/api/home/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+      const res = await axiosInstance.delete(`home/${id}`);
       setHomeInfo((prev) => prev.filter((item) => item.id !== id));
       setStatus({
         type: "success",

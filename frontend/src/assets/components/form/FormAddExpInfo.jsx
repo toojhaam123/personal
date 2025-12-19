@@ -1,8 +1,7 @@
-import axios from "axios";
-import React, { useState } from "react";
+import axiosInstance from "../../../config/axios";
+import { useState } from "react";
 
 function FormAddExpInfo({
-  token,
   setAddMode,
   loading,
   setLoading,
@@ -27,16 +26,7 @@ function FormAddExpInfo({
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/experiences",
-        addExpInfo,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      const res = await axiosInstance.post("experiences", addExpInfo);
 
       // Reset form
       setAddExpInfo({

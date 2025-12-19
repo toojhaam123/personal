@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import axiosInstance from "../../../config/axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FormAddPortfolio from "../form/FormAddPortfolio";
 function Portfolio({ token, setStatus }) {
@@ -11,9 +11,8 @@ function Portfolio({ token, setStatus }) {
     const fetchPortfolio = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/portfolios");
+        const res = await axiosInstance.get("portfolios");
         setPortfolio(res.data.data);
-        // console.log("Thông tin dự án: ", res.data.data);
       } catch (e) {
         console.log("Lỗi khi lấy thông tin dự án: ", e);
       } finally {
@@ -58,7 +57,6 @@ function Portfolio({ token, setStatus }) {
           ) : addMode ? (
             // Form thêm dự án mới
             <FormAddPortfolio
-              token={token}
               loading={loading}
               setLoading={setLoading}
               addMode={addMode}

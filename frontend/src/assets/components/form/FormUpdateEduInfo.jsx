@@ -1,8 +1,6 @@
-import axios from "axios";
-import React from "react";
+import axiosInstance from "../../../config/axios";
 
 function FormUpdateEduInfo({
-  token,
   loading,
   setLoading,
   setEditMode,
@@ -28,17 +26,9 @@ function FormUpdateEduInfo({
     setLoading(true);
     try {
       const edu = eduInfo[0];
-      const res = await axios.post(
-        `http://127.0.0.1:8000/api/educations/${edu.id}`,
-        {
-          edu_info: edu.edu_info,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post(`educations/${edu.id}`, {
+        edu_info: edu.edu_info,
+      });
       setEditMode(false);
       setStatus({
         type: "success",

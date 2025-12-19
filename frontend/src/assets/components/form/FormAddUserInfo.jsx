@@ -1,5 +1,5 @@
 import axiosInstance from "../../../config/axios";
-import React, { useState } from "react";
+import { useState } from "react";
 
 function FormAddUserInfo({
   loading,

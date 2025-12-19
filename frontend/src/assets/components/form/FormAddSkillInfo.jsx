@@ -1,8 +1,7 @@
-import axios from "axios";
-import React, { useState } from "react";
+import axiosInstance from "../../../config/axios";
+import { useState } from "react";
 
 function FormAddSkillInfo({
-  token,
   setAddMode,
   loading,
   setLoading,
@@ -27,15 +26,7 @@ function FormAddSkillInfo({
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/skills",
-        addSkillInfo,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post("skills", addSkillInfo);
 
       // Reset lại form
       setAddSkillInfo({

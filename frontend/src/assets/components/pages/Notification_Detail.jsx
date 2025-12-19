@@ -1,15 +1,24 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../../config/axios";
 export default function Notification_Details() {
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const [notifactionDetail, setNotificationDetail] = useState(null);
   useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/api/notification_detail/${id}`)
-      .then((res) => setNotificationDetail(res.data))
-      .catch((e) => console.error("Lỗi khi lấy chi tiết", e));
+    const fetchNotificationDetail = async () => {
+      setLoading(true);
+
+      try {
+        const res = await axiosInstance.get(`contacts/${id}`);
+        setNotificationDetail(res.data);
+      } catch (error) {
+        console.log("Lỗi khi lấy chi tiết thông báo!", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNotificationDetail();
   }, [id]);
   if (!notifactionDetail) return <p>Đang tải...</p>;
   return (
@@ -18,16 +27,24 @@ export default function Notification_Details() {
         <i className="fa-solid fa-bell"></i> Chi tiết thông báo
       </h1>
       <div className="flex">
-        <div className="text-start flex-[7] text-lg">
-          <p>
-            <strong>Người gửi: </strong> {notifactionDetail.name} -{" "}
-            {notifactionDetail.email}
-          </p>
-          <p>
-            <strong>Nội dung: </strong>
-            {notifactionDetail.message}
-          </p>
-        </div>
+        {loading ? (
+          <>
+            <p>
+              <i className="fa-solid fa-spinner fa-spin" /> Đang tải...
+            </p>
+          </>
+        ) : (
+          <div className="text-start flex-[7] text-lg">
+            <p>
+              <strong>Người gửi: </strong> {notifactionDetail.name} -{" "}
+              {notifactionDetail.email}
+            </p>
+            <p>
+              <strong>Nội dung: </strong>
+              {notifactionDetail.message}
+            </p>
+          </div>
+        )}
         <div className="flex-[3]">
           <div>
             <img

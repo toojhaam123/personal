@@ -1,10 +1,7 @@
-import axios from "axios";
-import React from "react";
+import axiosInstance from "../../../config/axios";
 function FormUpdatePortfolio({
-  token,
   loading,
   setLoading,
-  editMode,
   setEditMode,
   setStatus,
   portfolioDetail,
@@ -42,27 +39,23 @@ function FormUpdatePortfolio({
 
       // Append các trường khác
       Object.keys(portfolioDetail).forEach((key) => {
-        if (key !== "avatarPort") {
-          formData.append(key, portfolioDetail[key]);
-        }
+        if (key === "avatarPort") return;
+        const value = portfolioDetail[key];
+
+        if (value === null || value === "null" || value === undefined) return; // Để tránh ghi string "null" vào CSDL
+
+        formData.append(key, portfolioDetail[key]);
       });
-      // console.log("Dữ liệu gửi đi:", Object.fromEntries(formData.entries()));
-      const res = await axios.post(
-        `http://127.0.0.1:8000/api/portfolios/${portfolioDetail.id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await axiosInstance.post(
+        `portfolios/${portfolioDetail.id}`,
+        formData
       );
 
       // Cập nhật lại state
       setPortfolioDetail(res.data.data);
       setStatus({
         type: "success",
-        message: "Cập nhật thông tin dự án thành công!",
+        message: res.data.message,
       });
       // console.log("Cập nhật thành công!");
       setEditMode(false);
@@ -75,7 +68,6 @@ function FormUpdatePortfolio({
 
   return (
     <form
-      action=""
       onSubmit={handleSubmitPortfolioUpdate}
       method="post"
       className="p-2 rounded"
@@ -84,7 +76,6 @@ function FormUpdatePortfolio({
         Ảnh dự án
       </label>
       <input
-        key={editMode ? "editOn" : "editOff"} // reset input khi thoát edit
         type="file"
         id="avatarPort"
         name="avatarPort"
@@ -99,7 +90,7 @@ function FormUpdatePortfolio({
         type="text"
         name="title"
         onChange={(e) => handleChangeUpdatePort(e)}
-        value={portfolioDetail.title || ""}
+        value={portfolioDetail?.title || ""}
         id="title"
       />
       <label
@@ -113,7 +104,7 @@ function FormUpdatePortfolio({
         name="description"
         id="description"
         onChange={(e) => handleChangeUpdatePort(e)}
-        value={portfolioDetail.description || ""}
+        value={portfolioDetail?.description || ""}
         rows={10}
         className="text-black bg-white w-full mt-1 text-lg p-2 rounded"
       ></textarea>
@@ -128,7 +119,7 @@ function FormUpdatePortfolio({
         name="link"
         id="link"
         onChange={(e) => handleChangeUpdatePort(e)}
-        value={portfolioDetail.link || ""}
+        value={portfolioDetail?.link || ""}
         className="w-full bg-white text-black mt-1 text-lg rounded p-2"
         type="url"
       />

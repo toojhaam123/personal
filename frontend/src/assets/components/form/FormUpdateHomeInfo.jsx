@@ -1,7 +1,6 @@
 import React from "react";
-import axios from "axios";
+import axiosInstance from "../../../config/axios";
 function FormUpdateHomeInfo({
-  token,
   loading,
   setLoading,
   setEditMode,
@@ -26,16 +25,11 @@ function FormUpdateHomeInfo({
         formData.append("cv_path", file);
       }
 
-      const res = await axios.post(
-        `http://127.0.0.1:8000/api/home/${i.id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post(`home/${i.id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       setEditMode(false);
       setLoading(false);
@@ -47,7 +41,6 @@ function FormUpdateHomeInfo({
       setHomeInfo([res.data.data]);
     } catch (e) {
       console.log("Lỗi khi cập nhật thông tin trang chủ!", e);
-      // alert("Có lỗi khi cập nhập thông tin trang chủ!", e);
     }
   };
 

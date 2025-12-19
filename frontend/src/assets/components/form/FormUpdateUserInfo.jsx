@@ -1,5 +1,4 @@
 import axiosInstance from "../../../config/axios";
-import React from "react";
 
 function FormUpdateUserInfo({
   loading,

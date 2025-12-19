@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useState } from "react";
+import axiosInstance from "../../../config/axios";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +8,7 @@ function PortfolioDetail({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const { id } = useParams();
-  const [portfolioDetail, setPortfolioDetail] = useState({
-    avatarPort: "",
-    title: "",
-    description: "",
-    link: "",
-  });
+  const [portfolioDetail, setPortfolioDetail] = useState(null);
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
   const navigate = useNavigate();
 
@@ -21,9 +16,7 @@ function PortfolioDetail({ token, setStatus }) {
     const fetchPortfolioDetail = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(
-          `http://127.0.0.1:8000/api/portfolios/${id}`
-        );
+        const res = await axiosInstance.get(`portfolios/${id}`);
         setPortfolioDetail(res.data);
       } catch (e) {
         console.log("Lỗi khi lấy chi tiết dự án!", e);
@@ -44,14 +37,7 @@ function PortfolioDetail({ token, setStatus }) {
 
     try {
       setLoading(true);
-      const res = await axios.delete(
-        `http://127.0.0.1:8000/api/portfolios/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.delete(`portfolios/${id}`);
       if (res.data.success) {
         setStatus({
           type: "success",
@@ -115,10 +101,8 @@ function PortfolioDetail({ token, setStatus }) {
           {editMode ? (
             // Form chỉnh sửa dự án
             <FormUpdatePortfolio
-              token={token}
               loading={loading}
               setLoading={setLoading}
-              editMode={editMode}
               setEditMode={setEditMode}
               setStatus={setStatus}
               portfolioDetail={portfolioDetail}
@@ -137,10 +121,10 @@ function PortfolioDetail({ token, setStatus }) {
                 ) : (
                   <>
                     <h1 className="text-3xl font-bolt">
-                      {portfolioDetail.title}
+                      {portfolioDetail?.title}
                     </h1>
                     <p className="text-lg text-start my-2 whitespace-pre-line">
-                      {portfolioDetail.description}
+                      {portfolioDetail?.description}
                     </p>
                   </>
                 )
@@ -161,7 +145,7 @@ function PortfolioDetail({ token, setStatus }) {
             ) : (
               <>
                 <img
-                  src={`http://127.0.0.1:8000/storage/avatarPort/${portfolioDetail.avatarPort}`}
+                  src={`http://127.0.0.1:8000/storage/avatarPort/${portfolioDetail?.avatarPort}`}
                   // src="../../public/1696433119267khunghinh.net.png"
                   alt="Hình ảnh dự án"
                   title="Hình ảnh dự án"

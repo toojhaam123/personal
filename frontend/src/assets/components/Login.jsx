@@ -61,8 +61,8 @@ function Login({ setStatus }) {
         password,
       });
 
-      const token = res.data?.token;
-      const expireAt = Date.now() + 24 * 60 * 60 * 1000;
+      const token = res.data?.token; // Lấy token vừa đăng nhập
+      const expireAt = Date.now() + 24 * 60 * 60 * 1000; // Lấy thời gian đăng nhập là 24h
 
       if (!token) {
         setError("Đăng nhập thất bại, không nhận được token!");

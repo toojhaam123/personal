@@ -1,7 +1,5 @@
-import React from "react";
 import { useState } from "react";
 import FormContact from "../../components/form/FormContact";
-import FormAddContactInfo from "../../components/form/FormAddContactInfo";
 function Contact({ setStatus }) {
   const [loading, setLoading] = useState(false);
 

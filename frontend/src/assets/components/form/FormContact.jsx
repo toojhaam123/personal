@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import axiosInstance from "../../../config/axios";
 
 function FormContact({ loading, setLoading, setStatus }) {
+  const [error, setError] = useState("");
   const [formContact, setFormContact] = useState({
     name: "",
     email: "",
@@ -10,18 +11,32 @@ function FormContact({ loading, setLoading, setStatus }) {
 
   // Xử lý khi nhập thông tin
   const handleChangeFormContact = (e) => {
-    setFormContact({ ...formContact, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormContact({ ...formContact, [name]: value });
   };
 
   // Gửi dữ liệu khi đăng liên hệ
   const handleSubmitContact = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
+    if (!formContact.name.trim()) {
+      setError("Bạn chưa nhập tên");
+      return;
+    }
+    if (!formContact.email.trim()) {
+      setError("Nhập email để chúng tôi liên hệ lại bạn!");
+      return;
+    }
+
+    if (!formContact.message.trim()) {
+      setError("Nhập nội dung tin nhắn của bạn!");
+      return;
+    }
+    setLoading(true);
     try {
       // Gửi Request Post tới API bằng axios
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/contacts", // endpoint API Laravel
+      const res = await axiosInstance.post(
+        "contacts", // endpoint API Laravel
         formContact
       );
 
@@ -29,6 +44,7 @@ function FormContact({ loading, setLoading, setStatus }) {
 
       // Reset form
       setFormContact({ name: "", email: "", message: "" });
+      setError(""); // Nếu ko có lỗi gì
     } catch (e) {
       if (e.response) {
         setStatus({
@@ -44,63 +60,66 @@ function FormContact({ loading, setLoading, setStatus }) {
   };
 
   return (
-    <form onSubmit={handleSubmitContact} method="post">
-      <label htmlFor="name" className="float-start">
-        Họ và tên
-      </label>
-      <input
-        type="text"
-        name="name"
-        value={formContact.name}
-        onChange={(e) => handleChangeFormContact(e)}
-        placeholder="Họ và tên"
-        id="name"
-        className="w-full p-2 border rounded-lg bg-white text-black mb-2"
-      />
-      <label htmlFor="email" className="float-start">
-        Email
-      </label>
-      <input
-        type="email"
-        name="email"
-        value={formContact.email}
-        placeholder="Email"
-        onChange={(e) => handleChangeFormContact(e)}
-        id="email"
-        className="w-full p-2 border rounded-lg bg-white text-black mb-2"
-      />
-      <label htmlFor="content" className="float-start">
-        Nội dung tin nhắn
-      </label>
-      <textarea
-        name="message"
-        onChange={(e) => {
-          handleChangeFormContact(e);
-          e.target.style.height = "auto";
-          e.target.style.height = e.target.style.scrollHeight + "px";
-        }}
-        value={formContact.message}
-        id="message"
-        className="w-full rounded-lg border p-2 bg-white text-black mb-2"
-        placeholder="Nội dung tin nhắn..."
-        rows={5}
-      ></textarea>
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full text-white bg-blue-500 border hover:blue-600 hover:text-white hover:border-white rounded-lg px-4 py-2 transition duration-300"
-      >
-        {loading ? (
-          <>
-            <i className="fa-solid fa-spinner fa-spin"></i> Đang gửi...
-          </>
-        ) : (
-          <>
-            <i className="fa-solid fa-arrow-right"></i> Gửi
-          </>
-        )}
-      </button>
-    </form>
+    <>
+      <p className="text-red-500 text-center">{error}</p>
+      <form onSubmit={handleSubmitContact} method="post">
+        <label htmlFor="name" className="float-start">
+          Họ và tên
+        </label>
+        <input
+          type="text"
+          name="name"
+          value={formContact.name}
+          onChange={(e) => handleChangeFormContact(e)}
+          placeholder="Họ và tên"
+          id="name"
+          className="w-full p-2 border rounded-lg bg-white text-black mb-2"
+        />
+        <label htmlFor="email" className="float-start">
+          Email
+        </label>
+        <input
+          type="email"
+          name="email"
+          value={formContact.email}
+          placeholder="Email"
+          onChange={(e) => handleChangeFormContact(e)}
+          id="email"
+          className="w-full p-2 border rounded-lg bg-white text-black mb-2"
+        />
+        <label htmlFor="message" className="float-start">
+          Nội dung tin nhắn
+        </label>
+        <textarea
+          name="message"
+          onChange={(e) => {
+            handleChangeFormContact(e);
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.style.scrollHeight + "px";
+          }}
+          value={formContact.message}
+          id="message"
+          className="w-full rounded-lg border p-2 bg-white text-black mb-2"
+          placeholder="Nội dung tin nhắn..."
+          rows={5}
+        ></textarea>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full text-white bg-blue-500 border hover:blue-600 hover:text-white hover:border-white rounded-lg px-4 py-2 transition duration-300"
+        >
+          {loading ? (
+            <>
+              <i className="fa-solid fa-spinner fa-spin"></i> Đang gửi...
+            </>
+          ) : (
+            <>
+              <i className="fa-solid fa-arrow-right"></i> Gửi
+            </>
+          )}
+        </button>
+      </form>
+    </>
   );
 }
 

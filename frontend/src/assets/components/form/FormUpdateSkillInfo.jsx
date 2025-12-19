@@ -1,8 +1,6 @@
-import axios from "axios";
-import React from "react";
+import axiosInstance from "../../../config/axios";
 
 function FormUpdateSkillInfo({
-  token,
   loading,
   setLoading,
   setEditMode,
@@ -28,17 +26,9 @@ function FormUpdateSkillInfo({
     setLoading(true);
     try {
       const skill = skillInfo[0];
-      const res = await axios.post(
-        `http://127.0.0.1:8000/api/skills/${skill.id}`,
-        {
-          skill_info: skill.skill_info,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post(`skills/${skill.id}`, {
+        skill_info: skill.skill_info,
+      });
       setEditMode(false);
       setStatus({
         type: "success",

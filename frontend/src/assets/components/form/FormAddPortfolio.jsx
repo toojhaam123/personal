@@ -1,7 +1,6 @@
-import axios from "axios";
+import axiosInstance from "../../../config/axios";
 import { useState } from "react";
 function FormAddPortfolio({
-  token,
   loading,
   setLoading,
   addMode,
@@ -42,28 +41,17 @@ function FormAddPortfolio({
         data.append(key, formData[key]);
       });
 
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/portfolios",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      if (res.data.success) {
-        setStatus({ type: "success", message: res.data.message });
-        setFormData({
-          avatarPort: null,
-          title: "",
-          description: "",
-          link: "",
-        });
-        setAddMode(false);
-        // console.log("Dữ liệu nhận đc: ", res.data);
-        setPort((prev) => [...prev, res.data]);
-      }
+      const res = await axiosInstance.post("portfolios", data);
+      setStatus({ type: "success", message: res.data.message });
+      // reset lại form
+      setFormData({
+        avatarPort: null,
+        title: "",
+        description: "",
+        link: "",
+      });
+      setAddMode(false);
+      setPort((prev) => [...prev, res.data]);
     } catch (e) {
       console.error("Lỗi khi gửi dự án: ", e);
     } finally {

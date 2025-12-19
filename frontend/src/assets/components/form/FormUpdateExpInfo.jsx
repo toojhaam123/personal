@@ -1,7 +1,6 @@
-import axios from "axios";
+import axiosInstance from "../../../config/axios";
 
 function FormUpdateExpInfo({
-  token,
   loading,
   setLoading,
   setEditMode,
@@ -28,18 +27,9 @@ function FormUpdateExpInfo({
 
     try {
       const exp = expInfo[0];
-      const res = await axios.post(
-        `http://127.0.0.1:8000/api/experiences/${exp.id}`,
-        {
-          exp_info: exp.exp_info,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      const res = await axiosInstance.post(`experiences/${exp.id}`, {
+        exp_info: exp.exp_info,
+      });
       setEditMode(false);
       setStatus({
         type: "success",

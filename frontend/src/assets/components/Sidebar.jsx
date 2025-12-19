@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Logout from "./Logout";
-import { Form, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 import FormAddUserInfo from "./form/FormAddUserInfo";
 import FormUpdateUserInfo from "./form/FormUpdateUserInfo";
@@ -134,7 +134,6 @@ function Sidebar({ token, setStatus }) {
       ) : // {/* Nếu ở chế độ chỉnh sửa thì hiện thị form  */}
       editMode ? (
         <FormUpdateUserInfo
-          token={token}
           loading={loading}
           setLoading={setLoading}
           setStatus={setStatus}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../../config/axios";
 import FormAddSkillInfo from "../form/FormAddSkillInfo";
 import FormUpdateSkillInfo from "../form/FormUpdateSkillInfo";
 function Skill({ token, setStatus }) {
@@ -12,9 +12,8 @@ function Skill({ token, setStatus }) {
     const fetchSkillInfo = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://127.0.0.1:8000/api/skills");
+        const res = await axiosInstance.get("skills");
         setSkillInfo(Array.isArray(res.data) ? res.data : [res.data]);
-        // console.log("Thông tin kỹ năng: ", res.data);
       } catch (e) {
         console.log("Lỗi lấy thông tin kỹ năng: ", e);
       } finally {
@@ -30,11 +29,7 @@ function Skill({ token, setStatus }) {
     setLoading(true);
 
     try {
-      const res = await axios.delete(`http://127.0.0.1:8000/api/skills/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axiosInstance.delete(`skills/${id}`);
 
       setSkillInfo((prev) => prev.filter((item) => item.id != id));
       setStatus({
@@ -125,7 +120,6 @@ function Skill({ token, setStatus }) {
           {/* Hiện thị form thêm thông tin kỹ năng */}
           {addMode ? (
             <FormAddSkillInfo
-              token={token}
               setAddMode={setAddMode}
               setStatus={setStatus}
               setLoading={setLoading}
@@ -133,9 +127,8 @@ function Skill({ token, setStatus }) {
               setSkillInfo={setSkillInfo}
             ></FormAddSkillInfo>
           ) : editMode ? (
-            // Chế độ chỉnh sửa
+            // Form chỉnh sửa
             <FormUpdateSkillInfo
-              token={token}
               loading={loading}
               setLoading={setLoading}
               setEditMode={setEditMode}
