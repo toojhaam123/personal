@@ -99,11 +99,13 @@ function FormAddUserInfo({
       method="post"
       encType="multipart/form-data"
     >
-      <img
-        src={previewImage}
-        alt="Avatar"
-        className="w-32 h-32 rounded-full mx-auto mb-4"
-      />
+      <div className="w-32 h-32 rounded-full bg-gray-400 mx-auto justify-center items-center flex overflow-hidden">
+        {previewImage ? (
+          <img src={previewImage} alt="Avatar" className="mx-auto" />
+        ) : (
+          <p className="text-gray-100 mx-auto">Avatar</p>
+        )}
+      </div>
 
       <label htmlFor="avatar" className="float-start">
         Chọn ảnh

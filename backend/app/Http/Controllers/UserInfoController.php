@@ -9,140 +9,119 @@ use Illuminate\Support\Facades\Storage;
 
 class UserInfoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $userInfo = UserInfo::all();
-        return response()->json($userInfo);
+        return response()->json(UserInfo::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function store(Request $request)
     {
-        // validate dữ liệu
-        $validated = $request->validate([
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
-            'fullname' => 'nullable|string|max:255',
+        $rules = [
+            "fullname" => 'nullable|string|max:255',
             'job_title' => 'nullable|string|max:255',
             'birth' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'link_address' => 'nullable|string|max:255',
-            'email' => 'nullable|string|email',
+            'email' => 'nullable|email',
             'phone' => 'nullable|string|max:255',
             'facebook' => 'nullable|string|max:255',
             'link_facebook' => 'nullable|string|max:255',
             'github' => 'nullable|string|max:255',
             'link_github' => 'nullable|string|max:255',
-        ]);
+        ];
 
-        // nếu có files
+        // nếu có file ảnh thì xử lý 
+        if ($request->hasFile('avatar')) {
+            $relues['avatar'] = 'image|mimes:jpg,jpeg,png|max:5120';
+        }
+
+        // validate request 
+        $validated = $request->validate($rules);
+
+        // Xử lý upload file nếu có 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('avatars', $fileName, 'public');
             $validated['avatar'] = $fileName;
         }
+        // Tạo bản ghi trong DB
+        $userInfo = UserInfo::create($validated);
 
-        $userInfo = UserInfo::create([
-            'avatar' => $validated['avatar'],
-            'fullname' => $validated['fullname'],
-            'job_title' => $validated['job_title'],
-            'birth' => $validated['birth'],
-            'address' => $validated['address'],
-            'link_address' => $validated['link_address'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'facebook' => $validated['facebook'],
-            'link_facebook' => $validated['link_facebook'],
-            'github' => $validated['github'],
-            'link_github' => $validated['link_github'],
-        ]);
         return response()->json([
+            'success' => true,
             'message' => "Thêm thông tin người dùng thành công!",
             'data' => $userInfo,
-        ]);
+        ], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Cập nhật thông tin người dùng
     public function update(Request $request, $id)
     {
+        // Tìm bảng ghi cần cập nhập theo id 
+        $userInfo = UserInfo::findOrFail($id);
 
-        try {
-            // Tìm bảng ghi cần cập nhập theo id 
-            $userInfo = UserInfo::findOrFail($id);
+        $rules = [
+            "fullname" => 'nullable|string|max:255',
+            'job_title' => 'nullable|string|max:255',
+            'birth' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'link_address' => 'nullable|string|max:255',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string|max:255',
+            'facebook' => 'nullable|string|max:255',
+            'link_facebook' => 'nullable|string|max:255',
+            'github' => 'nullable|string|max:255',
+            'link_github' => 'nullable|string|max:255',
+        ];
 
-            // Validate dữ liệu
-            $validated = $request->validate([
-                'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
-                'fullname' => 'nullable|string|max:255',
-                'job_title' => 'nullable|string|max:255',
-                'birth' => 'nullable|string|max:255',
-                'address' => 'nullable|string|max:255',
-                'link_address' => 'nullable|string|max:255',
-                'email' => 'nullable|string|email',
-                'phone' => 'nullable|string|max:255',
-                'facebook' => 'nullable|string|max:255',
-                'link_facebook' => 'nullable|string|max:255',
-                'github' => 'nullable|string|max:255',
-                'link_github' => 'nullable|string|max:255',
-            ]);
+        // nếu có file ảnh thì xử lý 
+        if ($request->hasFile('avatar')) {
+            $relues['avatar'] = 'image|mimes:jpg,jpeg,png|max:5120';
+        }
 
-            // nếu có files
+        // validate request 
+        $validated = $request->validate($rules);
+
+        // xử lý ảnh mới nếu có 
+        if ($request->hasFile('avatar')) {
+            // Xóa avatar cũ 
+            if ($userInfo->avatar && Storage::disk('public')->exists('avatars/' . $userInfo->avatar)) {
+                Storage::disk('public')->delete('avatars/' . $userInfo->avatar);
+            }
+
+            // Lưu avatar mới 
             if ($request->hasFile('avatar')) {
-                // Xóa ảnh cũ nếu có 
-                if ($userInfo->avatar && file_exists(storage_path('app/public/avatars/' . $userInfo->avatar))) {
-                    unlink(storage_path('app/public/avatars/' . $userInfo->avatar));
-                }
-
                 $file = $request->file('avatar');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('avatars', $fileName, 'public');
                 $validated['avatar'] = $fileName;
             }
-            // Cập nhật dữ liệu
-            $userInfo->update($validated);
-
-            // Trả về response 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cập nhập thông tin thành công rồi!',
-                'data' => $userInfo,
-            ], 200);
-        } catch (\Throwable $e) {
-            // Trả về lỗi
-            return response()->json([
-                'success' => false,
-                'message' => 'Cập nhật thất bại!',
-                'error' => $e->getMessage(),
-            ], 500);
         }
+
+        // update bản ghi 
+        $userInfo->update($validated);
+
+        // trả về kết quả 
+        return response()->json([
+            'success' => true,
+            'message' => "Cập nhật thông tin người dùng thành công!",
+            'data' => $userInfo,
+        ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Xóa 
     public function destroy($id)
     {
         // Tìm bản ghi cần xóa 
         $userInfo = UserInfo::findOrFail($id);
 
-        if (!$userInfo) {
-            return response()->json([
-                'success' => false,
-                'message' => "Không tìm thấy ID người dùng!",
-            ]);
-        }
         // Xóa ảnh avatar nếu có
         if (!empty($userInfo->avatar)) {
-            $filePath = str_replace('/storage', 'public', $userInfo->avatar);
-            if (Storage::exists($filePath)) {
-                Storage::delete($filePath);
+            $path = 'avatars/' . $userInfo->avatar;
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
             }
         }
 
@@ -154,7 +133,8 @@ class UserInfoController extends Controller
             [
                 'success' => true,
                 'message' => "Xóa thông tin người dùng thành công!",
-            ]
+            ],
+            200
         );
     }
 }

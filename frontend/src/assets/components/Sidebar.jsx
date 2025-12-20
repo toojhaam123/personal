@@ -153,13 +153,22 @@ function Sidebar({ token, setStatus }) {
               tin!
             </p>
           ) : userInfo.length > 0 ? (
-            userInfo.map((item) => (
-              <div key={item.id} className="mt-4 space-y-2 text-sm text-start">
-                <img
-                  src={`http://127.0.0.1:8000/storage/avatars/${item.avatar}`}
-                  alt="Avatar"
-                  className="w-32 h-32 rounded-full mx-auto mb-4"
-                />
+            userInfo.map((item, index) => (
+              <div
+                key={item.id || index}
+                className="mt-4 space-y-2 text-sm text-start"
+              >
+                <div className="w-32 h-32 rounded-full mx-auto flex jusify-center items-center bg-gray-400 overflow-hidden">
+                  {item.avatar ? (
+                    <img
+                      src={`http://127.0.0.1:8000/storage/avatars/${item.avatar}`}
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <p className="text-gray-100 mx-auto">Avatar</p>
+                  )}
+                </div>
                 <h2 className="text-xl font-bold text-center">
                   {item.fullname}
                 </h2>

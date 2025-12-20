@@ -84,19 +84,23 @@ function FormUpdateUserInfo({
             onSubmit={(e) => handleUpdateUserInfo(e, item.id)}
             method="post"
           >
-            {previewImage[index] ? (
-              <img
-                src={previewImage[index]}
-                alt="Avatar"
-                className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-              />
-            ) : (
-              <img
-                src={`http://127.0.0.1:8000/storage/avatars/${item.avatar}`}
-                alt="Avatar"
-                className="w-32 h-32 rounded-full mx-auto mb-4"
-              />
-            )}
+            <div className="w-32 h-32 rounded-full flex justufy-center items-center border overflow-hidden mx-auto bg-gray-400">
+              {previewImage[index] ? (
+                <img
+                  src={previewImage[index]}
+                  alt="Avatar"
+                  className="mx-auto object-cover"
+                />
+              ) : item.avatar ? (
+                <img
+                  src={`http://127.0.0.1:8000/storage/avatars/${item.avatar}`}
+                  alt="Avatar"
+                  className="mx-auto object-cover"
+                />
+              ) : (
+                <p className="mx-auto text-gray-100">Avatar</p>
+              )}
+            </div>
             <label htmlFor="avatar" className="float-start">
               Chọn ảnh
             </label>

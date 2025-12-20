@@ -56,7 +56,7 @@ function App() {
       <div className="status">
         {status && (
           <div
-            className={`mb-2 pl-2 rounded-lg transition-opacity duration-100 border flex justify-between items-center
+            className={`mb-2 pl-4 rounded-lg transition-opacity duration-100 border flex justify-between items-center
             ${visible ? "opacity-100" : "opacity-0"} ${
               status.type === "success"
                 ? "bg-green-100 text-green-700 font-bold"
