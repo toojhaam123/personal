@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('avatarPort')->nullable();
             $table->string('title')->nullable();
             $table->text('description')->nullable();

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +13,7 @@ class UserInfoController extends Controller
         return response()->json(UserInfo::all());
     }
 
-
+    // Thêm thông tin người dùng
     public function store(Request $request)
     {
         $rules = [
@@ -33,11 +32,14 @@ class UserInfoController extends Controller
 
         // nếu có file ảnh thì xử lý 
         if ($request->hasFile('avatar')) {
-            $relues['avatar'] = 'image|mimes:jpg,jpeg,png|max:5120';
+            $rules['avatar'] = 'nullable|image|mimes:jpg,jpeg,png|max:5120';
         }
 
         // validate request 
         $validated = $request->validate($rules);
+
+        // Gắn user_id từ token 
+        $validated['user_id'] = $request->user()->id;
 
         // Xử lý upload file nếu có 
         if ($request->hasFile('avatar')) {
@@ -59,8 +61,10 @@ class UserInfoController extends Controller
     // Cập nhật thông tin người dùng
     public function update(Request $request, $id)
     {
+        $userId = $request->user()->id;
         // Tìm bảng ghi cần cập nhập theo id 
-        $userInfo = UserInfo::findOrFail($id);
+        $userInfo = UserInfo::where('id', $id)->where('user_id', $userId)->firstOrFail();
+
 
         $rules = [
             "fullname" => 'nullable|string|max:255',
@@ -78,7 +82,7 @@ class UserInfoController extends Controller
 
         // nếu có file ảnh thì xử lý 
         if ($request->hasFile('avatar')) {
-            $relues['avatar'] = 'image|mimes:jpg,jpeg,png|max:5120';
+            $rules['avatar'] = 'nullable|image|mimes:jpg,jpeg,png|max:5120';
         }
 
         // validate request 
@@ -112,10 +116,12 @@ class UserInfoController extends Controller
     }
 
     // Xóa 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $userId = $request->user()->id;
         // Tìm bản ghi cần xóa 
-        $userInfo = UserInfo::findOrFail($id);
+        $userInfo = UserInfo::where('id', $id)->where('user_id', $userId)->firstOrFail();
+
 
         // Xóa ảnh avatar nếu có
         if (!empty($userInfo->avatar)) {

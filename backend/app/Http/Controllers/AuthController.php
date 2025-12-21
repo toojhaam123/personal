@@ -20,7 +20,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        $user = User::create([
+        User::create([
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -62,7 +62,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token', ['user'])->plainTextToken;
 
         return response()->json([
-            'message' => 'Đăng nhập thành công!',
+            'message' => 'Đăng nhập thành công userId',
             'token' => $token,
         ], 200);
     }

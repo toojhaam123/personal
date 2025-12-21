@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_infos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('avatar')->nullable();
             $table->string('fullname')->nullable();
             $table->string('job_title')->nullable();

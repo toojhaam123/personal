@@ -42,7 +42,7 @@ Route::prefix('auth')->group(function () {
 Route::prefix('user-info')->group(function () {
     Route::get('/', [UserInfoController::class, 'index']);
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
         Route::post('/', [UserInfoController::class, 'store']);
         Route::post('{id}', [UserInfoController::class, 'update']);
         Route::delete('{id}', [UserInfoController::class, 'destroy']);
