@@ -9,7 +9,7 @@ import {
 import Navbar from "./assets/components/Navbar";
 import Sidebar from "./assets/components/Sidebar";
 import Login from "./assets/components/Login";
-// import Register from "./assets/components/Register";
+import Register from "./assets/components/Register";
 import ProtectRoute from "./assets/components/ProtectRoute";
 import useStatus from "./hooks/useStatus";
 // Các pages
@@ -131,7 +131,7 @@ function App() {
                 path="/login"
                 element={<Login setStatus={setStatus} />}
               ></Route>
-              {/* <Route path="/register" element={<Register />}></Route> */}
+              <Route path="/register" element={<Register />}></Route>
               <Route
                 path="/notification_detail/:id"
                 element={

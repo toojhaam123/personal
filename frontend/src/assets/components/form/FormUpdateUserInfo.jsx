@@ -5,15 +5,15 @@ function FormUpdateUserInfo({
   setLoading,
   setStatus,
   setEditMode,
-  userInfo,
-  setUserInfo,
+  user,
+  setUser,
   previewImage,
   setPreviewImage,
 }) {
   // Hàm xử lý thay đổi khi nhập cập nhập thông tin
   const handleChangeUdateUserInfo = (e, index) => {
     const { name, value, files } = e.target;
-    setUserInfo((prev) => {
+    setUser((prev) => {
       const updated = [...prev];
       const file = files && files.length > 0 ? files[0] : value;
       updated[index][name] = file || value;
@@ -35,7 +35,7 @@ function FormUpdateUserInfo({
     setLoading(true);
 
     try {
-      const userToUpdate = userInfo.find((u) => u.id == id);
+      const userToUpdate = setUser.find((u) => u.id == id);
       const formData = new FormData();
 
       // Duyệt tất cả các key trong userToUpdate để gửi
@@ -51,9 +51,9 @@ function FormUpdateUserInfo({
         }
       });
 
-      const res = await axiosInstance.post(`user-info/${id}`, formData);
+      const res = await axiosInstance.post("auth/users", formData);
       // cập nhập ngay ảnh mới
-      setUserInfo((prev) =>
+      setUser((prev) =>
         prev.map((u) =>
           u.id === id ? { ...u, avatar: res.data.data.avatar } : u
         )
@@ -77,8 +77,8 @@ function FormUpdateUserInfo({
 
   return (
     <>
-      {userInfo.length !== 0 &&
-        userInfo.map((item, index) => (
+      {user.length !== 0 &&
+        user?.map((item, index) => (
           <form
             key={item.id || index}
             onSubmit={(e) => handleUpdateUserInfo(e, item.id)}

@@ -175,11 +175,11 @@ function Home({ token, setStatus }) {
           )}
         </div>
         <div className="flex-[4]">
-          {userInfo[0]?.avatar ? (
+          {userInfo?.avatar ? (
             <img
               src={`http://127.0.0.1:8000/storage/avatars/${userInfo[0].avatar}`}
               alt="Avatar"
-              className="w-full h-50 rounded-full mx-auto mb-4 object-cover"
+              className="w-full h-full rounded-full mx-auto mb-4 object-cover"
             />
           ) : (
             <p className="mx-auto text-gray-100">Avatar</p>

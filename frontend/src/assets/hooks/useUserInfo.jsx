@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 
 const useUserInfo = () => {
   // Lấy thông tin người dùng từ API về hiện thị
-  const [userInfo, setUserInfo] = useState([]);
+  const [user, setUser] = useState([]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/user-info");
-        setUserInfo(Array.isArray(res.data) ? res.data : [res.data]);
-        // console.log("Dữ liệu nhận đc:", res.data);
+        const res = await axiosInstance.get("auth/users");
+        setUser([res.data.user]);
       } catch (e) {
-        console.log("Lỗi khi lấy dữ liệu", e);
+        console.log("Lỗi khi lấy thông tin người dùng!", e);
       }
     };
     fetchUserInfo();
   }, []);
-  return { userInfo };
+  return { user, setUser };
 };
 
 export default useUserInfo;

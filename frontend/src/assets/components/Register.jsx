@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance from "../../config/axios";
+import axios from "axios";
 import { NavLink, Navigate } from "react-router-dom";
 function Register() {
   const [username, setUserName] = useState("");
@@ -11,7 +11,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axiosInstance.post("register", {
+      await axios.post("http://127.0.0.1:8000/api/auth/register", {
         username,
         email,
         password,
@@ -19,7 +19,7 @@ function Register() {
       alert("Đã đăng ký thành công! Quay lại đăng nhập!");
       Navigate("/login");
     } catch (error) {
-      setError(error.response?.data?.message || "Lỗi đăng ký");
+      setError(error.response?.data?.message);
     }
   };
   return (

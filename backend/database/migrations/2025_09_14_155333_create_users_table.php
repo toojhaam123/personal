@@ -16,6 +16,17 @@ return new class extends Migration
             $table->string('username');
             $table->string('email')->uniqid();
             $table->string('password');
+            $table->string('avatar')->nullable();
+            $table->string('fullname')->nullable();
+            $table->string('job_title')->nullable();
+            $table->string('birth')->nullable();
+            $table->string('address')->nullable();
+            $table->string('link_address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('link_facebook')->nullable();
+            $table->string('github')->nullable();
+            $table->string('link_github')->nullable();
             $table->timestamps();
         });
     }
@@ -23,8 +34,22 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn([
+                'avatar',
+                'fullname',
+                'job_title',
+                'birth',
+                'address',
+                'link_address',
+                'phone',
+                'facebook',
+                'link_facebook',
+                'github',
+                'link_github',
+            ]);
+        });
     }
 };

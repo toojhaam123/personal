@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import axiosInstance from "../../config/axios";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login({ setStatus }) {
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ function Login({ setStatus }) {
     setLoading(true);
     try {
       //   Gửi request đăng nhập
-      const res = await axiosInstance.post("auth/login", {
+      const res = await axios.post("http://127.0.0.1:8000/api/auth/login", {
         email,
         password,
       });
@@ -81,11 +81,14 @@ function Login({ setStatus }) {
       const status = error.response?.status;
 
       if (status === 401) {
-        setError("Thông tị đăng nhập không chính xác");
+        setError("Thông tin đăng nhập không chính xác");
+        return;
       } else if (status === 429) {
         setError("Đăng nhập quá nhiều lần, thử lại sau!");
+        return;
       } else {
         setError("Lỗi hệ thống, thử lại sau nhé!");
+        return;
       }
     } finally {
       setLoading(false);
@@ -136,9 +139,9 @@ function Login({ setStatus }) {
           )}
         </>
       </button>
-      {/* <p className="mt-5">
+      <p className="mt-5">
         <NavLink to="/register">Đăng ký tài khoản</NavLink>
-      </p> */}
+      </p>
     </form>
   );
 }

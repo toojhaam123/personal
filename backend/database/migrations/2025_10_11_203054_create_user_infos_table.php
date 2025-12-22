@@ -11,23 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_infos', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('avatar')->nullable();
-            $table->string('fullname')->nullable();
-            $table->string('job_title')->nullable();
-            $table->string('birth')->nullable();
-            $table->string('address')->nullable();
-            $table->string('link_address')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('facebook')->nullable();
-            $table->string('link_facebook')->nullable();
-            $table->string('github')->nullable();
-            $table->string('link_github')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('user_infos', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+        //     $table->string('avatar')->nullable();
+        //     $table->string('fullname')->nullable();
+        //     $table->string('job_title')->nullable();
+        //     $table->string('birth')->nullable();
+        //     $table->string('address')->nullable();
+        //     $table->string('link_address')->nullable();
+        //     $table->string('email')->nullable();
+        //     $table->string('phone')->nullable();
+        //     $table->string('facebook')->nullable();
+        //     $table->string('link_facebook')->nullable();
+        //     $table->string('github')->nullable();
+        //     $table->string('link_github')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
