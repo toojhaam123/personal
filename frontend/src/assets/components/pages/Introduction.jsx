@@ -1,13 +1,17 @@
 import axiosInstance from "../../../config/axios";
 import { useEffect, useState } from "react";
 import useUserInfo from "../../hooks/useUserInfo";
-import FormAddHomeInfo from "../../components/form/FormAddHomeInfo";
-import FormUpdateHomeInfo from "../../components/form/FormUpdateHomeInfo";
+import useUsers from "../../hooks/useUsers";
+import FormAddHomeInfo from "../form/FormAddHomeInfo";
+import FormUpdateHomeInfo from "../form/FormUpdateHomeInfo";
 function Home({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const { userInfo } = useUserInfo(); // Thông tin người dùng
+  const { users } = useUsers();
+
+  console.log("Tất cả user: ", users);
 
   // Lấy thông tin trang chủ từ API
   const [homeInfo, setHomeInfo] = useState([]);
@@ -170,7 +174,7 @@ function Home({ token, setStatus }) {
                       <i className="fa-regular fa-file"></i> Xem CV
                     </a>
                   )
-                : !loading && <p>Không có thông tin trang chủ nào!</p>}
+                : !loading && <p>Không có thông tin giới thiệu nào!</p>}
             </div>
           )}
         </div>

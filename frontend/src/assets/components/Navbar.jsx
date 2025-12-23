@@ -5,12 +5,12 @@ function Navbar({ token }) {
   return (
     <nav className="flex flex-col text-start gap-6  pb-2">
       <NavLink
-        to="/"
+        to="/introductions"
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
         }
       >
-        <i className="fas fa-home"></i> Trang chủ
+        <i class="fa-solid fa-circle-info"></i> Giới thiệu
       </NavLink>
       <NavLink
         to="/experience"

@@ -6,6 +6,7 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
+import Home from "./assets/components/Home";
 import Navbar from "./assets/components/Navbar";
 import Sidebar from "./assets/components/Sidebar";
 import Login from "./assets/components/Login";
@@ -13,7 +14,7 @@ import Register from "./assets/components/Register";
 import ProtectRoute from "./assets/components/ProtectRoute";
 import useStatus from "./hooks/useStatus";
 // Các pages
-import Home from "./assets/components/pages/Home";
+import Introduction from "./assets/components/pages/Introduction";
 import Experience from "./assets/components/pages/Experience";
 import Skill from "./assets/components/pages/Skill";
 import Education from "./assets/components/pages/Education";
@@ -75,6 +76,10 @@ function App() {
           </div>
         )}
       </div>
+      <div>
+        <p>Home</p>
+        <Home></Home>
+      </div>
       <div className="flex h-screen">
         <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
           <Sidebar token={token} setStatus={setStatus} />
@@ -86,8 +91,8 @@ function App() {
           <div className="flex-[12] overflow-y-auto scroll-hidden p-1">
             <Routes>
               <Route
-                path="/"
-                element={<Home token={token} setStatus={setStatus} />}
+                path="/introductions"
+                element={<Introduction token={token} setStatus={setStatus} />}
               />
               <Route
                 path="/experience"

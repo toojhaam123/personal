@@ -186,10 +186,8 @@ class AuthController extends Controller
         );
     }
 
-    public function index(Request $request)
+    public function user(Request $request)
     {
-        return response()->json([
-            'user' => $request->user(),
-        ]);
+        return response()->json($request->user());
     }
 }
