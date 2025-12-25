@@ -32,7 +32,7 @@ function Notification() {
       <div className="flex">
         {loading ? (
           <p>
-            <i class="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui lòng
+            <i className="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui lòng
             chờ!
           </p>
         ) : notifaction.length === 0 ? (

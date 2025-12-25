@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 // import FormAddUserInfo from "./form/FormAddUserInfo";
 import FormUpdateUserInfo from "./form/FormUpdateUserInfo";
-import useUserInfo from "../hooks/useUserInfo";
+import useUsers from "../hooks/useUsers";
 import axiosInstance from "../../config/axios";
 function Sidebar({ token, setStatus }) {
   const [editMode, setEditMode] = useState(false);
@@ -13,8 +13,8 @@ function Sidebar({ token, setStatus }) {
   const [previewImage, setPreviewImage] = useState({});
 
   // Lấy thông tin người dùng từ API về hiện thị
-  const { user, setUser } = useUserInfo(); // Thông tin người dùng
-  console.log("user, ", user);
+  const { user, setUser } = useUsers(); // Thông tin người dùng
+  // console.log("user, ", user);
 
   // Hàm xử lý xóa thông tin người dùng
   const handleDeleteUserInfo = async (id) => {
@@ -40,7 +40,7 @@ function Sidebar({ token, setStatus }) {
   };
 
   return (
-    <div className="text-center max-vh-100 flex flex-col">
+    <div className="text-center max-vh-100 flex flex-col border">
       <div className="flex gap-2 text-center justify-center">
         {/* Nút thêm thông tin người dùng */}
         {token && (!user || user.length === 0) ? (
@@ -124,7 +124,7 @@ function Sidebar({ token, setStatus }) {
                 <i className="fa-solid fa-spinner fa-spin"></i> Đăng tải thông
                 tin!
               </p>
-            ) : user.length > 0 ? (
+            ) : user?.length > 0 ? (
               user?.map((item, index) => (
                 <div
                   key={item?.id || index}
@@ -197,7 +197,6 @@ function Sidebar({ token, setStatus }) {
             ) : (
               <p className="border-b-2">Không có thông tin người dùng</p>
             )}
-
             <div className="mt-5">
               {!token && (
                 <div className="login">

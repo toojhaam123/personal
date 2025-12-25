@@ -35,25 +35,25 @@ function Register() {
         placeholder="Tên người dùng"
         value={username}
         onChange={(e) => setUserName(e.target.value)}
-        className="w-full p-2 border mb-2 bg-gray-700"
+        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
       />
       <input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-2 border mb-2 bg-gray-700"
+        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
       />
       <input
         type="password"
         placeholder="Mật khẩu"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="w-full p-2 border mb-2 bg-gray-700"
+        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
       />
       <button
         type="submit"
-        className="w-full bg-green-600 text-white py-2 rounded"
+        className="w-full bg-green-600 text-white py-2 rounded-lg mt-5"
       >
         Đăng ký
       </button>

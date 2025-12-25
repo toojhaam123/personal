@@ -25,9 +25,9 @@ Route::prefix('auth')->group(function () {
 });
 
 // Lấy tất cả người dùng
-Route::prefix('users')->group(function () {
-    Route::get("/", [UserController::class, 'index']);
-});
+Route::get("users", [UserController::class, 'index']);
+// Route::prefix('users')->group(function () {
+// });
 
 // Home 
 Route::prefix('home')->group(function () {

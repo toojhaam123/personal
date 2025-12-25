@@ -1,6 +1,5 @@
 import axiosInstance from "../../../config/axios";
 import { useEffect, useState } from "react";
-import useUserInfo from "../../hooks/useUserInfo";
 import useUsers from "../../hooks/useUsers";
 import FormAddHomeInfo from "../form/FormAddHomeInfo";
 import FormUpdateHomeInfo from "../form/FormUpdateHomeInfo";
@@ -8,10 +7,7 @@ function Home({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
-  const { userInfo } = useUserInfo(); // Thông tin người dùng
-  const { users } = useUsers();
-
-  console.log("Tất cả user: ", users);
+  const { userInfo } = useUsers(); // Thông tin người dùng
 
   // Lấy thông tin trang chủ từ API
   const [homeInfo, setHomeInfo] = useState([]);

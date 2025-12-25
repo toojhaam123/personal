@@ -99,7 +99,7 @@ function Login({ setStatus }) {
     <form
       action=""
       method="POST"
-      className="p-6 w-[100%] border rounded-md mx-auto my-auto p-4 w-80"
+      className="p-6 border rounded-md mx-auto my-auto p-4 w-80"
       onSubmit={handleLogin}
     >
       <h1 className="text-2xl font-bold mb-4">Đăng nhập</h1>
@@ -118,12 +118,12 @@ function Login({ setStatus }) {
         name="password"
         value={password}
         onChange={handleChangeLogin}
-        className="w-full rounded-lg p-2 border mb-2 bg-gray-700"
+        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
       />
       <button
         type="submit"
         disabled={isDisabled}
-        className={`w-full text-white py-2 px-4 rounded mt-5 ${
+        className={`w-full text-white py-2 px-4 rounded-lg mt-5 ${
           isDisabled
             ? "bg-blue-200 cursor-not-allowed text-black"
             : "bg-blue-600"
@@ -139,7 +139,7 @@ function Login({ setStatus }) {
           )}
         </>
       </button>
-      <p className="mt-5">
+      <p>
         <NavLink to="/register">Đăng ký tài khoản</NavLink>
       </p>
     </form>

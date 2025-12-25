@@ -1,19 +1,21 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-
+import { NavLink, useParams } from "react-router-dom";
 function Navbar({ token }) {
+  const { username } = useParams();
+  const base = `/${username}`;
+
   return (
     <nav className="flex flex-col text-start gap-6  pb-2">
       <NavLink
-        to="/introductions"
+        to={base}
+        end
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
         }
       >
-        <i class="fa-solid fa-circle-info"></i> Giới thiệu
+        <i className="fa-solid fa-circle-info"></i> Giới thiệu
       </NavLink>
       <NavLink
-        to="/experience"
+        to={`${base}/experience`}
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
         }
@@ -21,7 +23,7 @@ function Navbar({ token }) {
         <i className="fas fa-briefcase"></i> Kinh nghiệm
       </NavLink>
       <NavLink
-        to="/skill"
+        to={`${base}/skill`}
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
         }
@@ -29,7 +31,7 @@ function Navbar({ token }) {
         <i className="fas fa-code"></i> Kỹ năng
       </NavLink>
       <NavLink
-        to="/education"
+        to={`${base}/education`}
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
         }
@@ -37,7 +39,7 @@ function Navbar({ token }) {
         <i className="fas fa-graduation-cap"></i> Học vấn
       </NavLink>
       <NavLink
-        to="/portfolio"
+        to={`${base}/portfolio`}
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
         }
@@ -45,7 +47,7 @@ function Navbar({ token }) {
         <i className="fas fa-folder-open"></i> Dự án
       </NavLink>
       <NavLink
-        to="/contact"
+        to={`${base}/contact`}
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
         }
@@ -54,7 +56,7 @@ function Navbar({ token }) {
       </NavLink>
       {token && (
         <NavLink
-          to="/notifications"
+          to={`${base}/notifications`}
           className={({ isActive }) =>
             `hover:text-blue-600 ${isActive ? "text-blue-600" : ""}`
           }

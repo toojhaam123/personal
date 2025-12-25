@@ -9,6 +9,15 @@
   align-items: center;
 }
 
+.home {
+  min-height: 90vh;
+  min-width: 95vw;
+}
+.profile {
+  position: fixed;
+  left: 4rem;
+  bottom: 4rem;
+}
 .logo {
   height: 12em;
   width: 12em;
