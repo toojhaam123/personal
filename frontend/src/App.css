@@ -10,13 +10,14 @@
 }
 
 .home {
+  position: relative;
   min-height: 90vh;
   min-width: 95vw;
 }
 .profile {
-  position: fixed;
-  left: 4rem;
-  bottom: 4rem;
+  position: absolute;
+  left: 2rem;
+  bottom: 1rem;
 }
 .logo {
   height: 12em;
@@ -58,4 +59,5 @@
   width: auto;
   top: 0;
   position: fixed;
+  z-index: 1000;
 }

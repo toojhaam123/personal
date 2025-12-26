@@ -33,7 +33,7 @@ function Logout({ setStatus }) {
   return (
     <button
       onClick={handleLogout}
-      className="bg-red-600 text-white py-2 px-4 rounded mt-5"
+      className="w-100 bg-red-600 text-white rounded duration-500 hover:bg-red-700 transition"
     >
       <i className="fa-solid fa-right-from-bracket"></i> Đăng xuất
     </button>

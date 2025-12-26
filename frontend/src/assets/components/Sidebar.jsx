@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Logout from "./Logout";
-import { NavLink } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 // import FormAddUserInfo from "./form/FormAddUserInfo";
 import FormUpdateUserInfo from "./form/FormUpdateUserInfo";
@@ -8,13 +6,12 @@ import useUsers from "../hooks/useUsers";
 import axiosInstance from "../../config/axios";
 function Sidebar({ token, setStatus }) {
   const [editMode, setEditMode] = useState(false);
-  const [addMode, setAddMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState({});
 
   // Lấy thông tin người dùng từ API về hiện thị
   const { user, setUser } = useUsers(); // Thông tin người dùng
-  // console.log("user, ", user);
+  console.log("user, ", user);
 
   // Hàm xử lý xóa thông tin người dùng
   const handleDeleteUserInfo = async (id) => {
@@ -40,66 +37,45 @@ function Sidebar({ token, setStatus }) {
   };
 
   return (
-    <div className="text-center max-vh-100 flex flex-col border">
-      <div className="flex gap-2 text-center justify-center">
-        {/* Nút thêm thông tin người dùng */}
-        {token && (!user || user.length === 0) ? (
-          <button
-            type="button"
-            onClick={() => setAddMode(!addMode)}
-            className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
-          >
-            {addMode ? (
-              <>
-                {" "}
-                <i className="fa-solid fa-xmark"></i> Hủy
-              </>
-            ) : (
-              <>
-                {" "}
-                <i className="fa-solid fa-plus"></i> Thêm
-              </>
-            )}
-          </button>
-        ) : (
-          // {/* Nút chỉnh sửa  */}
-          token && (
-            <>
+    <div className="text-center h-full w-full">
+      <div className="flex text-center justify-center">
+        {/* Nút chỉnh sửa  */}
+        {token && (
+          <>
+            <button
+              type="button"
+              onClick={() => setEditMode(!editMode)}
+              className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+            >
+              {editMode ? (
+                <>
+                  {" "}
+                  <i className="fa-solid fa-xmark"></i> Hủy
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                </>
+              )}
+            </button>
+            {editMode && (
               <button
-                type="button"
-                onClick={() => setEditMode(!editMode)}
-                className="border bg-blue-600 hover:bg-blue-700 transition duration-500 mb-3"
+                onClick={() => handleDeleteUserInfo(user[0].id)}
+                className="border bg-red-600 hover:bg-red-700 transition duration-500 mb-3"
               >
-                {editMode ? (
+                {loading ? (
                   <>
-                    {" "}
-                    <i className="fa-solid fa-xmark"></i> Hủy
+                    <i className="fa-solid fa-delete-left"></i> Đang xóa
                   </>
                 ) : (
                   <>
-                    {" "}
-                    <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                    <i className="fa-solid fa-delete-left"></i> Xóa
                   </>
                 )}
               </button>
-              {editMode && (
-                <button
-                  onClick={() => handleDeleteUserInfo(user[0].id)}
-                  className="border bg-red-600 hover:bg-red-700 transition duration-500 mb-3"
-                >
-                  {loading ? (
-                    <>
-                      <i className="fa-solid fa-delete-left"></i> Đang xóa
-                    </>
-                  ) : (
-                    <>
-                      <i className="fa-solid fa-delete-left"></i> Xóa
-                    </>
-                  )}
-                </button>
-              )}
-            </>
-          )
+            )}
+          </>
         )}
       </div>
       {
@@ -117,7 +93,7 @@ function Sidebar({ token, setStatus }) {
           ></FormUpdateUserInfo>
         ) : (
           // nếu ko ở trạng thái chỉnh sửa và chế độ thêm thì in ra thông tin
-          <div className="infomation">
+          <div>
             {loading ? (
               <p>
                 {" "}
@@ -197,25 +173,6 @@ function Sidebar({ token, setStatus }) {
             ) : (
               <p className="border-b-2">Không có thông tin người dùng</p>
             )}
-            <div className="mt-5">
-              {!token && (
-                <div className="login">
-                  <NavLink
-                    to="/login"
-                    className={({ isActive }) =>
-                      `hover:text-white bg-blue-600 py-2 px-4 rounded mt-5 ${
-                        isActive
-                          ? "text-white "
-                          : "bg-blue-600 text-white rounded w-100 p-2"
-                      }`
-                    }
-                  >
-                    <i className="fa-solid fa-right-to-bracket"></i> Đăng nhập
-                  </NavLink>
-                </div>
-              )}
-            </div>
-            {token && <Logout setStatus={setStatus} />}
           </div>
         )
       }

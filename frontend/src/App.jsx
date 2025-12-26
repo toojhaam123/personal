@@ -45,13 +45,20 @@ function App() {
       <div className="status">
         {status && (
           <div
-            className={`mb-2 pl-4 rounded-lg transition-opacity duration-100 border flex justify-between items-center
+            className={`pl-4 rounded-lg transition-opacity duration-100 border flex justify-between items-center
             ${visible ? "opacity-100" : "opacity-0"} ${
               status.type === "success"
                 ? "bg-green-100 text-green-700 font-bold"
                 : "bg-red-100 text-red-700 font-bold"
             }`}
           >
+            <div className="me-2">
+              {status.type == "success" ? (
+                <i className="text-3xl fa-regular fa-circle-check"></i>
+              ) : (
+                <i class="text-3xl fa-solid fa-xmark"></i>
+              )}
+            </div>
             <span>{status.message}</span>
             <button
               onClick={() => setVisible(false)}
@@ -64,7 +71,7 @@ function App() {
           </div>
         )}
       </div>
-      <div className="home bg-gray-900 text-white rounded-3xl flex justify-center">
+      <div className="home flex justify-center">
         <Routes>
           <Route path="/" element={<Home token={token} />} />
           <Route

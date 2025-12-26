@@ -14,15 +14,12 @@ import Notification from "./pages/Notification";
 import Notification_Detail from "./pages/Notification_Detail";
 function Users({ token, setStatus }) {
   return (
-    <div className="flex h-screen">
-      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
-        <Sidebar token={token} setStatus={setStatus} />
-      </div>
-      <div className="flex-[8] p-5 bg-gray-900 rounded-3xl text-white ms-5  flex-row flex gap-5">
-        <div className="flex-[2] border-r">
-          <Navbar token={token} />
+    <div className="flex gap-5 w-full">
+      <div className="flex-[8] rounded-3xl text-white  flex-row flex gap-5">
+        <div className="flex-[3] bg-gray-900 flex justify-center py-5 rounded-3xl">
+          <Navbar token={token} setStatus={setStatus} />
         </div>
-        <div className="flex-[12] overflow-y-auto scroll-hidden p-1">
+        <div className="flex-[11] bg-gray-900 rounded-3xl h-full overflow-y-auto scroll-hidden pt-5 ps-5">
           <Routes>
             <Route
               index
@@ -73,6 +70,9 @@ function Users({ token, setStatus }) {
             />
           </Routes>
         </div>
+      </div>
+      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
+        <Sidebar token={token} setStatus={setStatus} />
       </div>
     </div>
   );

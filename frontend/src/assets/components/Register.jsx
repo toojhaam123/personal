@@ -23,44 +23,46 @@ function Register() {
     }
   };
   return (
-    <form
-      method="post"
-      onSubmit={handleRegister}
-      className="p-6 border rounded-md mx-auto my-auto w-80"
-    >
-      <h1 className="text-3xl font-bold mb-4">Đăng ký</h1>
-      {error && <p className="text-red-600">{error}</p>}
-      <input
-        type="text"
-        placeholder="Tên người dùng"
-        value={username}
-        onChange={(e) => setUserName(e.target.value)}
-        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
-      />
-      <input
-        type="password"
-        placeholder="Mật khẩu"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
-      />
-      <button
-        type="submit"
-        className="w-full bg-green-600 text-white py-2 rounded-lg mt-5"
+    <div className="mx-auto my-auto bg-gray-900 rounded-3xl">
+      <form
+        method="post"
+        onSubmit={handleRegister}
+        className="p-6 rounded-md mx-auto my-auto w-80"
       >
-        Đăng ký
-      </button>
-      <p>
-        <NavLink to="/login">Đã có tài khoản</NavLink>
-      </p>
-    </form>
+        <h1 className="text-3xl font-bold mb-4">Đăng ký</h1>
+        {error && <p className="text-red-600">{error}</p>}
+        <input
+          type="text"
+          placeholder="Tên người dùng"
+          value={username}
+          onChange={(e) => setUserName(e.target.value)}
+          className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
+        />
+        <input
+          type="password"
+          placeholder="Mật khẩu"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
+        />
+        <button
+          type="submit"
+          className="w-full bg-green-600 text-white py-2 rounded-lg mt-5 mb-2"
+        >
+          Đăng ký
+        </button>
+        <p>
+          <NavLink to="/login">Đã có tài khoản</NavLink>
+        </p>
+      </form>
+    </div>
   );
 }
 

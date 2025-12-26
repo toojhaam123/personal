@@ -1,10 +1,11 @@
 import { NavLink, useParams } from "react-router-dom";
-function Navbar({ token }) {
+import Logout from "./Logout";
+function Navbar({ token, setStatus }) {
   const { username } = useParams();
   const base = `/${username}`;
 
   return (
-    <nav className="flex flex-col text-start gap-6  pb-2">
+    <nav className="flex flex-col text-start gap-6">
       <NavLink
         to={base}
         end
@@ -64,6 +65,7 @@ function Navbar({ token }) {
           <i className="fas fa-bell"></i> Thông báo
         </NavLink>
       )}
+      <div className="mt-auto">{token && <Logout setStatus={setStatus} />}</div>
     </nav>
   );
 }

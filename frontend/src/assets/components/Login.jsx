@@ -96,53 +96,54 @@ function Login({ setStatus }) {
   };
 
   return (
-    <form
-      action=""
-      method="POST"
-      className="p-6 border rounded-md mx-auto my-auto p-4 w-80"
-      onSubmit={handleLogin}
-    >
-      <h1 className="text-2xl font-bold mb-4">Đăng nhập</h1>
-      {error && <p className="text-red-600">{error}</p>}
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={email}
-        onChange={handleChangeLogin}
-        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
-      />
-      <input
-        type="password"
-        placeholder="Mật khẩu"
-        name="password"
-        value={password}
-        onChange={handleChangeLogin}
-        className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
-      />
-      <button
-        type="submit"
-        disabled={isDisabled}
-        className={`w-full text-white py-2 px-4 rounded-lg mt-5 ${
-          isDisabled
-            ? "bg-blue-200 cursor-not-allowed text-black"
-            : "bg-blue-600"
-        }`}
+    <div className="mx-auto my-auto bg-gray-900 rounded-3xl">
+      <form
+        method="POST"
+        className="p-6 rounded-md p-4 w-80"
+        onSubmit={handleLogin}
       >
-        <>
-          {loading ? (
-            <i className="fa-solid fa-spinner fa-spin"></i>
-          ) : (
-            <>
-              <i className="fa-solid fa-right-to-bracket"></i> Đăng nhập
-            </>
-          )}
-        </>
-      </button>
-      <p>
-        <NavLink to="/register">Đăng ký tài khoản</NavLink>
-      </p>
-    </form>
+        <h1 className="text-3xl font-bold mb-4">Đăng nhập</h1>
+        {error && <p className="text-red-600">{error}</p>}
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={handleChangeLogin}
+          className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
+        />
+        <input
+          type="password"
+          placeholder="Mật khẩu"
+          name="password"
+          value={password}
+          onChange={handleChangeLogin}
+          className="w-full rounded-lg p-2 border mb-2 bg-gray-700 text-white"
+        />
+        <button
+          type="submit"
+          disabled={isDisabled}
+          className={`w-full text-white py-2 px-4 rounded-lg mt-5 mb-2 ${
+            isDisabled
+              ? "bg-blue-200 cursor-not-allowed text-black"
+              : "bg-blue-600"
+          }`}
+        >
+          <>
+            {loading ? (
+              <i className="fa-solid fa-spinner fa-spin"></i>
+            ) : (
+              <>
+                <i className="fa-solid fa-right-to-bracket"></i> Đăng nhập
+              </>
+            )}
+          </>
+        </button>
+        <p>
+          <NavLink to="/register">Đăng ký tài khoản</NavLink>
+        </p>
+      </form>
+    </div>
   );
 }
 

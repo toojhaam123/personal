@@ -10,6 +10,8 @@ function FormUpdateUserInfo({
   previewImage,
   setPreviewImage,
 }) {
+  console.log("User in Update: ", user);
+
   // Hàm xử lý thay đổi khi nhập cập nhập thông tin
   const handleChangeUdateUserInfo = (e, index) => {
     const { name, value, files } = e.target;
