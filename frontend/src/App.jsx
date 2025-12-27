@@ -26,7 +26,7 @@ function App() {
 
       // Hết hạn login, logout ngay
       if (Date.now() > Number(expireAt)) {
-        window.confirm("Hết thời gian đăng nhập, đăng nhập lại!");
+        window.confirm("Hết phiên đăng nhập, mời đăng nhập lại!");
         localStorage.removeItem("token");
         localStorage.removeItem("expireAt");
         navigate("/login");
@@ -56,7 +56,7 @@ function App() {
               {status.type == "success" ? (
                 <i className="text-3xl fa-regular fa-circle-check"></i>
               ) : (
-                <i class="text-3xl fa-solid fa-xmark"></i>
+                <i className="text-3xl fa-solid fa-xmark"></i>
               )}
             </div>
             <span>{status.message}</span>
@@ -71,7 +71,7 @@ function App() {
           </div>
         )}
       </div>
-      <div className="home flex justify-center">
+      <div className="home flex justify-center overflow-hidden">
         <Routes>
           <Route path="/" element={<Home token={token} />} />
           <Route

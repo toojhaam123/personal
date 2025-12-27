@@ -71,7 +71,7 @@ function Users({ token, setStatus }) {
           </Routes>
         </div>
       </div>
-      <div className="flex-[2] p-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
+      <div className="flex-[2] pt-5 py-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
         <Sidebar token={token} setStatus={setStatus} />
       </div>
     </div>

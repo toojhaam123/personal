@@ -13,21 +13,16 @@ function FormUpdateUserInfo({
   console.log("User in Update: ", user);
 
   // Hàm xử lý thay đổi khi nhập cập nhập thông tin
-  const handleChangeUdateUserInfo = (e, index) => {
+  const handleChangeUdateUserInfo = (e) => {
     const { name, value, files } = e.target;
-    setUser((prev) => {
-      const updated = [...prev];
-      const file = files && files.length > 0 ? files[0] : value;
-      updated[index][name] = file || value;
-      return updated;
-    });
+    setUser((prev) => ({
+      ...prev,
+      [name]: files && files.length > 0 ? files[0] : value,
+    }));
 
-    // nếu là input file tạo preview
+    // nếu là input file tạo preview avatr
     if (name === "avatar" && files && files.length > 0) {
-      setPreviewImage((prev) => ({
-        ...prev,
-        [index]: URL.createObjectURL(files[0]),
-      }));
+      setPreviewImage(URL.createObjectURL(files[0]));
     }
   };
 
@@ -79,28 +74,28 @@ function FormUpdateUserInfo({
 
   return (
     <>
-      {user.length !== 0 &&
-        user?.map((item, index) => (
+      {user && (
+        <div className="px-5">
           <form
-            key={item.id || index}
-            onSubmit={(e) => handleUpdateUserInfo(e, item.id)}
+            key={user.id}
+            onSubmit={(e) => handleUpdateUserInfo(e, user.id)}
             method="post"
           >
-            <div className="w-32 h-32 rounded-full flex justufy-center items-center border overflow-hidden mx-auto bg-gray-400">
-              {previewImage[index] ? (
+            <div className="w-32 h-32 rounded-full flex justufy-center items-center border mx-auto bg-gray-400">
+              {previewImage ? (
                 <img
-                  src={previewImage[index]}
-                  alt="Avatar"
+                  src={previewImage}
+                  alt="Ảnh"
                   className="mx-auto object-cover"
                 />
-              ) : item.avatar ? (
+              ) : user.avatar ? (
                 <img
-                  src={`http://127.0.0.1:8000/storage/avatars/${item.avatar}`}
-                  alt="Avatar"
+                  src={`http://127.0.0.1:8000/storage/avatars/${user.avatar}`}
+                  alt="Ảnh"
                   className="mx-auto object-cover"
                 />
               ) : (
-                <p className="mx-auto text-gray-100">Avatar</p>
+                <p className="mx-auto text-gray-100">Ảnh</p>
               )}
             </div>
             <label htmlFor="avatar" className="float-start">
@@ -110,7 +105,7 @@ function FormUpdateUserInfo({
               type="file"
               name="avatar"
               id="avatar"
-              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              onChange={(e) => handleChangeUdateUserInfo(e)}
               className="w-full p-2 border bg-white text-black mb-2 rounded-lg"
             />
             <label htmlFor="fullname" className="float-start">
@@ -121,8 +116,8 @@ function FormUpdateUserInfo({
               name="fullname"
               className="w-full p-2 border rounded-lg bg-white text-black mb-2"
               type="text"
-              onChange={(e) => handleChangeUdateUserInfo(e, index)}
-              value={item.fullname ? item.fullname : ""}
+              onChange={(e) => handleChangeUdateUserInfo(e)}
+              value={user.fullname ? user.fullname : ""}
               placeholder="Họ và tên"
             />
             <label htmlFor="jobtitle" className="float-start">
@@ -133,8 +128,8 @@ function FormUpdateUserInfo({
               name="job_title"
               className="w-full p-2 border rounded-lg bg-white text-black mb-2"
               type="text"
-              onChange={(e) => handleChangeUdateUserInfo(e, index)}
-              value={item.job_title ? item.job_title : ""}
+              onChange={(e) => handleChangeUdateUserInfo(e)}
+              value={user.job_title ? user.job_title : ""}
               placeholder="Chức danh"
             />
             <label htmlFor="birth" className="float-start">
@@ -145,8 +140,8 @@ function FormUpdateUserInfo({
               id="birth"
               name="birth"
               placeholder="Năm sinh"
-              onChange={(e) => handleChangeUdateUserInfo(e, index)}
-              value={item.birth ? item.birth : ""}
+              onChange={(e) => handleChangeUdateUserInfo(e)}
+              value={user.birth ? user.birth : ""}
               className="w-full p-2 rounded-lg border text-black bg-white mb-2"
             />
             <div className="border border-white p-2 rounded-lg">
@@ -156,10 +151,10 @@ function FormUpdateUserInfo({
               <input
                 type="text"
                 name="address"
-                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                onChange={(e) => handleChangeUdateUserInfo(e)}
                 className="w-full p-2 rounded-lg border text-black bg-white mb-2"
                 id="address"
-                value={item.address ? item.address : ""}
+                value={user.address ? user.address : ""}
                 placeholder="Địa chi"
               />
               <label htmlFor="link_address" className="float-start">
@@ -169,8 +164,8 @@ function FormUpdateUserInfo({
                 type="url"
                 name="link_address"
                 id="link_address"
-                onChange={(e) => handleChangeUdateUserInfo(e, index)}
-                value={item.link_address ? item.link_address : ""}
+                onChange={(e) => handleChangeUdateUserInfo(e)}
+                value={user.link_address ? user.link_address : ""}
                 className="w-full p-2 rounded-lg border text-black bg-white mb-2"
                 placeholder="Link địa chỉ"
               />
@@ -183,8 +178,8 @@ function FormUpdateUserInfo({
               placeholder="email"
               id="email"
               name="email"
-              onChange={(e) => handleChangeUdateUserInfo(e, index)}
-              value={item.email ? item.email : ""}
+              onChange={(e) => handleChangeUdateUserInfo(e)}
+              value={user.email ? user.email : ""}
               className="w-full p-2 rounded-lg border text-black bg-white mb-2"
             />
             <label htmlFor="phone" className="float-start">
@@ -194,9 +189,9 @@ function FormUpdateUserInfo({
               type="text"
               id="phone"
               name="phone"
-              value={item.phone ? item.phone : ""}
+              value={user.phone ? user.phone : ""}
               placeholder="Số điện thoại"
-              onChange={(e) => handleChangeUdateUserInfo(e, index)}
+              onChange={(e) => handleChangeUdateUserInfo(e)}
               className="w-full p-2 rounded-lg border text-black bg-white mb-2"
             />
             <div className="border border-white p-2 rounded-lg">
@@ -206,10 +201,10 @@ function FormUpdateUserInfo({
               <input
                 type="text"
                 name="facebook"
-                value={item.facebook ? item.facebook : ""}
+                value={user.facebook ? user.facebook : ""}
                 className="w-full p-2 rounded-lg border text-black bg-white mb-2"
                 id="facebook"
-                onChange={(e) => handleChangeUdateUserInfo(e, index)}
+                onChange={(e) => handleChangeUdateUserInfo(e)}
                 placeholder="Facebook"
               />
               <label htmlFor="" className="float-start">
@@ -219,8 +214,8 @@ function FormUpdateUserInfo({
                 type="url"
                 id="link_facebook"
                 name="link_facebook"
-                onChange={(e) => handleChangeUdateUserInfo(e, index)}
-                value={item.link_facebook ? item.link_facebook : ""}
+                onChange={(e) => handleChangeUdateUserInfo(e)}
+                value={user.link_facebook ? user.link_facebook : ""}
                 className="w-full p-2 rounded-lg border text-black bg-white mb-2"
                 placeholder="Link facebook"
               />
@@ -232,8 +227,8 @@ function FormUpdateUserInfo({
               <input
                 type="text"
                 name="github"
-                onChange={(e) => handleChangeUdateUserInfo(e, index)}
-                value={item.github ? item.github : ""}
+                onChange={(e) => handleChangeUdateUserInfo(e)}
+                value={user.github ? user.github : ""}
                 className="w-full p-2 rounded-lg border text-black bg-white mb-2"
                 id="github"
                 placeholder="Github"
@@ -245,8 +240,8 @@ function FormUpdateUserInfo({
                 type="url"
                 id="link_github"
                 name="link_github"
-                onChange={(e) => handleChangeUdateUserInfo(e, index)}
-                value={item.link_github ? item.link_github : ""}
+                onChange={(e) => handleChangeUdateUserInfo(e)}
+                value={user.link_github ? user.link_github : ""}
                 className="w-full p-2 rounded-lg border text-black bg-white mb-2"
                 placeholder="Link github"
               />
@@ -267,7 +262,8 @@ function FormUpdateUserInfo({
               )}
             </button>
           </form>
-        ))}
+        </div>
+      )}
     </>
   );
 }

@@ -13,6 +13,14 @@ class UserController extends Controller
         return response()->json(User::all());
     }
 
+    public function userDetail($username)
+    {
+        // Tìm bản gi 
+        $user = User::where('username', $username)->firstOrFail();
+        // Trả về kết quả
+        return response()->json($user);
+    }
+
     // // Thêm thông tin người dùng
     // public function store(Request $request)
     // {

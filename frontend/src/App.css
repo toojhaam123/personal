@@ -11,8 +11,8 @@
 
 .home {
   position: relative;
-  min-height: 90vh;
-  min-width: 95vw;
+  height: clamp(600px, 90vh, 900px);
+  width: clamp(320px, 95vw, 1400px);
 }
 .profile {
   position: absolute;

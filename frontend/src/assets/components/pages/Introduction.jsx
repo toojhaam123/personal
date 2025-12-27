@@ -16,7 +16,7 @@ function Home({ token, setStatus }) {
     const fetchHomeInfo = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("home");
+        const res = await axiosInstance.get("introductions");
         setHomeInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Thôn tin trang chủ: ", res.data);
       } catch (e) {

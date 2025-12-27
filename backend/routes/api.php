@@ -24,13 +24,15 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-// Lấy tất cả người dùng
-Route::get("users", [UserController::class, 'index']);
-// Route::prefix('users')->group(function () {
-// });
+Route::prefix('users')->group(function () {
+    // Lấy tất cả người dung
+    Route::get("/", [UserController::class, 'index']);
+    // Lấy chi tiết người dùng
+    Route::get("/{username}", [UserController::class, 'userDetail']);
+});
 
 // Home 
-Route::prefix('home')->group(function () {
+Route::prefix('introductions')->group(function () {
     Route::get('/', [HomeController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {

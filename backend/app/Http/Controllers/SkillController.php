@@ -33,13 +33,6 @@ class SkillController extends Controller
         // Kiểm tra bản ghi 
         $skill = Skill::findOrFail($id);
 
-        if (!$skill) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Không tìm thấy bản ghi nào!',
-            ]);
-        }
-
         // Cập nhật 
         $skill->update([
             'skill_info' => $request->skill_info,
