@@ -10,7 +10,12 @@ function FormUpdateUserInfo({
   previewImage,
   setPreviewImage,
 }) {
-  console.log("User in Update: ", user);
+  // Dùng để hiện thị avatar
+  const avatarSrc = previewImage
+    ? previewImage
+    : user?.avatar
+    ? `http://127.0.0.1:8000/storage/avatars/${user?.avatar}`
+    : null;
 
   // Hàm xử lý thay đổi khi nhập cập nhập thông tin
   const handleChangeUdateUserInfo = (e) => {
@@ -27,34 +32,33 @@ function FormUpdateUserInfo({
   };
 
   // Hàm xử lý chỉnh sửa thông tin người dùng
-  const handleUpdateUserInfo = async (e, id) => {
+  const handleUpdateUserInfo = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const userToUpdate = setUser.find((u) => u.id == id);
       const formData = new FormData();
 
       // Duyệt tất cả các key trong userToUpdate để gửi
-      Object.keys(userToUpdate).forEach((key) => {
-        let value = userToUpdate[key];
+      Object.keys(user).forEach((key) => {
+        const value = user[key];
 
         if (key === "avatar") {
           if (value instanceof File) {
             formData.append("avatar", value);
           }
-        } else if (value != null && value !== "null") {
+        } else if (value != null && value !== "null" && value !== undefined) {
           formData.append(key, value);
         }
       });
 
-      const res = await axiosInstance.post("auth/users", formData);
+      const res = await axiosInstance.post("users", formData);
+
       // cập nhập ngay ảnh mới
-      setUser((prev) =>
-        prev.map((u) =>
-          u.id === id ? { ...u, avatar: res.data.data.avatar } : u
-        )
-      );
+      setUser((prev) => ({
+        ...prev,
+        avatar: res.data.data.avatar,
+      }));
 
       setStatus({
         type: "success",
@@ -78,24 +82,18 @@ function FormUpdateUserInfo({
         <div className="px-5">
           <form
             key={user.id}
-            onSubmit={(e) => handleUpdateUserInfo(e, user.id)}
+            onSubmit={(e) => handleUpdateUserInfo(e)}
             method="post"
           >
-            <div className="w-32 h-32 rounded-full flex justufy-center items-center border mx-auto bg-gray-400">
-              {previewImage ? (
+            <div className="w-32 h-32 rounded-full mx-auto flex justify-center items-center bg-gray-400 overflow-hidden">
+              {avatarSrc ? (
                 <img
-                  src={previewImage}
-                  alt="Ảnh"
-                  className="mx-auto object-cover"
-                />
-              ) : user.avatar ? (
-                <img
-                  src={`http://127.0.0.1:8000/storage/avatars/${user.avatar}`}
-                  alt="Ảnh"
-                  className="mx-auto object-cover"
+                  src={avatarSrc}
+                  alt="Ảnh xem trước"
+                  className="w-full h-full object-cover"
                 />
               ) : (
-                <p className="mx-auto text-gray-100">Ảnh</p>
+                <p className="text-sm select-none text-gray-100">Ảnh</p>
               )}
             </div>
             <label htmlFor="avatar" className="float-start">
@@ -248,7 +246,7 @@ function FormUpdateUserInfo({
             </div>
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 transition duration-500 scroll-hidden"
+              className="btn-save sticky bottom-0 bg-blue-600 px-6 py-2 hover:bg-blue-700 transition duration-500"
               disabled={loading}
             >
               {loading ? (

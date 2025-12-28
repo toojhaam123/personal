@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EducationController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\IntroductionController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\UserController;
@@ -17,28 +17,34 @@ Route::prefix('auth')->group(function () {
 
     // Các route cần token 
     Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
-        Route::get('me', [AuthController::class, 'user']);
+        Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('{id}', [AuthController::class, 'update']);
         Route::delete('{id}', [AuthController::class, 'destroy']);
     });
 });
 
+// users
 Route::prefix('users')->group(function () {
     // Lấy tất cả người dung
     Route::get("/", [UserController::class, 'index']);
     // Lấy chi tiết người dùng
-    Route::get("/{username}", [UserController::class, 'userDetail']);
-});
-
-// Home 
-Route::prefix('introductions')->group(function () {
-    Route::get('/', [HomeController::class, 'index']);
+    Route::get("{username}", [UserController::class, 'userDetail']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('{id}', [HomeController::class, 'update']);
-        Route::post('/', [HomeController::class, 'store']);
-        Route::delete('{id}', [HomeController::class, 'destroy']);
+        Route::post("/", [UserController::class, "update"]);
+        Route::delete('/', [UserController::class, "destroy"]);
+    });
+});
+
+// Giới thiệu (introduction)
+Route::prefix('introductions')->group(function () {
+    Route::get('/', [IntroductionController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [IntroductionController::class, 'store']);
+        Route::post('{id}', [IntroductionController::class, 'update']);
+        Route::delete('{id}', [IntroductionController::class, 'destroy']);
     });
 });
 

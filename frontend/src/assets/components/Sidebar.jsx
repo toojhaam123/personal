@@ -1,17 +1,16 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
-// import FormAddUserInfo from "./form/FormAddUserInfo";
 import FormUpdateUserInfo from "./form/FormUpdateUserInfo";
 import useUserDetail from "../hooks/useUserDetail";
 import axiosInstance from "../../config/axios";
 function Sidebar({ token, setStatus }) {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [previewImage, setPreviewImage] = useState({});
+  const [previewImage, setPreviewImage] = useState(null);
 
   // Lấy thông tin người dùng từ API về hiện thị
   const { user, setUser } = useUserDetail(); // Thông tin người dùng
-  console.log("user in sidebar, ", user);
 
   // Hàm xử lý xóa thông tin người dùng
   const handleDeleteUserInfo = async (id) => {
@@ -37,7 +36,7 @@ function Sidebar({ token, setStatus }) {
   };
 
   return (
-    <div className="text-center">
+    <div className="">
       <div className="flex text-center justify-center">
         {/* Nút chỉnh sửa  */}
         {token && (
@@ -103,8 +102,11 @@ function Sidebar({ token, setStatus }) {
                 tin!
               </p>
             ) : user ? (
-              <div key={user?.id} className="space-y-2 text-sm text-start">
-                <div className="w-32 h-32 rounded-full mx-auto flex jusify-center items-center bg-gray-400">
+              <div
+                key={user?.id}
+                className="space-y-2 text-sm text-start h-[76vh]"
+              >
+                <div className="w-32 h-32 rounded-full mx-auto flex justify-center items-center bg-gray-400 overflow-hidden">
                   {user?.avatar ? (
                     <img
                       src={`http://127.0.0.1:8000/storage/avatars/${user?.avatar}`}
@@ -168,7 +170,9 @@ function Sidebar({ token, setStatus }) {
                 )}
               </div>
             ) : (
-              <p className="border-b-2">Không có thông tin người dùng</p>
+              <div className="h-[82vh] flex justify-center items-center">
+                <p className="border-b-2">Không có thông tin người dùng</p>
+              </div>
             )}
           </div>
         )

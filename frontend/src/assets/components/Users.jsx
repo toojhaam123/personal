@@ -15,11 +15,11 @@ import Notification_Detail from "./pages/Notification_Detail";
 function Users({ token, setStatus }) {
   return (
     <div className="flex gap-5 w-full">
-      <div className="flex-[8] rounded-3xl text-white  flex-row flex gap-5">
-        <div className="flex-[3] bg-gray-900 flex justify-center py-5 rounded-3xl">
+      <div className="flex-[12] rounded-3xl text-white  flex-row flex gap-5">
+        <div className="flex-[2] bg-gray-900 flex justify-center py-5 rounded-3xl">
           <Navbar token={token} setStatus={setStatus} />
         </div>
-        <div className="flex-[11] bg-gray-900 rounded-3xl h-full overflow-y-auto scroll-hidden pt-5 ps-5">
+        <div className="flex-[9] bg-gray-900 rounded-3xl h-full overflow-y-auto scroll-hidden pt-5 px-5">
           <Routes>
             <Route
               index
@@ -71,7 +71,7 @@ function Users({ token, setStatus }) {
           </Routes>
         </div>
       </div>
-      <div className="flex-[2] pt-5 py-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
+      <div className="flex-[3]  py-5 bg-gray-900 text-white flex flex-col items-center rounded-3xl overflow-y-auto scroll-hidden">
         <Sidebar token={token} setStatus={setStatus} />
       </div>
     </div>

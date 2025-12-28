@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, Link, useParams } from "react-router-dom";
 import Logout from "./Logout";
 function Navbar({ token, setStatus }) {
   const { username } = useParams();
@@ -65,7 +65,18 @@ function Navbar({ token, setStatus }) {
           <i className="fas fa-bell"></i> Thông báo
         </NavLink>
       )}
-      <div className="mt-auto">{token && <Logout setStatus={setStatus} />}</div>
+      <div className="mt-auto">
+        {token ? (
+          <Logout setStatus={setStatus} />
+        ) : (
+          <Link
+            to="/login"
+            className="inline-block bg-blue-600 hover:bg-blue-700 px-6 py-2 hover:text-gray-100 duration-500 rounded transition"
+          >
+            Tạo CV của bạn
+          </Link>
+        )}
+      </div>
     </nav>
   );
 }

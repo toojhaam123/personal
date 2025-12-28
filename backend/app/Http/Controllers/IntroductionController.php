@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Home;
+use App\Models\Introduction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 
 
-class HomeController extends Controller
+class IntroductionController extends Controller
 {
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'home_info' => 'nullable|string',
+            'intro_info' => 'nullable|string',
             'cv_path' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
 
         ]);
@@ -29,13 +27,16 @@ class HomeController extends Controller
                 $validated['cv_path'] = '/storage/cv/' . $fileName;
             }
 
-            // Tạo bản ghi Home
-            $homeInfo = Home::create($validated);
+            // Validate user id 
+            $validated['user_id'] = $request->user()->id;
+
+            // Tạo bản ghi Intro
+            $introInfo = Introduction::create($validated);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Tạo thông tin trang chủ thành công!',
-                'data'    => $homeInfo,
+                'message' => 'Tạo thông tin giới thiệu thành công!',
+                'data'    => $introInfo,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -49,23 +50,23 @@ class HomeController extends Controller
     {
 
         $validated = $request->validate([
-            'home_info' => 'nullable|string',
+            'intro_info' => 'nullable|string',
             'cv_path' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
         // Kiểm tra bản ghi
-        $homeInfo = Home::findOrFail($id);
+        $introInfo = Introduction::findOrFail($id);
 
         // Cập nhật nội dung 
-        $homeInfo->home_info = $request->home_info;
+        $introInfo->intro_info = $request->intro_info;
 
         // nếu có file mới 
         if ($request->hasFile('cv_path')) {
             $file = $request->file('cv_path');
 
             // Xóa file cũ nếu có
-            if (!empty($homeInfo->cv_path)) {
-                $oldFile = str_replace('/storage', 'public', $homeInfo->cv_path);
+            if (!empty($introInfo->cv_path)) {
+                $oldFile = str_replace('/storage', 'public', $introInfo->cv_path);
                 if (Storage::exists($oldFile)) {
                     Storage::delete($oldFile);
                 }
@@ -76,40 +77,40 @@ class HomeController extends Controller
             $file->storeAs('cv', $fileName);
 
             // Lưu đường dẫn vào DB bỏ public
-            $homeInfo->cv_path = "/storage/cv/" . $fileName;
+            $introInfo->cv_path = "/storage/cv/" . $fileName;
         }
 
-        $homeInfo->save();
+        $introInfo->save();
 
         // trả về kết quả
         return response()->json([
             'success' => true,
             'message' => 'Cập nhật thông tin trang chủ thành công!',
-            'data' => $homeInfo,
+            'data' => $introInfo,
         ]);
     }
 
     public function index(Request $request)
     {
-        return Home::latest()->get();
+        return Introduction::latest()->get();
     }
 
     // Xóa thông tin trang chủ 
     public function destroy($id)
     {
         // Tìm bản ghi
-        $homeInfo = Home::findOrFail($id);
+        $introInfo = Introduction::findOrFail($id);
 
         // Xóa file CV nếu có
-        if (!empty($homeInfo->cv_path)) {
-            $filePath = str_replace('/storage', 'public', $homeInfo->cv_path);
+        if (!empty($introInfo->cv_path)) {
+            $filePath = str_replace('/storage', 'public', $introInfo->cv_path);
             if (Storage::exists($filePath)) {
                 Storage::delete($filePath);
             }
         }
 
         // Xóa bản ghi trong DB
-        $homeInfo->delete();
+        $introInfo->delete();
 
         // Trả kết quả JSON
         return response()->json([

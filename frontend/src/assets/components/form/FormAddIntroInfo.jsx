@@ -1,68 +1,73 @@
 import { useState } from "react";
 import axiosInstance from "../../../config/axios";
 
-function FormAddHomeInfo({
+function FormAddIntroInfo({
   loading,
   setLoading,
   setAddMode,
   setStatus,
-  setHomeInfo,
+  setIntroInfo,
 }) {
-  const [addHomeInfo, setAddHomeInfo] = useState({
-    home_info: "",
+  const [addIntroInfo, setAddIntroInfo] = useState({
+    intro_info: "",
     cv_path: "",
   });
 
   // Hàm xử lý khi nhật thông tin
-  const handleChangeAddHomeInfo = (e) => {
+  const handleChangeAddIntroInfo = (e) => {
     const { name, value, files } = e.target;
 
     if (files && files.length > 0) {
       const file = files[0];
 
       // Cập nhật file vào state
-      setAddHomeInfo({
-        ...addHomeInfo,
+      setAddIntroInfo({
+        ...addIntroInfo,
         [name]: file,
       });
     } else {
       // Cập nhật file vào state
-      setAddHomeInfo({
-        ...addHomeInfo,
+      setAddIntroInfo({
+        ...addIntroInfo,
         [name]: value,
       });
     }
   };
 
   //   Hàm thêm thông tin trang chủ
-  const handleSubmitAddHomeInfo = async (e) => {
+  const handleSubmitAddIntroInfo = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const formData = new FormData();
-      for (let key in addHomeInfo) {
-        formData.append(key, addHomeInfo[key]);
+
+      if (addIntroInfo.intro_info) {
+        formData.append("intro_info", addIntroInfo.intro_info);
       }
 
-      const res = await axiosInstance.post("home", formData);
+      if (addIntroInfo.cv_path) {
+        formData.append("cv_path", addIntroInfo.cv_path);
+      }
+
+      const res = await axiosInstance.post("introductions", formData);
 
       // reset lại form
-      setAddHomeInfo({
-        home_info: "",
+      setAddIntroInfo({
+        intro_info: "",
         cv_path: "",
       });
       setAddMode(false);
-      setHomeInfo((prev) => [res.data.data, ...prev]);
+      setIntroInfo((prev) => [res.data.data, ...prev]);
       setStatus({
         type: "success",
         message: res.data.message,
       });
     } catch (err) {
-      console.log("Lỗi khi tạo thông tin trang chủ", err);
+      console.log("Lỗi khi tạo thông tin giới thiệu!", err);
       setStatus({
         type: "error",
-        message: "Lỗi khi tạo thông tin trang chủ!",
+        message: "Lỗi khi tạo thông tin giới thiệu!",
         err,
       });
     } finally {
@@ -73,15 +78,15 @@ function FormAddHomeInfo({
   return (
     <form
       action=""
-      onSubmit={handleSubmitAddHomeInfo}
+      onSubmit={handleSubmitAddIntroInfo}
       encType="multipart/form-data"
     >
       <div>
         <textarea
-          name="home_info"
-          id="home_info"
+          name="intro_info"
+          id="intro_info"
           rows={10}
-          onChange={handleChangeAddHomeInfo}
+          onChange={handleChangeAddIntroInfo}
           className="w-full bg-white text-black rounded-lg p-2 border text-lg"
         ></textarea>
         <label htmlFor="cv_path" className="float-start">
@@ -92,7 +97,7 @@ function FormAddHomeInfo({
           name="cv_path"
           id="cv_path"
           type="file"
-          onChange={handleChangeAddHomeInfo}
+          onChange={handleChangeAddIntroInfo}
           accept=".pdf, .doc"
         />
       </div>
@@ -116,4 +121,4 @@ function FormAddHomeInfo({
   );
 }
 
-export default FormAddHomeInfo;
+export default FormAddIntroInfo;

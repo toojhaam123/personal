@@ -1,26 +1,26 @@
 import axiosInstance from "../../../config/axios";
 import { useEffect, useState } from "react";
-import useUsers from "../../hooks/useUsers";
-import FormAddHomeInfo from "../form/FormAddHomeInfo";
-import FormUpdateHomeInfo from "../form/FormUpdateHomeInfo";
+import useUserDetail from "../../hooks/useUserDetail";
+import FormAddIntroInfo from "../form/FormAddIntroInfo";
+import FormUpdateIntroInfo from "../form/FormUpdateIntroInfo";
 function Home({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
-  const { userInfo } = useUsers(); // Thông tin người dùng
+  const { user } = useUserDetail(); // Thông tin người dùng
 
   // Lấy thông tin trang chủ từ API
-  const [homeInfo, setHomeInfo] = useState([]);
-  // console.log("Thông tin trang chủ: ", useUserInfo);
+  const [introInfo, setIntroInfo] = useState([]);
+  // console.log("User in intro: ", user);
   useEffect(() => {
     const fetchHomeInfo = async () => {
       setLoading(true);
       try {
         const res = await axiosInstance.get("introductions");
-        setHomeInfo(Array.isArray(res.data) ? res.data : [res.data]);
+        setIntroInfo(Array.isArray(res.data) ? res.data : [res.data]);
         // console.log("Thôn tin trang chủ: ", res.data);
       } catch (e) {
-        console.log("Lỗi khi lấy thông tin trang chủ!", e);
+        console.log("Lỗi khi lấy thông tin giới thiệu!", e);
       } finally {
         setLoading(false);
       }
@@ -34,7 +34,7 @@ function Home({ token, setStatus }) {
     setLoading(true);
     try {
       const res = await axiosInstance.delete(`home/${id}`);
-      setHomeInfo((prev) => prev.filter((item) => item.id !== id));
+      setIntroInfo((prev) => prev.filter((item) => item.id !== id));
       setStatus({
         type: "success",
         message: res.data.message,
@@ -58,7 +58,7 @@ function Home({ token, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Thêm thông tin trang chủ */}
-        {token && (!homeInfo || homeInfo.length === 0) ? (
+        {token && (!introInfo || introInfo.length === 0) ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -100,7 +100,7 @@ function Home({ token, setStatus }) {
               {editMode && (
                 // Nút xóa thông tin trang chủ
                 <button
-                  onClick={() => handleDeleteHomeInfo(homeInfo[0].id)}
+                  onClick={() => handleDeleteHomeInfo(introInfo[0].id)}
                   className="border bg-red-600 hover:bg-red-700 transition duration-500 mb-3"
                 >
                   {loading ? (
@@ -122,25 +122,25 @@ function Home({ token, setStatus }) {
         <div className="flex-[6]">
           {/* Form thêm thông tin trang chủ */}
           {addMode ? (
-            <FormAddHomeInfo
+            <FormAddIntroInfo
               token={token}
               loading={loading}
               setLoading={setLoading}
               setAddMode={setAddMode}
               setStatus={setStatus}
-              setHomeInfo={setHomeInfo}
+              setIntroInfo={setIntroInfo}
             />
           ) : editMode ? (
             <>
               {/* Form update thông tin trang chủ */}
-              <FormUpdateHomeInfo
+              <FormUpdateIntroInfo
                 token={token}
                 loading={loading}
                 setLoading={setLoading}
                 setEditMode={setEditMode}
                 setStatus={setStatus}
-                homeInfo={homeInfo}
-                setHomeInfo={setHomeInfo}
+                introInfo={introInfo}
+                setIntroInfo={setIntroInfo}
               />
             </>
           ) : (
@@ -152,16 +152,16 @@ function Home({ token, setStatus }) {
                   Vui lòng chờ!
                 </p>
               ) : (
-                homeInfo[0]?.home_info && (
+                introInfo[0]?.home_info && (
                   <p className="text-start text-lg mb-4 whitespace-pre-line">
-                    {homeInfo[0].home_info}
+                    {introInfo[0].home_info}
                   </p>
                 )
               )}
-              {!editMode && homeInfo.length > 0
-                ? homeInfo[0]?.cv_path && (
+              {!editMode && introInfo.length > 0
+                ? introInfo[0]?.cv_path && (
                     <a
-                      href={`http://127.0.0.1:8000${homeInfo[0].cv_path}`}
+                      href={`http://127.0.0.1:8000${introInfo[0].cv_path}`}
                       target="_blank"
                       className="px-4 py-2 border border-blue-600 text-white 
                     rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 
@@ -175,15 +175,18 @@ function Home({ token, setStatus }) {
           )}
         </div>
         <div className="flex-[4]">
-          {userInfo?.avatar ? (
-            <img
-              src={`http://127.0.0.1:8000/storage/avatars/${userInfo[0].avatar}`}
-              alt="Avatar"
-              className="w-full h-full rounded-full mx-auto mb-4 object-cover"
-            />
-          ) : (
-            <p className="mx-auto text-gray-100">Avatar</p>
-          )}
+          <div className="w-[160px] h-[160px] sm:w-[220px] sm:h-[220px] md:w-[300px] md:h-[300px] rounded-full border flex justify-center items-center bg-gray-400 overflow-hidden">
+            {user?.avatar ? (
+              <img
+                src={`http://127.0.0.1:8000/storage/avatars/${user?.avatar}`}
+                alt="Avatar"
+                className="mb-4 object-cover"
+              />
+            ) : (
+              <p className="text-gray-100">Ảnh</p>
+            )}
+          </div>
+
           <img
             src="../../public/laptop.svg"
             alt="Laptop"

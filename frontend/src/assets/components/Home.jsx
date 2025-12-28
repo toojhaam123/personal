@@ -59,7 +59,7 @@ function Home({ token }) {
             to="/login"
             className="inline-block bg-blue-600 hover:bg-blue-700 px-6 py-2 hover:text-gray-100 duration-500 rounded transition"
           >
-            Tạo CV miễn phí
+            Tạo CV của bạn
           </Link>
         )}
       </div>
