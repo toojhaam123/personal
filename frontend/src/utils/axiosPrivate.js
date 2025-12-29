@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const axiosInstance = axios.create({
+const axiosPrivate = axios.create({
   baseURL: "http://127.0.0.1:8000/api", // URL gốc của backend
 });
 
 // Gắn token ngay lần đầu App load, tạo một axios customer => chạy trước khi request đc gửi đi
-axiosInstance.interceptors.request.use(
+axiosPrivate.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
 
@@ -19,7 +19,7 @@ axiosInstance.interceptors.request.use(
 );
 
 //Bắt lỗi 401 + auto logout => Chạy sau khi serve trả lại response về
-axiosInstance.interceptors.response.use(
+axiosPrivate.interceptors.response.use(
   (response) => response, // nếu Ok thì đi tiếp
   (error) => {
     // Lấy status code từ response lỗi
@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem("expireAt"); // Xóa thời gian bắt đầu đăng nhập
 
       // Xóa Authorization headers
-      delete axiosInstance.defaults.headers.common["Authorization"];
+      delete axiosPrivate.defaults.headers.common["Authorization"];
 
       // Đưa về trang chủ
       window.location.href = "/";
@@ -40,4 +40,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axiosPrivate;

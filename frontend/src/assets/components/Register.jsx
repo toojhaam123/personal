@@ -1,25 +1,32 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { NavLink, Navigate } from "react-router-dom";
+import axiosPublic from "@/utils/axiosPublic";
+import { NavLink, useNavigate } from "react-router-dom";
 function Register() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { navigate } = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
     try {
-      await axios.post("http://127.0.0.1:8000/api/auth/register", {
+      setLoading(true);
+      const res = await axiosPublic.post("/auth/register", {
         username,
         email,
         password,
       });
-      alert("Đã đăng ký thành công! Quay lại đăng nhập!");
-      Navigate("/login");
+      setUserName("");
+      setEmail("");
+      setPassword("");
+      alert(res.data.message);
+      navigate("/login");
     } catch (error) {
       setError(error.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -56,7 +63,15 @@ function Register() {
           type="submit"
           className="w-full bg-green-600 text-white py-2 rounded-lg mt-5 mb-2"
         >
-          Đăng ký
+          <>
+            {loading ? (
+              <i className="fa-solid fa-spinner fa-spin"></i>
+            ) : (
+              <>
+                <i className="fa-regular fa-registered"></i> Đăng ký
+              </>
+            )}
+          </>
         </button>
         <p>
           <NavLink to="/login">Đã có tài khoản</NavLink>

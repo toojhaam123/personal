@@ -1,8 +1,9 @@
-import { NavLink, Link, useParams } from "react-router-dom";
+import { NavLink, Link, useParams, useLocation } from "react-router-dom";
 import Logout from "./Logout";
 function Navbar({ token, setStatus }) {
   const { username } = useParams();
   const base = `/${username}`;
+  const location = useLocation();
 
   return (
     <nav className="flex flex-col text-start gap-6">
@@ -71,6 +72,7 @@ function Navbar({ token, setStatus }) {
         ) : (
           <Link
             to="/login"
+            state={{ from: location.pathname }}
             className="inline-block bg-blue-600 hover:bg-blue-700 px-6 py-2 hover:text-gray-100 duration-500 rounded transition"
           >
             Tạo CV của bạn

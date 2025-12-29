@@ -1,8 +1,6 @@
-import { Link, Routes, Route } from "react-router-dom";
-import useUsers from "../hooks/useUsers";
+import { Link } from "react-router-dom";
 import useMeInfo from "../hooks/useMeInfo";
 function Home({ token }) {
-  const { users } = useUsers();
   const { me } = useMeInfo();
 
   return (
@@ -42,18 +40,13 @@ function Home({ token }) {
       {/* Vào login tạo CV */}
       <div className="text-center mt-10 profile">
         {token ? (
-          users.map(
-            (user) =>
-              user.username === me.username && (
-                <Link
-                  key={user.id}
-                  to={`/${user.username}`}
-                  className="inline-block bg-blue-600 hover:bg-blue-700 hover:text-gray-100 px-6 py-2 rounded duration-500 transition"
-                >
-                  Xem CV của tôi
-                </Link>
-              )
-          )
+          <Link
+            key={me.id}
+            to={`/${me.username}`}
+            className="inline-block bg-blue-600 hover:bg-blue-700 hover:text-gray-100 px-6 py-2 rounded duration-500 transition"
+          >
+            Xem CV của tôi
+          </Link>
         ) : (
           <Link
             to="/login"

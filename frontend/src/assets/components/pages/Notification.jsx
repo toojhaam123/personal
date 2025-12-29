@@ -1,4 +1,4 @@
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 import { useState, useEffect } from "react";
 import { formatDateVN } from "../../../utils/dateUtils";
 import { truncatetext } from "../../../utils/stringUtils";

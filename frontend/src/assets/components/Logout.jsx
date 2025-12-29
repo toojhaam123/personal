@@ -1,7 +1,5 @@
-import axiosInstance from "../../config/axios";
-import { useNavigate } from "react-router-dom";
+import axiosPrivate from "@/utils/axiosPrivate";
 function Logout({ setStatus }) {
-  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const handleLogout = async () => {
     if (!token) {
@@ -11,7 +9,7 @@ function Logout({ setStatus }) {
       });
     }
     try {
-      await axiosInstance.post("auth/logout");
+      await axiosPrivate.post("auth/logout");
     } catch (error) {
       console.error(error);
       setStatus({
@@ -26,7 +24,6 @@ function Logout({ setStatus }) {
         type: "success",
         message: "Đã đăng xuất!",
       });
-      navigate("/"); // Chuyển về trang chủ
     }
   };
 

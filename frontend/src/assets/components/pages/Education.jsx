@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 import FormAddEduInfo from "../../components/form/FormAddEduInfo";
 import FormUpdateEduInfo from "../form/FormUpdateEduInfo";
 function Education({ token, setStatus }) {

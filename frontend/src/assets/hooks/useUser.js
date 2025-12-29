@@ -1,7 +1,7 @@
-import axios from "axios";
+import axiosPublic from "@/utils/axiosPublic";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-function useUserDetail() {
+function useUser() {
   // Lấy username
   const { username } = useParams();
   const [loading, setLoading] = useState(false);
@@ -13,9 +13,7 @@ function useUserDetail() {
     const FetchUserDetail = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(
-          `http://127.0.0.1:8000/api/users/${username}`
-        );
+        const res = await axiosPublic.get(`/users/${username}`);
         setUser(res.data);
       } catch (error) {
         console.log("Lỗi khi lấy chi tiết người dùng!", error);
@@ -28,4 +26,4 @@ function useUserDetail() {
   return { user, setUser, loading };
 }
 
-export default useUserDetail;
+export default useUser;

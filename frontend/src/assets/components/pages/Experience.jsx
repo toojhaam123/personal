@@ -1,4 +1,4 @@
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 import { useEffect, useState } from "react";
 import FormAddExpInfo from "../../components/form/FormAddExpInfo";
 import FormUpdateExpInfo from "../../components/form/FormUpdateExpInfo";

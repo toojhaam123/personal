@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 export default function Notification_Details() {
   const [loading, setLoading] = useState(false);
   const { id } = useParams();

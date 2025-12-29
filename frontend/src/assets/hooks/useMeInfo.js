@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../config/axios";
+import axiosPrivate from "@/utils/axiosPrivate";
 
 const useMeInfo = () => {
   const token = localStorage.getItem("token");
@@ -9,7 +9,7 @@ const useMeInfo = () => {
     if (!token) return;
     const fetchUserInfo = async () => {
       try {
-        const res = await axiosInstance.get("auth/me");
+        const res = await axiosPrivate.get("auth/me");
         setMe(res.data);
         // console.log("Tôi: ", res.data);
       } catch (e) {

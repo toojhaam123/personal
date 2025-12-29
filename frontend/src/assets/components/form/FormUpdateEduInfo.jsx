@@ -1,4 +1,4 @@
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 
 function FormUpdateEduInfo({
   loading,

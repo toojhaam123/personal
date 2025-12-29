@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 import FormUpdateUserInfo from "./form/FormUpdateUserInfo";
-import useUserDetail from "../hooks/useUserDetail";
-import axiosInstance from "../../config/axios";
+import useUser from "../hooks/useUser";
+import axiosInstance from "../../utils/axiosPrivate";
 function Sidebar({ token, setStatus }) {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
 
   // Lấy thông tin người dùng từ API về hiện thị
-  const { user, setUser } = useUserDetail(); // Thông tin người dùng
+  const { user, setUser } = useUser(); // Thông tin người dùng
 
   // Hàm xử lý xóa thông tin người dùng
   const handleDeleteUserInfo = async (id) => {

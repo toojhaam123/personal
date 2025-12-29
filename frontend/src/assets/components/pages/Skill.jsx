@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 import FormAddSkillInfo from "../form/FormAddSkillInfo";
 import FormUpdateSkillInfo from "../form/FormUpdateSkillInfo";
 function Skill({ token, setStatus }) {

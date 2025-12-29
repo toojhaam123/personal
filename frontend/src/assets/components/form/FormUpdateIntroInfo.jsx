@@ -1,5 +1,5 @@
 import React from "react";
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 function FormUpdateHomeInfo({
   loading,
   setLoading,

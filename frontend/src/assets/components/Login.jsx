@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import axiosPublic from "@/utils/axiosPublic";
 
 function Login({ setStatus }) {
   const [loading, setLoading] = useState(false);
@@ -9,6 +8,8 @@ function Login({ setStatus }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/"; // Lấy state vị trị đã lưu để quay lại
 
   const minPw = 6;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,7 +57,7 @@ function Login({ setStatus }) {
     setLoading(true);
     try {
       //   Gửi request đăng nhập
-      const res = await axios.post("http://127.0.0.1:8000/api/auth/login", {
+      const res = await axiosPublic.post("/auth/login", {
         email,
         password,
       });
@@ -76,7 +77,7 @@ function Login({ setStatus }) {
         type: "success",
         message: res.data.message,
       });
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (error) {
       const status = error.response?.status;
 

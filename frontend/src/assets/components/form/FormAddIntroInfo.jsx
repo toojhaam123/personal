@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 
 function FormAddIntroInfo({
   loading,

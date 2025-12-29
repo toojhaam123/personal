@@ -1,4 +1,4 @@
-import axiosInstance from "../../../config/axios";
+import axiosInstance from "../../../utils/axiosPrivate";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FormAddPortfolio from "../form/FormAddPortfolio";

@@ -42,7 +42,7 @@ class AuthController extends Controller
 
         User::create($validated);
 
-        return response()->json(['message' => "Đăng ký thành công!"], 201);
+        return response()->json(['message' => "Đăng ký thành công, mời bạn đăng nhập!"], 201);
     }
 
     public function login(Request $request)
