@@ -83,9 +83,12 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         $userId = $request->user()->id;
+
+        // Thu hồi token hiện tại
+        $request->user()->currentAccessToken()->delete();
+
         // Tìm bản ghi cần xóa 
         $user = User::where('id', $userId)->firstOrFail();
-
 
         // Xóa ảnh avatar nếu có
         if (!empty($user->avatar)) {
@@ -102,7 +105,7 @@ class UserController extends Controller
         return response()->json(
             [
                 'success' => true,
-                'message' => "Xóa thông tin người dùng thành công!",
+                'message' => "Tài khoản của bạn đã xóa thành công!",
             ],
             200
         );

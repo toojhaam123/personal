@@ -92,7 +92,15 @@ class IntroductionController extends Controller
 
     public function index(Request $request)
     {
-        return Introduction::latest()->get();
+        $username = $request->user()->username;
+
+        $introInfo = Introduction::where('username', $username)->first();
+
+        if (!$introInfo) {
+            return response()->json(['message' => 'Không tìm thấy thông tin hoặc bạn không có quyền'], 404);
+        }
+
+        return $introInfo;
     }
 
     // Xóa thông tin trang chủ 

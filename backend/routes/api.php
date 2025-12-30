@@ -19,8 +19,6 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
-        Route::post('{id}', [AuthController::class, 'update']);
-        Route::delete('{id}', [AuthController::class, 'destroy']);
     });
 });
 

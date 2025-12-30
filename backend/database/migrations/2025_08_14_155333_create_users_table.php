@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('email')->uniqid();
+            $table->string('username')->unique();
+            $table->string('email')->unique();
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->string('fullname')->nullable();
@@ -34,22 +34,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'avatar',
-                'fullname',
-                'job_title',
-                'birth',
-                'address',
-                'link_address',
-                'phone',
-                'facebook',
-                'link_facebook',
-                'github',
-                'link_github',
-            ]);
-        });
+        Schema::dropIfExists("users");
     }
 };

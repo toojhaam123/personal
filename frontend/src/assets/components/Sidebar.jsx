@@ -1,37 +1,62 @@
+import Swal from "sweetalert2";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { formatDateVN } from "../utils/dateUtils";
 import FormUpdateUserInfo from "./form/FormUpdateUserInfo";
 import useUser from "../hooks/useUser";
-import axiosInstance from "../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
 function Sidebar({ token, setStatus }) {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const navigate = useNavigate();
 
   // Lấy thông tin người dùng từ API về hiện thị
   const { user, setUser } = useUser(); // Thông tin người dùng
 
   // Hàm xử lý xóa thông tin người dùng
-  const handleDeleteUserInfo = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa không!")) return;
-    setLoading(true);
-    try {
-      const res = await axiosInstance.delete("auth/users");
-      setUser((prev) => prev.filter((item) => item.id !== id));
-      setStatus({
-        type: "success",
-        message: res.data.message,
-      });
-      setEditMode(false);
-    } catch (err) {
-      setStatus({
-        type: "error",
-        message: "Lỗi khi xóa thông tin người dùng!",
-        err,
-      });
-    } finally {
-      setLoading(false);
+  const handleDeleteUserInfo = async () => {
+    // hiện thị hộp thoại xác nhận xóa
+    const result = await Swal.fire({
+      title: "Bạn có chắc chắn!",
+      text: "Tài khoản sẽ bị xóa vĩnh viễn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "red", // Màu đỏ cho nút xóa
+      cancelButtonColor: "green", // Màu xanh cho nút thoát
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    });
+
+    if (result.isConfirmed) {
+      setLoading(true);
+      try {
+        await axiosPrivate.delete("users");
+        // Thông báo thành công
+        await Swal.fire({
+          title: "Xóa thành công!",
+          text: "Tài khoản đã xóa khỏi hệ thống!",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        setEditMode(false);
+        // Xóa token
+        localStorage.removeItem("token");
+        navigate("/");
+      } catch (err) {
+        Swal.fire({
+          title: "Lỗi!",
+          text:
+            err.response?.data?.message ||
+            "Không thể xóa thông tin, vui lòng thử lại.",
+          icon: "error",
+          confirmButtonText: "Đã hiểu",
+        });
+        console.log("Lỗi chi tiết: ", err.response?.data);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -61,7 +86,8 @@ function Sidebar({ token, setStatus }) {
               </button>
               {editMode && (
                 <button
-                  onClick={() => handleDeleteUserInfo(user.id)}
+                  type="button"
+                  onClick={handleDeleteUserInfo}
                   className="border bg-red-600 hover:bg-red-700 transition duration-500 mb-3"
                 >
                   {loading ? (

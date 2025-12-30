@@ -1,23 +1,24 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPublic from "@/utils/axiosPublic";
+import axiosPrivate from "@/utils/axiosPrivate";
 import { useEffect, useState } from "react";
 import useUser from "../../hooks/useUser";
 import FormAddIntroInfo from "../form/FormAddIntroInfo";
 import FormUpdateIntroInfo from "../form/FormUpdateIntroInfo";
-function Home({ token, setStatus }) {
+function Introduction({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const { user } = useUser(); // Thông tin người dùng
 
   // Lấy thông tin trang chủ từ API
-  const [introInfo, setIntroInfo] = useState([]);
+  const [introInfo, setIntroInfo] = useState(null);
   // console.log("User in intro: ", user);
   useEffect(() => {
-    const fetchHomeInfo = async () => {
+    const fetchIntroInfo = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("introductions");
-        setIntroInfo(Array.isArray(res.data) ? res.data : [res.data]);
+        const res = await axiosPublic.get("introductions");
+        setIntroInfo(res.data);
         // console.log("Thôn tin trang chủ: ", res.data);
       } catch (e) {
         console.log("Lỗi khi lấy thông tin giới thiệu!", e);
@@ -25,16 +26,18 @@ function Home({ token, setStatus }) {
         setLoading(false);
       }
     };
-    fetchHomeInfo();
+    fetchIntroInfo();
   }, []);
 
+  console.log("Intro: ", introInfo);
+
   // Xóa thông tin trang chủ
-  const handleDeleteHomeInfo = async (id) => {
+  const handleDeleteIntroInfo = async (id) => {
     if (!window.confirm("Bạn chắc chắn muốn xóa không!")) return;
     setLoading(true);
     try {
-      const res = await axiosInstance.delete(`home/${id}`);
-      setIntroInfo((prev) => prev.filter((item) => item.id !== id));
+      const res = await axiosPrivate.delete(`introductions/${id}`);
+      setIntroInfo("");
       setStatus({
         type: "success",
         message: res.data.message,
@@ -58,7 +61,7 @@ function Home({ token, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Thêm thông tin trang chủ */}
-        {token && (!introInfo || introInfo.length === 0) ? (
+        {token && !introInfo ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -98,9 +101,9 @@ function Home({ token, setStatus }) {
                 )}
               </button>
               {editMode && (
-                // Nút xóa thông tin trang chủ
+                // Nút xóa thông tin giới thiệu
                 <button
-                  onClick={() => handleDeleteHomeInfo(introInfo[0].id)}
+                  onClick={() => handleDeleteIntroInfo()}
                   className="border bg-red-600 hover:bg-red-700 transition duration-500 mb-3"
                 >
                   {loading ? (
@@ -144,33 +147,33 @@ function Home({ token, setStatus }) {
               />
             </>
           ) : (
-            // Hiện thị thông tin trang chủ
-            <div className="home_info">
+            // Hiện thị thông tin giới thiệu
+            <div>
               {loading ? (
                 <p>
                   <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
                   Vui lòng chờ!
                 </p>
+              ) : introInfo ? (
+                <p className="text-start text-lg mb-4 whitespace-pre-line">
+                  Thông tin {introInfo.intro_info}
+                </p>
               ) : (
-                introInfo[0]?.home_info && (
-                  <p className="text-start text-lg mb-4 whitespace-pre-line">
-                    {introInfo[0].home_info}
-                  </p>
-                )
+                <p className="text-center">
+                  Không có thông tin giới thiệu nào!
+                </p>
               )}
-              {!editMode && introInfo.length > 0
-                ? introInfo[0]?.cv_path && (
-                    <a
-                      href={`http://127.0.0.1:8000${introInfo[0].cv_path}`}
-                      target="_blank"
-                      className="px-4 py-2 border border-blue-600 text-white 
+              {!editMode && introInfo && (
+                <a
+                  href={`http://127.0.0.1:8000${introInfo.cv_path}`}
+                  target="_blank"
+                  className="px-4 py-2 border border-blue-600 text-white 
                     rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 
                       hover:border-white float-end"
-                    >
-                      <i className="fa-regular fa-file"></i> Xem CV
-                    </a>
-                  )
-                : !loading && <p>Không có thông tin giới thiệu nào!</p>}
+                >
+                  <i className="fa-regular fa-file"></i> Xem CV
+                </a>
+              )}
             </div>
           )}
         </div>
@@ -198,4 +201,4 @@ function Home({ token, setStatus }) {
   );
 }
 
-export default Home;
+export default Introduction;

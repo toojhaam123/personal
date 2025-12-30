@@ -1,4 +1,4 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
 
 function FormUpdateUserInfo({
   loading,
@@ -52,7 +52,7 @@ function FormUpdateUserInfo({
         }
       });
 
-      const res = await axiosInstance.post("users", formData);
+      const res = await axiosPrivate.post("users", formData);
 
       // cập nhập ngay ảnh mới
       setUser((prev) => ({
