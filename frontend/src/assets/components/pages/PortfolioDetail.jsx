@@ -1,4 +1,5 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPublic from "@/utils/axiosPublic";
+import axiosPrivate from "@/utils/axiosPrivate";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -7,7 +8,7 @@ import FormUpdatePortfolio from "../form/FormUpdatePortfolio";
 function PortfolioDetail({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const { id } = useParams();
+  const { username, slug } = useParams();
   const [portfolioDetail, setPortfolioDetail] = useState(null);
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
   const navigate = useNavigate();
@@ -16,16 +17,16 @@ function PortfolioDetail({ token, setStatus }) {
     const fetchPortfolioDetail = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get(`portfolios/${id}`);
+        const res = await axiosPublic.get(`${username}/portfolio/${slug}`);
         setPortfolioDetail(res.data);
       } catch (e) {
-        console.log("Lỗi khi lấy chi tiết dự án!", e);
+        console.log("Lỗi khi lấy chi tiết dự án!", e.response?.data);
       } finally {
         setLoading(false);
       }
     };
     fetchPortfolioDetail();
-  }, [id]);
+  }, [slug]);
 
   // Xử lý xóa dự án
   const handleDeletePortfolio = async (id) => {
@@ -37,20 +38,20 @@ function PortfolioDetail({ token, setStatus }) {
 
     try {
       setLoading(true);
-      const res = await axiosInstance.delete(`portfolios/${id}`);
+      const res = await axiosPrivate.delete(`${username}/portfolio/${id}`);
       if (res.data.success) {
         setStatus({
           type: "success",
           message: res.data.message,
         });
-        navigate("/portfolio");
+        navigate(`/${username}/portfolio`);
         setStatus({
           type: "success",
           message: res.data.message,
         });
       }
     } catch (e) {
-      console.log("Lỗi khi xóa dự án!", e);
+      console.log("Lỗi khi xóa dự án!", e.response?.data);
     } finally {
       setLoading(false);
     }

@@ -4,117 +4,118 @@ namespace App\Http\Controllers;
 
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
-use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PortfolioController extends Controller
 {
     // Thêm bản ghi thong tin dự án
-    public function store(Request $request)
+    public function storeOrUpdate(Request $request)
     {
+        // Validate
+        $validated = $request->validate([
+            'id' => 'nullable|integer',
+            'avatarPort' => 'nullable|image|mimes:jpg,gif,png,jpeg|max:5120',
+            'title' => 'required|string|max:255',
+            'description' => 'string|nullable',
+            'link' => 'string|nullable',
+        ]);
         try {
-            // Validate
-            $portfolio = $request->validate([
-                'avatarPort' => '|nullable|image|mimes:jpg,gif,png,jpeg|max:5120',
-                'title' => 'string|nullable|max:255',
-                'description' => 'string|nullable',
-                'link' => 'string|nullable',
-            ]);
+            $username = $request->user()->username;
+            $id = $request->input('id');
+
+            $portfolio = null;
+
+            if ($id) {
+                // Tìm bản ghi xem có không 
+                $portfolio = Portfolio::where('id', $id)->where('username', $username)->first();
+            }
+
+            $dataToSave = $validated;
+            $dataToSave['username'] = $username;
+            $dataToSave['slug'] = Str::slug($request->title);
 
             // Xử lý ảnh nếu có 
             if ($request->hasFile('avatarPort')) {
-                $file = $request->file('avatarPort');
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('avatarPort', $fileName, 'public');
-                $portfolio['avatarPort'] = $fileName;
-            }
-
-            // thêm bản ghi 
-            $respon = Portfolio::create($portfolio);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Thêm dự án thành công!',
-                'data' => $respon,
-            ]);
-        } catch (\Throwable $e) {
-            return response()->json([[
-                'success' => false,
-                'message' => 'Thêm dự án thất bại!',
-                'error' => $e->getMessage(),
-            ]]);
-        }
-    }
-
-    // Cập nhật dự án 
-    public function update(Request $request, $id)
-    {
-        try {
-            // Kiểm trả bản ghi 
-            $portfolio = Portfolio::findOrFail($id);
-
-            // Validate 
-            $validated = $request->validate([
-                'avatarPort' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
-                'title' => 'string|nullable|max:255',
-                'description' => 'string|nullable',
-                'link' => 'string|nullable',
-            ]);
-
-            // Nếu có file 
-            if ($request->hasFile('avatarPort')) {
-                // xóa ảnh cũ nếu có
-                if ($portfolio->avatarPort && file_exists(storage_path('app/public/avatarPort/' . $portfolio->avatarPort))) {
-                    unlink(storage_path('app/public/avatarPort/' . $portfolio->avatarPort));
+                // Xóa bản ghi cũ nếu có 
+                if ($portfolio?->avatarPort && Storage::disk('public')->exists('avatarPort/' . $portfolio?->avatarPort)) {
+                    Storage::disk('public')->delete('avatarPort/' . $portfolio?->avatarPort);
                 }
 
+                // Lưu file mới 
                 $file = $request->file('avatarPort');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('avatarPort', $fileName, 'public');
-                $validated['avatarPort'] = $fileName;
+                $dataToSave['avatarPort'] = $fileName;
             }
 
-            // Cập nhật 
-            $portfolio->update($validated);
+            // tLưu dữ liệu
+            $result = Portfolio::updateOrCreate(
+                ['id' => $id, 'username' => $username],
+                $dataToSave,
+            );
 
-            // Trả về kq 
             return response()->json([
                 'success' => true,
-                'message' => 'Cập nhật dự án thành công!',
-                'data' => $portfolio,
+                'message' => $id ? "Cập nhật dự án thành công!" : 'Thêm dự án mới thành công!',
+                'data' => $result,
             ]);
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cập nhật thông tin dự án thất bại!',
+                'message' => 'Thêm dự án thất bại!' . $e->getLine(),
                 'error' => $e->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     // Lấy dữ liệu dự án 
-    public function index()
+    public function index(Request $request, $username)
     {
-        return Portfolio::latest()->paginate(10);
+        // Tìm bản ghi 
+        $portfolio = Portfolio::where('username', $username)->orderBy('created_at', 'desc')->get();
+
+        if ($portfolio->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => "Không tìm thấy dự án nào!",
+                'data' => [],
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $portfolio,
+        ], 200);
     }
 
     // Xem chi tiết dự án 
-    public function portfolioDetail($id)
+    public function portfolioDetail(Request $request, $username, $slug)
     {
-        $detailPort = Portfolio::findOrFail($id);
+        $detailPort = Portfolio::where('username', $username)->where('slug', $slug)->first();
         return response()->json($detailPort);
     }
 
     // Xóa dự án
-    public function destroy($id)
+    public function destroy(Request $request, $username, $id)
     {
+        $authenticatedUser = $request->user()->username;
         try {
             // Tìm bản ghi
             $portfolio = Portfolio::findOrFail($id);
 
+            if ($authenticatedUser !== $username) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Bạn không có quyền xóa thông tin này!",
+                ]);
+            }
             // Nếu có ảnh lưu trong storage thì xóa luôn 
-            if ($portfolio->avatarPort && file_exists(storage_path('app/public/avataPort/' . $portfolio->avatarPort))) {
-                @unlink(storage_path('app/public/avatarPort/' . $portfolio->avatarPort));
+            if ($portfolio->avatarPort) {
+                $path = 'avatarPort/' . $portfolio->avatarPort;
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
             }
 
             $portfolio->delete();

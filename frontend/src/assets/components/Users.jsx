@@ -44,7 +44,7 @@ function Users({ token, setStatus }) {
             <Route path="contact" element={<Contact setStatus={setStatus} />} />
             {/* Nếu chưa login thì ko thể vào được qua đường link */}
             <Route
-              path="notifications"
+              path="notification"
               element={
                 <ProtectRoute>
                   <Notification />
@@ -52,7 +52,7 @@ function Users({ token, setStatus }) {
               }
             />
             <Route
-              path="portfolio_detail/:id"
+              path="portfolio/:slug"
               element={
                 <PortfolioDetail
                   token={token}

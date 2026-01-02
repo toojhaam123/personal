@@ -58,7 +58,7 @@ function Navbar({ token, setStatus }) {
       </NavLink>
       {token && (
         <NavLink
-          to={`${base}/notifications`}
+          to={`${base}/notification`}
           className={({ isActive }) =>
             `hover:text-blue-600 ${isActive ? "text-blue-600" : ""}`
           }

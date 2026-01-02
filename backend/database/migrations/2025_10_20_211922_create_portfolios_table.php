@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign("username")->references("username")->on("users")->cascadeOnDelete();
             $table->string('avatarPort')->nullable();
             $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->text('description')->nullable();
             $table->string('link')->nullable();
             $table->timestamps();

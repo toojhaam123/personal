@@ -1,4 +1,5 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
+import { useParams } from "react-router-dom";
 function FormUpdatePortfolio({
   loading,
   setLoading,
@@ -8,19 +9,22 @@ function FormUpdatePortfolio({
   setPortfolioDetail,
   setPreviewImage,
 }) {
+  const { username } = useParams();
   // Xử lý thay đổi khi cập nhật
   const handleChangeUpdatePort = (e) => {
     const { name, value, files } = e.target;
-    const file = files && files.length > 0 ? files[0] : null;
 
-    setPortfolioDetail((prev) => ({
-      ...prev,
-      [name]: file || value,
-    }));
-
-    // nếu là input file thì tạo URL preview
-    if (name === "avatarPort" && file) {
-      setPreviewImage(URL.createObjectURL(file));
+    if (name === "avatarPort") {
+      const file = files[0];
+      if (file) {
+        setPortfolioDetail((prev) => ({
+          ...prev,
+          avatarPort: file,
+        }));
+        setPreviewImage(URL.createObjectURL(file));
+      }
+    } else {
+      setPortfolioDetail((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -46,10 +50,8 @@ function FormUpdatePortfolio({
 
         formData.append(key, portfolioDetail[key]);
       });
-      const res = await axiosInstance.post(
-        `portfolios/${portfolioDetail.id}`,
-        formData
-      );
+      console.log("id gửi đi: ", formData.get("id"));
+      const res = await axiosPrivate.post(`${username}/portfolio`, formData);
 
       // Cập nhật lại state
       setPortfolioDetail(res.data.data);
@@ -57,10 +59,9 @@ function FormUpdatePortfolio({
         type: "success",
         message: res.data.message,
       });
-      // console.log("Cập nhật thành công!");
       setEditMode(false);
     } catch (e) {
-      console.log("Lỗi khi chỉnh sửa thông tin dự án!", e);
+      console.log("Lỗi khi chỉnh sửa thông tin dự án!", e.response?.data);
     } finally {
       setLoading(false);
     }

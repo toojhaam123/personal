@@ -1,17 +1,20 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPublic from "@/utils/axiosPublic";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import FormAddPortfolio from "../form/FormAddPortfolio";
 function Portfolio({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const [portfolio, setPortfolio] = useState([]); // Lấy danh sách các dự án
   const [previewImage, setPreviewImage] = useState(null); // preview hình ảnh
+  const { username } = useParams();
+  const base = `/${username}`;
+
   useEffect(() => {
     const fetchPortfolio = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("portfolios");
+        const res = await axiosPublic.get(`${username}/portfolio`);
         setPortfolio(res.data.data);
       } catch (e) {
         console.log("Lỗi khi lấy thông tin dự án: ", e);
@@ -78,15 +81,17 @@ function Portfolio({ token, setStatus }) {
                   {portfolio.map((item, index) => (
                     <Link
                       key={`item.id ?? "STT-" ${index}`}
-                      to={`/portfolio_detail/${item.id}`}
+                      to={`${base}/portfolio/${item?.slug}`}
                     >
                       <div className="shadow-xl cursor-pointer pb-4 rounded-lg hover:bg-gray-800 m-2 transition duration-500">
                         <img
-                          src={`http://127.0.0.1:8000/storage/avatarPort/${item.avatarPort}`}
+                          src={`http://127.0.0.1:8000/storage/avatarPort/${item?.avatarPort}`}
                           alt=""
                           className="border h-[190px] w-[100%] mx-auto rounded object-cover m-1"
                         />
-                        <h2 className="font-bold text-lg mb-1">{item.title}</h2>
+                        <h2 className="font-bold text-lg mb-1">
+                          {item?.title}
+                        </h2>
                       </div>
                     </Link>
                   ))}

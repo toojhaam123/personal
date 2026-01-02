@@ -1,15 +1,23 @@
-import axiosInstance from "../../../utils/axiosPrivate";
-import { useState } from "react";
+import axiosPrivate from "@/utils/axiosPrivate";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 function FormAddPortfolio({
   loading,
   setLoading,
-  addMode,
   setAddMode,
   setStatus,
   setPort,
   previewImage,
   setPreviewImage,
 }) {
+  const { username } = useParams();
+  //Dọn URL preview
+  useEffect(() => {
+    return () => {
+      if (previewImage) URL.revokeObjectURL(previewImage);
+    };
+  }, [previewImage]);
+
   const [formData, setFormData] = useState({
     avatarPort: null,
     title: "",
@@ -20,14 +28,22 @@ function FormAddPortfolio({
   // Xủa lý nhâp thông tin dự án
   const handleChangePortfolio = (e) => {
     const { name, value, files } = e.target; // Lấy file từ input
-    const file = files && files.length > 0 ? files[0] : null;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: file || value, // Nếu là file thì lấy file đầu tiên, ko thì lấy value
-    }));
+
     // Nếu là input file thì tạo URL preview
-    if (name === "avatarPort" && file) {
-      setPreviewImage(URL.createObjectURL(file));
+    if (name === "avatarPort" && files && files[0]) {
+      const file = files[0];
+      setFormData((prev) => ({
+        ...prev,
+        avatarPort: file,
+      }));
+      // Tạo preview mói
+      const url = URL.createObjectURL(file);
+      setPreviewImage(url);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
@@ -38,11 +54,14 @@ function FormAddPortfolio({
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        if (formData[key] !== null) {
+          data.append(key, formData[key]);
+        }
       });
 
-      const res = await axiosInstance.post("portfolios", data);
+      const res = await axiosPrivate.post(`${username}/portfolio`, data);
       setStatus({ type: "success", message: res.data.message });
+      setPort((prev) => [res.data.data || res.data, ...prev]);
       // reset lại form
       setFormData({
         avatarPort: null,
@@ -51,9 +70,9 @@ function FormAddPortfolio({
         link: "",
       });
       setAddMode(false);
-      setPort((prev) => [...prev, res.data]);
+      setPreviewImage(null);
     } catch (e) {
-      console.error("Lỗi khi gửi dự án: ", e);
+      console.log("Lỗi khi thêm dự án: ", e.response?.data);
     } finally {
       setLoading(false);
     }
@@ -61,27 +80,27 @@ function FormAddPortfolio({
 
   return (
     <form
-      action=""
       onSubmit={handleSubmitPortfolio}
       method="post"
       className="p-2 rounded"
     >
       {previewImage && (
-        <img
-          src={previewImage}
-          // src="../../public/1696433119267khunghinh.net.png"
-          alt=""
-          className="border rounded w-[30%] mx-auto object-cover"
-        />
+        <div className="mb-4 text-center">
+          <img
+            src={previewImage}
+            alt="Ảnh xem trước"
+            className="border rounded w-[200px] h-[150px] mx-auto object-cover"
+          />
+        </div>
       )}
       <label className="float-start text-lg p-2" htmlFor="avatarPort">
         Ảnh dự án
       </label>
       <input
-        key={addMode ? "editOn" : "editOff"} // reset input khi thoát edit
         type="file"
         id="avatarPort"
         name="avatarPort"
+        accept="image/*"
         onChange={(e) => handleChangePortfolio(e)}
         className="w-full bg-white text-black rounded text-lg p-2"
       />
@@ -92,6 +111,7 @@ function FormAddPortfolio({
         className="w-full bg-white text-black mt-1 text-lg rounded p-2"
         type="text"
         name="title"
+        value={formData.title}
         onChange={(e) => handleChangePortfolio(e)}
         id="title"
       />
@@ -107,6 +127,7 @@ function FormAddPortfolio({
         id="description"
         onChange={(e) => handleChangePortfolio(e)}
         rows={10}
+        value={formData.description}
         className="text-black bg-white w-full mt-1 text-lg p-2 rounded"
       ></textarea>
       <label
@@ -119,6 +140,7 @@ function FormAddPortfolio({
       <input
         name="link"
         id="link"
+        value={formData.link}
         onChange={(e) => handleChangePortfolio(e)}
         className="w-full bg-white text-black mt-1 text-lg rounded p-2"
         type="url"

@@ -76,13 +76,12 @@ Route::prefix('educations')->group(function () {
 });
 
 // Portfolio 
-Route::prefix('portfolios')->group(function () {
+Route::prefix('{username}/portfolio')->group(function () {
     Route::get('/', [PortfolioController::class, 'index']);
-    Route::get('{id}', [PortfolioController::class, 'portfolioDetail']);
+    Route::get('{slug}', [PortfolioController::class, 'portfolioDetail']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('', [PortfolioController::class, 'store']);
-        Route::post('{id}', [PortfolioController::class, 'update']);
+        Route::post('/', [PortfolioController::class, 'storeOrUpdate']);
         Route::delete('{id}', [PortfolioController::class, 'destroy']);
     });
 });
