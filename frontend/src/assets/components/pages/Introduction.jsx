@@ -4,24 +4,28 @@ import { useEffect, useState } from "react";
 import useUser from "../../hooks/useUser";
 import FormAddIntroInfo from "../form/FormAddIntroInfo";
 import FormUpdateIntroInfo from "../form/FormUpdateIntroInfo";
+import { useParams } from "react-router-dom";
 function Introduction({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const { user } = useUser(); // Thông tin người dùng
 
-  // Lấy thông tin trang chủ từ API
+  const { username } = useParams();
+  // console.log("Username: ", username);
+
+  // Lấy thông tin giới thiệu từ API
   const [introInfo, setIntroInfo] = useState(null);
   // console.log("User in intro: ", user);
   useEffect(() => {
     const fetchIntroInfo = async () => {
       setLoading(true);
       try {
-        const res = await axiosPublic.get("introductions");
+        const res = await axiosPublic.get(`introductions/${username}`);
         setIntroInfo(res.data);
-        // console.log("Thôn tin trang chủ: ", res.data);
+        // console.log("Thôn tin giới thiệu: ", res.data);
       } catch (e) {
-        console.log("Lỗi khi lấy thông tin giới thiệu!", e);
+        console.log("Lỗi khi lấy thông tin giới thiệu!", e.response?.data);
       } finally {
         setLoading(false);
       }
@@ -29,9 +33,7 @@ function Introduction({ token, setStatus }) {
     fetchIntroInfo();
   }, []);
 
-  console.log("Intro: ", introInfo);
-
-  // Xóa thông tin trang chủ
+  // Xóa thông tin giới thiệu
   const handleDeleteIntroInfo = async (id) => {
     if (!window.confirm("Bạn chắc chắn muốn xóa không!")) return;
     setLoading(true);
@@ -46,7 +48,7 @@ function Introduction({ token, setStatus }) {
     } catch (err) {
       setStatus({
         type: "error",
-        message: "Lỗi khi xóa thông tin trang chủ!",
+        message: "Lỗi khi xóa thông tin giới thiệu!",
         err,
       });
     } finally {
@@ -60,7 +62,7 @@ function Introduction({ token, setStatus }) {
         <i className="fa-solid fa-hand"></i> Xin chào
       </h1>
       <div className="flex gap-2">
-        {/* Thêm thông tin trang chủ */}
+        {/* Thêm thông tin giới thiệu */}
         {token && !introInfo ? (
           <button
             type="button"
@@ -103,7 +105,7 @@ function Introduction({ token, setStatus }) {
               {editMode && (
                 // Nút xóa thông tin giới thiệu
                 <button
-                  onClick={() => handleDeleteIntroInfo()}
+                  onClick={() => handleDeleteIntroInfo(introInfo?.id)}
                   className="border bg-red-600 hover:bg-red-700 transition duration-500 mb-3"
                 >
                   {loading ? (
@@ -123,7 +125,7 @@ function Introduction({ token, setStatus }) {
       </div>
       <div className="flex">
         <div className="flex-[6]">
-          {/* Form thêm thông tin trang chủ */}
+          {/* Form thêm thông tin giới thiệu */}
           {addMode ? (
             <FormAddIntroInfo
               token={token}
@@ -135,7 +137,7 @@ function Introduction({ token, setStatus }) {
             />
           ) : editMode ? (
             <>
-              {/* Form update thông tin trang chủ */}
+              {/* Form update thông tin giới thiệu */}
               <FormUpdateIntroInfo
                 token={token}
                 loading={loading}
@@ -156,7 +158,7 @@ function Introduction({ token, setStatus }) {
                 </p>
               ) : introInfo ? (
                 <p className="text-start text-lg mb-4 whitespace-pre-line">
-                  Thông tin {introInfo.intro_info}
+                  {introInfo.intro_info}
                 </p>
               ) : (
                 <p className="text-center">
@@ -165,7 +167,7 @@ function Introduction({ token, setStatus }) {
               )}
               {!editMode && introInfo && (
                 <a
-                  href={`http://127.0.0.1:8000${introInfo.cv_path}`}
+                  href={`http://127.0.0.1:8000/storage/cv/${introInfo.cv_path}`}
                   target="_blank"
                   className="px-4 py-2 border border-blue-600 text-white 
                     rounded-lg hover:bg-blue-600 hover:text-white transition duration-500 

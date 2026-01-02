@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Introduction extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'intro_info', 'cv_path'];
+    protected $fillable = ['username', 'intro_info', 'cv_path'];
 }

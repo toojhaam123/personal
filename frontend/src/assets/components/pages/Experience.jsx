@@ -1,21 +1,25 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPublic from "@/utils/axiosPublic";
+import axiosPrivate from "@/utils/axiosPrivate";
 import { useEffect, useState } from "react";
 import FormAddExpInfo from "../../components/form/FormAddExpInfo";
 import FormUpdateExpInfo from "../../components/form/FormUpdateExpInfo";
+import { useParams } from "react-router-dom";
 function Experience({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
-  const [expInfo, setExpInfo] = useState([]);
+  const [expInfo, setExpInfo] = useState(null);
+  const { username } = useParams();
+
   useEffect(() => {
     // Lấy thông tin kinh nghiệm từ API gửi về
     const fetcExpInfo = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("experiences");
-        setExpInfo(Array.isArray(res.data) ? res.data : [res.data]);
+        const res = await axiosPublic.get(`experiences/${username}`);
+        setExpInfo(res.data);
       } catch (e) {
-        console.log("Có lỗi khi lấy thông tin kinh nghiệm!", e);
+        console.log("Có lỗi khi lấy thông tin kinh nghiệm!", e.response?.data);
       } finally {
         setLoading(false);
       }
@@ -28,8 +32,8 @@ function Experience({ token, setStatus }) {
     if (!window.confirm("Bạn có chắc muốn xóa không!")) return;
     setLoading(true);
     try {
-      const res = await axiosInstance.delete(`experiences/${id}`);
-      setExpInfo((prev) => prev.filter((item) => item.id != id));
+      const res = await axiosPrivate.delete(`experiences/${id}`);
+      setExpInfo("");
       setStatus({
         type: "success",
         message: res.data.message,
@@ -53,7 +57,7 @@ function Experience({ token, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Nú thêm thông tin người dùng */}
-        {token && (!expInfo || expInfo.length === 0) ? (
+        {token && !expInfo ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -94,7 +98,7 @@ function Experience({ token, setStatus }) {
               </button>
               {editMode && (
                 <button
-                  onClick={() => handleDeleteExperience(expInfo[0].id)}
+                  onClick={() => handleDeleteExperience(expInfo?.id)}
                   className="bg-red-600 border hover:bg-red-700 transition duration-500 mb-3"
                 >
                   {loading ? (
@@ -140,17 +144,17 @@ function Experience({ token, setStatus }) {
                   <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
                   Vui lòng chờ!
                 </p>
-              ) : expInfo.length === 0 ? (
+              ) : !expInfo ? (
                 <p className="text-center">
                   Không có thông tin kinh nghiệm nào!
                 </p>
               ) : (
-                expInfo[0]?.exp_info && (
+                expInfo?.exp_info && (
                   <p
-                    key={expInfo[0].id}
+                    key={expInfo?.id}
                     className="text-start text-lg mb-4 whitespace-pre-line"
                   >
-                    {expInfo[0].exp_info}
+                    {expInfo?.exp_info}
                   </p>
                 )
               )}

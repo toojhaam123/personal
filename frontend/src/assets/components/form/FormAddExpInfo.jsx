@@ -1,4 +1,4 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
 import { useState } from "react";
 
 function FormAddExpInfo({
@@ -26,7 +26,7 @@ function FormAddExpInfo({
     setLoading(true);
 
     try {
-      const res = await axiosInstance.post("experiences", addExpInfo);
+      const res = await axiosPrivate.post("experiences", addExpInfo);
 
       // Reset form
       setAddExpInfo({
@@ -38,8 +38,9 @@ function FormAddExpInfo({
         message: res.data.message,
       });
       setAddMode(false);
-      setExpInfo((prev) => [res.data.data, ...prev]);
+      setExpInfo(res.data.data);
     } catch (e) {
+      console.log("Lỗi khi thêm thông tin kinh nghiệm!", e.response?.data);
       setStatus({
         type: "error",
         message: "Lỗi khi thêm thông tin kinh nghiệm!",

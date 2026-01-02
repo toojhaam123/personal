@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
 
 function FormAddIntroInfo({
   loading,
@@ -50,7 +50,7 @@ function FormAddIntroInfo({
         formData.append("cv_path", addIntroInfo.cv_path);
       }
 
-      const res = await axiosInstance.post("introductions", formData);
+      const res = await axiosPrivate.post("introductions", formData);
 
       // reset lại form
       setAddIntroInfo({
@@ -58,13 +58,13 @@ function FormAddIntroInfo({
         cv_path: "",
       });
       setAddMode(false);
-      setIntroInfo((prev) => [res.data.data, ...prev]);
+      setIntroInfo(res.data.data);
       setStatus({
         type: "success",
         message: res.data.message,
       });
     } catch (err) {
-      console.log("Lỗi khi tạo thông tin giới thiệu!", err);
+      console.log("Lỗi khi tạo thông tin giới thiệu!", err.response?.data);
       setStatus({
         type: "error",
         message: "Lỗi khi tạo thông tin giới thiệu!",

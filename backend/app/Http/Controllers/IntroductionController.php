@@ -10,90 +10,60 @@ use Illuminate\Support\Facades\Storage;
 
 class IntroductionController extends Controller
 {
-    public function store(Request $request)
+    //hàm thêm mới nếu chưa có và chỉnh sửa nếu đã có bản ghi
+    public function storeOrUpdate(Request $request)
     {
-        $validated = $request->validate([
+        // Validated dữ liệu 
+        $request->validate([
             'intro_info' => 'nullable|string',
-            'cv_path' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
-
+            'cv_path' => 'nullable|file|mimes:pdf,doc,docx,|max:5120',
         ]);
 
         try {
-            // Nếu có file CV
-            if ($request->hasFile('cv_path')) { // Kiêm tra xem tro request có tên file cv_path hay ko, tránh người dùng ko gửi file mà backend vẫn xử lý 
-                $file = $request->file('cv_path'); // Lấy đối tượng file từ request
-                $fileName = time() . '_' . $file->getClientOriginalName(); // Tạo tên file mới để lưu, time() giúp tên file duy nhất, lấy tên file gốc
-                $file->storeAs('cv', $fileName); // lưu trong storage/app/public/cv
-                $validated['cv_path'] = '/storage/cv/' . $fileName;
+            $username = $request->user()->username;
+
+            // Tìm bản ghi của user này để xử lý file cũ nếu có 
+            $introInfo = Introduction::where("username", $username)->first();
+
+            $dataToSave = ['intro_info' => $request->intro_info,];
+
+            // xử lý file CV 
+            if ($request->hasFile('cv_path')) {
+                // Xóa bản ghi cũ nếu đã có 
+                if ($introInfo?->cv_path && Storage::disk('public')->exists('cv/' . $introInfo->cv_path)) {
+                    Storage::disk('public')->delete('cv/' . $introInfo->cv_path);
+                }
+
+                // Lưu file mới 
+                if ($request->hasFile('cv_path')) {
+                    $file = $request->file('cv_path');
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('cv', $fileName, 'public'); // Lưu vào storage/app/public/cv
+                    $dataToSave['cv_path'] = $fileName;
+                }
             }
 
-            // Validate user id 
-            $validated['user_id'] = $request->user()->id;
-
-            // Tạo bản ghi Intro
-            $introInfo = Introduction::create($validated);
+            // Nếu tìm thấy bản ghi thì update nếu ko thấy thì tạo mới
+            $result = Introduction::updateOrCreate(
+                ['username' => $username], // Điều kiện tìm kiếm
+                $dataToSave                // Dữ liệu cập nhập hoặc tạo mới
+            );
 
             return response()->json([
                 'success' => true,
-                'message' => 'Tạo thông tin giới thiệu thành công!',
-                'data'    => $introInfo,
+                'message' => $introInfo ? "Cập nhật thông tin giới thiệu thành công!" : "Thêm thông tin giới thiệu thành công!",
+                'data' => $result,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Lỗi khi tạo thông tin: ' . $e->getMessage(),
+                'message' => 'Lỗi khi thêm hoặc cập nhật thông tin giới thiệu!' . $e->getMessage(),
             ], 500);
         }
     }
 
-    public function update(Request $request, $id)
+    public function index(Request $request, $username)
     {
-
-        $validated = $request->validate([
-            'intro_info' => 'nullable|string',
-            'cv_path' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
-        ]);
-
-        // Kiểm tra bản ghi
-        $introInfo = Introduction::findOrFail($id);
-
-        // Cập nhật nội dung 
-        $introInfo->intro_info = $request->intro_info;
-
-        // nếu có file mới 
-        if ($request->hasFile('cv_path')) {
-            $file = $request->file('cv_path');
-
-            // Xóa file cũ nếu có
-            if (!empty($introInfo->cv_path)) {
-                $oldFile = str_replace('/storage', 'public', $introInfo->cv_path);
-                if (Storage::exists($oldFile)) {
-                    Storage::delete($oldFile);
-                }
-            }
-
-            // Lưu file mới 
-            $fileName = time() . "_" . $file->getClientOriginalName();
-            $file->storeAs('cv', $fileName);
-
-            // Lưu đường dẫn vào DB bỏ public
-            $introInfo->cv_path = "/storage/cv/" . $fileName;
-        }
-
-        $introInfo->save();
-
-        // trả về kết quả
-        return response()->json([
-            'success' => true,
-            'message' => 'Cập nhật thông tin trang chủ thành công!',
-            'data' => $introInfo,
-        ]);
-    }
-
-    public function index(Request $request)
-    {
-        $username = $request->user()->username;
-
         $introInfo = Introduction::where('username', $username)->first();
 
         if (!$introInfo) {
@@ -104,26 +74,38 @@ class IntroductionController extends Controller
     }
 
     // Xóa thông tin trang chủ 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        // Tìm bản ghi
-        $introInfo = Introduction::findOrFail($id);
-
-        // Xóa file CV nếu có
-        if (!empty($introInfo->cv_path)) {
-            $filePath = str_replace('/storage', 'public', $introInfo->cv_path);
-            if (Storage::exists($filePath)) {
-                Storage::delete($filePath);
+        try {
+            // Tìm bản ghi
+            $introInfo = Introduction::findOrFail($id);
+            // Kiểm tra quyền, đảm bảo user chỉ đc xóa của chính mình
+            if ($introInfo->username !== $request->user()->username) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bạn không có quyền xóa thông tin này!'
+                ], 403);
             }
+            // Xóa file CV nếu có
+            if (!empty($introInfo->cv_path)) {
+                $filePath = str_replace('/storage', 'public', $introInfo->cv_path);
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                }
+            }
+            // Xóa bản ghi trong DB
+            $introInfo->delete();
+
+            // Trả kết quả JSON
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã xóa thông tin thành công!',
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi xóa: ' . $e->getMessage(),
+            ], 500);
         }
-
-        // Xóa bản ghi trong DB
-        $introInfo->delete();
-
-        // Trả kết quả JSON
-        return response()->json([
-            'success' => true,
-            'message' => 'Đã xóa thông tin thành công!',
-        ]);
     }
 }

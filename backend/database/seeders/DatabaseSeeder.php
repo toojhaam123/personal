@@ -16,8 +16,10 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
+            'username' => 'tungpro', // Cột này Tùng có nè
+            'fullname' => 'Hạng A Tùng', // Đổi từ 'name' thành 'fullname'
             'email' => 'test@example.com',
+            'password' => bcrypt('123456'), // Thêm password nếu cần
         ]);
     }
 }

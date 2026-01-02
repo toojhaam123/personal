@@ -8,52 +8,43 @@ use Illuminate\Http\Request;
 class ExperienceController extends Controller
 {
     // Tạo thông tin Exp 
-    public function store(Request $request)
+    public function storeOrUpdate(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'exp_info' => 'nullable|string|max:255',
         ]);
 
-        $exp = Experience::create($validated);
+        try {
+            $username = $request->user()->username;
+            $exp = Experience::where("username", $username)->first();
+            $dataToSave = ['exp_info' => $request->exp_info,];
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Thêm thông tin kinh nghiệm thành công!',
-            'data' => $exp,
-        ], 200);
-    }
+            $result = Experience::updateOrCreate(
+                ['username' => $username],
+                $dataToSave,
+            );
 
-    public function update(Request $request, $id)
-    {
-        $exp = $request->validate([
-            'exp_info' => 'nullable|string',
-        ]);
-
-        // Kiểm tra bản ghi 
-        $exp = Experience::findOrFail($id);
-
-        if (!$exp) {
+            return response()->json([
+                'success' => true,
+                'message' => $exp ? "Cập nhập thông tin kinh nghiện thành công!" : "Thêm thông tin kinh nghiệm thành công!",
+                'data' => $result,
+            ], 200);
+        } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy bản ghi phù hợp!',
-            ], 400);
+                'message' => 'Lỗi khi thêm hoặc cập nhật dữ liệu!' . $th->getMessage(),
+            ]);
+        }
+    }
+    public function index(Request $request, $username)
+    {
+        $exp = Experience::where("username", $username)->first();
+
+        if (!$exp) {
+            return response()->json(['message' => 'Không tìm thấy thông tin hoặc bạn không có quyền'], 404);
         }
 
-        // cập nhập
-        $exp->update([
-            'exp_info' => $request->exp_info,
-        ]);
-
-        // trả kết quả 
-        return response()->json([
-            'success' => true,
-            'message' => "Cập nhật thông tin kinh nghiệm thành công!",
-        ]);
-    }
-
-    public function index(Request $request)
-    {
-        return Experience::latest()->get();
+        return $exp;
     }
 
     // Hàm xóa

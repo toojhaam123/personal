@@ -37,22 +37,20 @@ Route::prefix('users')->group(function () {
 
 // Giới thiệu (introduction)
 Route::prefix('introductions')->group(function () {
-    Route::get('/', [IntroductionController::class, 'index']);
+    Route::get('{username}', [IntroductionController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/', [IntroductionController::class, 'store']);
-        Route::post('{id}', [IntroductionController::class, 'update']);
+        Route::post('/', [IntroductionController::class, 'storeOrUpdate']);
         Route::delete('{id}', [IntroductionController::class, 'destroy']);
     });
 });
 
 // Experiences
 Route::prefix('experiences')->group(function () {
-    Route::get('/', [ExperienceController::class, 'index']);
+    Route::get('{username}', [ExperienceController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/', [ExperienceController::class, 'store']);
-        Route::post('{id}', [ExperienceController::class, 'update']);
+        Route::post('/', [ExperienceController::class, 'storeOrUpdate']);
         Route::delete('{id}', [ExperienceController::class, 'destroy']);
     });
 });
