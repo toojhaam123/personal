@@ -99,7 +99,7 @@ class IntroductionController extends Controller
             // Trả kết quả JSON
             return response()->json([
                 'success' => true,
-                'message' => 'Đã xóa thông tin thành công!',
+                'message' => 'Đã xóa thông tin giới thiệu thành công!',
             ]);
         } catch (\Throwable $e) {
             return response()->json([

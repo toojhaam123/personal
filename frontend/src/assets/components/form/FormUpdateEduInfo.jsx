@@ -1,4 +1,4 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
 
 function FormUpdateEduInfo({
   loading,
@@ -9,15 +9,13 @@ function FormUpdateEduInfo({
   setEduInfo,
 }) {
   // Xử lý thay đổi khi người dùng nhập vào textarea
-  const handleChangeUpdateEduInfo = (e, id) => {
-    const newValue = e.target.value;
-
+  const handleChangeUpdateEduInfo = (e) => {
+    const { name, value } = e.target;
     // cập nhật thông tin với giá trị mới
-    setEduInfo((edu) =>
-      edu.map((item) =>
-        item.id === id ? { ...item, edu_info: newValue } : item
-      )
-    );
+    setEduInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // Xử lý thông tin submit khi chỉnh sửa thoogn tin học vând
@@ -25,9 +23,8 @@ function FormUpdateEduInfo({
     e.preventDefault();
     setLoading(true);
     try {
-      const edu = eduInfo[0];
-      const res = await axiosInstance.post(`educations/${edu.id}`, {
-        edu_info: edu.edu_info,
+      const res = await axiosPrivate.post("educations", {
+        edu_info: eduInfo.edu_info,
       });
       setEditMode(false);
       setStatus({
@@ -43,13 +40,13 @@ function FormUpdateEduInfo({
 
   return (
     <form action="" method="post" onSubmit={handleSubmitEduInfoUpdate}>
-      {eduInfo?.[0]?.edu_info && (
+      {eduInfo && (
         <textarea
-          key={eduInfo[0].id}
+          key={eduInfo?.id}
           name="edu_info"
           rows={10}
-          value={eduInfo[0].edu_info}
-          onChange={(e) => handleChangeUpdateEduInfo(e, eduInfo[0].id)}
+          value={eduInfo?.edu_info}
+          onChange={(e) => handleChangeUpdateEduInfo(e)}
           id="edu_info"
           className="w-full rounded-lg bg-white text-black p-2 text-lg whitespace-pre-line"
         ></textarea>

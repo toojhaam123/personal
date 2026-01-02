@@ -1,22 +1,32 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPublic from "@/utils/axiosPublic";
+import axiosPrivate from "@/utils/axiosPrivate";
 import FormAddEduInfo from "../../components/form/FormAddEduInfo";
 import FormUpdateEduInfo from "../form/FormUpdateEduInfo";
+import { useParams } from "react-router-dom";
 function Education({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
-  const [eduInfo, setEduInfo] = useState([]);
-
+  const [eduInfo, setEduInfo] = useState(null);
+  const { username } = useParams();
   // Gọi API thông tin học vấn
   useEffect(() => {
     const fetchEduInfo = async () => {
       try {
         setLoading(true);
-        const res = await axiosInstance.get("educations");
+        const res = await axiosPublic.get(`educations/${username}`);
         setEduInfo(res.data);
       } catch (e) {
-        console.log("Có lỗi khi lấy thông tin học vấn!", e);
+        console.log("Có lỗi khi lấy thông tin học vấn!", e.response?.data);
+        let error;
+        let status = e.response.status;
+        if (status === 404) {
+          error = e.response.data.message;
+        } else if (status === 500) {
+          error = "Lỗi hệ thống (Server Error)!";
+        }
+        setStatus({ type: "error", message: error });
       } finally {
         setLoading(false);
       }
@@ -30,15 +40,16 @@ function Education({ token, setStatus }) {
     setLoading(true);
 
     try {
-      const res = await axiosInstance.delete(`educations/${id}`);
+      const res = await axiosPrivate.delete(`educations/${id}`);
 
-      setEduInfo((prev) => prev.filter((item) => item.id != id));
+      setEduInfo("");
       setEditMode(false);
       setStatus({
         type: "success",
         message: res.data.message,
       });
     } catch (e) {
+      console.log("Lỗi xóa ducation: ", e.response?.data);
       setStatus({
         type: "error",
         message: "Xóa thông tin học vấn thất bại!",
@@ -55,7 +66,7 @@ function Education({ token, setStatus }) {
       </h1>
       <div className="flex gap-2">
         {/* Nút thêm */}
-        {token && (!eduInfo || eduInfo.length === 0) ? (
+        {token && !eduInfo ? (
           <button
             type="button"
             onClick={() => setAddMode(!addMode)}
@@ -96,7 +107,7 @@ function Education({ token, setStatus }) {
               </button>
               {editMode && (
                 <button
-                  onClick={() => handleDeleteEduInffo(eduInfo[0].id)}
+                  onClick={() => handleDeleteEduInffo(eduInfo?.id)}
                   className="bg-red-600 border hover:bg-red-700 mb-3 transition duration-500"
                 >
                   {loading ? (
@@ -142,17 +153,15 @@ function Education({ token, setStatus }) {
                   <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
                   Vui lòng chờ!
                 </p>
-              ) : eduInfo.length === 0 ? (
-                <p className="text-center">Không có thông tin học vấn!</p>
+              ) : eduInfo ? (
+                <p
+                  key={eduInfo?.id}
+                  className="text-start text-lg mb-4 whitespace-pre-line"
+                >
+                  {eduInfo?.edu_info}
+                </p>
               ) : (
-                eduInfo?.[0]?.edu_info && (
-                  <p
-                    key={eduInfo[0].id}
-                    className="text-start text-lg mb-4 whitespace-pre-line"
-                  >
-                    {eduInfo[0].edu_info}
-                  </p>
-                )
+                <p className="text-center">Không có thông tin học vấn!</p>
               )}
             </div>
           )}

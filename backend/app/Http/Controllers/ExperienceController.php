@@ -16,6 +16,7 @@ class ExperienceController extends Controller
 
         try {
             $username = $request->user()->username;
+
             $exp = Experience::where("username", $username)->first();
             $dataToSave = ['exp_info' => $request->exp_info,];
 
@@ -48,15 +49,15 @@ class ExperienceController extends Controller
     }
 
     // Hàm xóa
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         // tìm bản ghi cần xóa
         $exp = Experience::findOrFail($id);
 
-        if (!$exp) {
+        if ($exp->username !== $request->user()->username) {
             return response()->json([
                 'success' => false,
-                'message' => "Lỗi khi xóa thông tin kinh nghiệm!",
+                'message' => "Bạn không có quyền xóa thông tin này!",
             ]);
         }
 

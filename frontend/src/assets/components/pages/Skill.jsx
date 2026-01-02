@@ -1,21 +1,34 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
+import axiosPublic from "@/utils/axiosPublic";
 import FormAddSkillInfo from "../form/FormAddSkillInfo";
 import FormUpdateSkillInfo from "../form/FormUpdateSkillInfo";
+import { useParams } from "react-router-dom";
 function Skill({ token, setStatus }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
-  const [skillInfo, setSkillInfo] = useState([]);
-
+  const [skillInfo, setSkillInfo] = useState(null);
+  const { username } = useParams();
   useEffect(() => {
     const fetchSkillInfo = async () => {
       try {
         setLoading(true);
-        const res = await axiosInstance.get("skills");
-        setSkillInfo(Array.isArray(res.data) ? res.data : [res.data]);
+        const res = await axiosPublic.get(`skills/${username}`);
+        setSkillInfo(res.data);
       } catch (e) {
-        console.log("Lỗi lấy thông tin kỹ năng: ", e);
+        let error;
+        console.log("Lỗi lấy thông tin kỹ năng: ", e.response?.data);
+        if (e.response) {
+          if (e.response.status === 404) {
+            error = "Không tìm thấy thông tin nào!";
+            setSkillInfo(null);
+          } else if (e.response.status === 500) {
+            error = "Lỗi hệ thống (SERVER ERROR )!";
+            setSkillInfo(null);
+          }
+        }
+        setStatus({ type: "error", message: error });
       } finally {
         setLoading(false);
       }
@@ -29,15 +42,16 @@ function Skill({ token, setStatus }) {
     setLoading(true);
 
     try {
-      const res = await axiosInstance.delete(`skills/${id}`);
+      const res = await axiosPrivate.delete(`skills/${id}`);
 
-      setSkillInfo((prev) => prev.filter((item) => item.id != id));
+      setSkillInfo("");
       setStatus({
         type: "success",
         message: res.data.message,
       });
       setEditMode(false);
     } catch (e) {
+      console.log("Lỗi khi xóa thông tin kỹ năng!", e.response?.data);
       setStatus({
         type: "error",
         message: "Xóa thông tin kỹ năng thất bại!",
@@ -97,7 +111,7 @@ function Skill({ token, setStatus }) {
               </button>
               {editMode && (
                 <button
-                  onClick={() => handleDeleteSkillInffo(skillInfo[0].id)}
+                  onClick={() => handleDeleteSkillInffo(skillInfo?.id)}
                   className="bg-red-600 border hover:bg-red-700 mb-3 transition duration-500"
                 >
                   {loading ? (
@@ -143,17 +157,15 @@ function Skill({ token, setStatus }) {
                   <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
                   Vui lòng chờ!
                 </p>
-              ) : skillInfo.length === 0 ? (
-                <p className="text-center">Không có thông tin kỹ năng nào!</p>
+              ) : skillInfo ? (
+                <p
+                  key={skillInfo?.id}
+                  className="text-lg mb-4 text-start whitespace-pre-line"
+                >
+                  {skillInfo?.skill_info}
+                </p>
               ) : (
-                skillInfo?.[0]?.skill_info && (
-                  <p
-                    key={skillInfo[0].id}
-                    className="text-lg mb-4 text-start whitespace-pre-line"
-                  >
-                    {skillInfo[0].skill_info}
-                  </p>
-                )
+                <p className="text-center">Không có thông tin kỹ năng nào!</p>
               )}
             </div>
           )}

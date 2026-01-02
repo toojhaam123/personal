@@ -3,76 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Education;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 
 class EducationController extends Controller
 {
     // Thông tin education 
-    public function store(Request $request)
+    public function storeOrUpdate(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'edu_info' => 'string|nullable',
         ]);
 
-        // Thêm bảng ghi vào 
+        $username = $request->user()->username;
 
-        $edu = Education::create($validated);
+        // Tìm bản ghi có không
+        $edu = Education::where('username', $username)->first();
+        $dataToSave = ['edu_info' => $request->edu_info];
+
+        $result = Education::updateOrCreate(
+            ['username' => $username],
+            $dataToSave,
+        );
 
         // Trả về kết quả 
         return response()->json([
             'success' => true,
-            'message' => 'Thêm thông tin học vấn thành công!',
-            'data' => $edu,
+            'message' => $edu ? "Cập nhật thông tin học vấn thành công!" : 'Thêm thông tin học vấn thành công!',
+            'data' => $result,
         ]);
     }
 
-    // Cập nhập 
-    public function update(Request $request, $id)
-    {
-        // Validate 
-        $edu = $request->validate([
-            'edu_info' => 'string|nullable',
-        ]);
 
+    // Lấy thông tin học vấn 
+    public function index(Request $request, $username)
+    {
         // Tìm bản ghi 
-        $edu = Education::findOrFail($id);
+        $edu = Education::where('username', $username)->first();
 
         if (!$edu) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy bản ghi!',
-            ]);
+                'message' => "Không tìn thấy thông tin nào!",
+            ], 404);
         }
-
-        // Tiến hành cập nhật 
-        $edu->update([
-            'edu_info' => $request->edu_info,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Cập nhật thông tin học vấn thành công!',
-            'data' => $edu,
-        ]);
-    }
-
-    // Lấy thông tin học vấn 
-    public function index()
-    {
-        return Education::latest()->get();
+        return $edu;
     }
 
     // Xóa thông học vấn 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         // Tìm bản ghi cần xóa 
         $edu = Education::findOrFail($id);
 
-        // Nếu ko tìm thấy 
-        if (!$edu) {
+        if ($edu->username !== $request->user()->username) {
             return response()->json([
                 'success' => false,
-                'message' => "Không tìm thấy bản ghi học vấn!",
+                'message' => "Bạn không có quyền xóa thông tin này!",
             ]);
         }
 

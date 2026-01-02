@@ -1,4 +1,4 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
 import { useState } from "react";
 function FormAddEduInfo({
   setAddMode,
@@ -13,7 +13,11 @@ function FormAddEduInfo({
 
   // Xử lý khi nhập thông tin
   const handleChangAddEduInfo = (e) => {
-    setAddEduInfo({ ...addEduInfo, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setAddEduInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // Xử lý submit thêm thông tin học vấn
@@ -22,7 +26,7 @@ function FormAddEduInfo({
     setLoading(true);
 
     try {
-      const res = await axiosInstance.post("educations", addEduInfo);
+      const res = await axiosPrivate.post("educations", addEduInfo);
 
       // Reset lại form
       setAddEduInfo({
@@ -35,7 +39,7 @@ function FormAddEduInfo({
       });
 
       setAddMode(false);
-      setEduInfo((prev) => [res.data.data, ...prev]);
+      setEduInfo(res.data.data);
     } catch (e) {
       setStatus({
         type: "error",
@@ -47,7 +51,7 @@ function FormAddEduInfo({
     }
   };
   return (
-    <form action="" method="post" onSubmit={handleSubmitAddEduInfo}>
+    <form method="post" onSubmit={handleSubmitAddEduInfo}>
       <textarea
         name="edu_info"
         rows={10}

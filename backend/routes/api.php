@@ -57,22 +57,20 @@ Route::prefix('experiences')->group(function () {
 
 // Skills 
 Route::prefix('skills')->group(function () {
-    Route::get('/', [SkillController::class, 'index']);
+    Route::get('{username}', [SkillController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/', [SkillController::class, 'store']);
-        Route::post('{id}', [SkillController::class, 'update']);
+        Route::post('/', [SkillController::class, 'storeOrUpdate']);
         Route::delete('{id}', [SkillController::class, 'destroy']);
     });
 });
 
 // Education
 Route::prefix('educations')->group(function () {
-    Route::get('/', [EducationController::class, 'index']);
+    Route::get('{username}', [EducationController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/', [EducationController::class, 'store']);
-        Route::post('{id}', [EducationController::class, 'update']);
+        Route::post('/', [EducationController::class, 'storeOrUpdate']);
         Route::delete('{id}', [EducationController::class, 'destroy']);
     });
 });

@@ -1,4 +1,4 @@
-import axiosInstance from "../../../utils/axiosPrivate";
+import axiosPrivate from "@/utils/axiosPrivate";
 import { useState } from "react";
 
 function FormAddSkillInfo({
@@ -14,10 +14,11 @@ function FormAddSkillInfo({
 
   // Hàm xử lý khi nhập thông tin
   const handleChangAddSkillInfo = (e) => {
-    setAddSkillInfo({
-      ...addSkillInfo,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setAddSkillInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // Hàm xử lý khi thêm thông tin kỹ năng
@@ -26,7 +27,7 @@ function FormAddSkillInfo({
     setLoading(true);
 
     try {
-      const res = await axiosInstance.post("skills", addSkillInfo);
+      const res = await axiosPrivate.post("skills", addSkillInfo);
 
       // Reset lại form
       setAddSkillInfo({
@@ -38,8 +39,9 @@ function FormAddSkillInfo({
         message: res.data.message,
       });
       setAddMode(false);
-      setSkillInfo((prev) => [res.data.data, ...prev]);
+      setSkillInfo(res.data.data);
     } catch (e) {
+      console.log("Lỗi khi thêm thông tin kỹ năng!", e.response?.data);
       setStatus({
         type: "error",
         message: "Lỗi khi thêm thông tin kỹ năng!",
@@ -50,7 +52,7 @@ function FormAddSkillInfo({
     }
   };
   return (
-    <form action="" method="post" onSubmit={handleSubmitAddSkillInfo}>
+    <form method="post" onSubmit={handleSubmitAddSkillInfo}>
       <div>
         <textarea
           name="skill_info"
