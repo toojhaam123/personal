@@ -14,7 +14,7 @@ function Portfolio({ token, setStatus }) {
     const fetchPortfolio = async () => {
       setLoading(true);
       try {
-        const res = await axiosPublic.get(`${username}/portfolio`);
+        const res = await axiosPublic.get(`${username}/portfolios`);
         setPortfolio(res.data.data);
       } catch (e) {
         console.log("Lỗi khi lấy thông tin dự án: ", e);

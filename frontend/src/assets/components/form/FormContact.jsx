@@ -1,7 +1,8 @@
 import { useState } from "react";
-import axiosInstance from "../../../utils/axiosPrivate";
-
+import axiosPublic from "@/utils/axiosPublic";
+import { useParams } from "react-router-dom";
 function FormContact({ loading, setLoading, setStatus }) {
+  const { username } = useParams();
   const [error, setError] = useState("");
   const [formContact, setFormContact] = useState({
     name: "",
@@ -33,12 +34,10 @@ function FormContact({ loading, setLoading, setStatus }) {
       return;
     }
     setLoading(true);
+
     try {
       // Gửi Request Post tới API bằng axios
-      const res = await axiosInstance.post(
-        "contacts", // endpoint API Laravel
-        formContact
-      );
+      const res = await axiosPublic.post(`${username}/contacts`, formContact);
 
       setStatus({ type: "success", message: res.data.message });
 
@@ -54,6 +53,7 @@ function FormContact({ loading, setLoading, setStatus }) {
       } else {
         setStatus({ type: "error", message: e.message });
       }
+      // console.log("Lỗi khi liên hệ: ", e.response?.data);
     } finally {
       setLoading(false);
     }

@@ -2,21 +2,24 @@ import axiosInstance from "../../../utils/axiosPrivate";
 import { useState, useEffect } from "react";
 import { formatDateVN } from "../../../utils/dateUtils";
 import { truncatetext } from "../../../utils/stringUtils";
-// import { truncatetext } from "../../utils/stringUtils";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import useMeInfo from "@/assets/hooks/useMeInfo";
 function Notification() {
   // Lấy thông tin từ bằng contacts ra để hiện thị
   const [notifaction, setNotification] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { username } = useParams();
+  const base = `/${username}`;
+  const { me } = useMeInfo();
 
   useEffect(() => {
     const fetchNotification = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("contacts");
-        setNotification(res.data);
+        const res = await axiosInstance.get(`${username}/contacts`);
+        setNotification(res.data.data);
       } catch (error) {
-        console.error("Lỗi lấy thông báo nhé!", error);
+        console.error("Lỗi lấy thông báo nhé!", error.response?.data);
       } finally {
         setLoading(false);
       }
@@ -35,26 +38,29 @@ function Notification() {
             <i className="fa-solid fa-spinner fa-spin"></i> Đang tải... Vui lòng
             chờ!
           </p>
-        ) : notifaction.length === 0 ? (
+        ) : notifaction?.length === 0 || me.username !== username ? (
           <p className="text-lg mb-4">Không có thông báo nào!</p>
         ) : (
           <div className="flex-[7]">
             <div className="space-y-4 mb-5">
-              {notifaction.map((item) => (
+              {notifaction?.map((item) => (
                 <li
-                  key={item.id}
+                  key={item?.id}
                   className="rounded-lg text-start p-4 m-2 border-b-2 hover:bg-gray-800 hover:text-white transition duration-500"
                 >
                   <p className="">
-                    <strong>{item.name}</strong> - đã gửi một liên hệ!{" "}
+                    <strong>{item?.name}</strong> - đã gửi một liên hệ!{" "}
                   </p>
                   <p>
-                    <strong>Nội dung:</strong> {truncatetext(item.message, 15)}
+                    <strong>Nội dung:</strong> {truncatetext(item?.message, 15)}
                   </p>
                   <p>
-                    <strong>Lúc:</strong> {formatDateVN(item.created_at)}
+                    <strong>Lúc:</strong> {formatDateVN(item?.created_at)}
                   </p>
-                  <Link className="" to={`/notification_detail/${item.id}`}>
+                  <Link
+                    className=""
+                    to={`${base}/notification/detail/${item?.id}`}
+                  >
                     Chi tiết <i className="fa-solid fa-arrow-right"></i>
                   </Link>
                 </li>

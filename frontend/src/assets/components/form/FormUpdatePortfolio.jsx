@@ -51,7 +51,7 @@ function FormUpdatePortfolio({
         formData.append(key, portfolioDetail[key]);
       });
       console.log("id gửi đi: ", formData.get("id"));
-      const res = await axiosPrivate.post(`${username}/portfolio`, formData);
+      const res = await axiosPrivate.post(`${username}/portfolios`, formData);
 
       // Cập nhật lại state
       setPortfolioDetail(res.data.data);

@@ -76,7 +76,7 @@ Route::prefix('educations')->group(function () {
 });
 
 // Portfolio 
-Route::prefix('{username}/portfolio')->group(function () {
+Route::prefix('{username}/portfolios')->group(function () {
     Route::get('/', [PortfolioController::class, 'index']);
     Route::get('{slug}', [PortfolioController::class, 'portfolioDetail']);
 
@@ -87,11 +87,11 @@ Route::prefix('{username}/portfolio')->group(function () {
 });
 
 // Contact and notification
-Route::prefix('contacts')->group(function () {
+Route::prefix('{username}/contacts')->group(function () {
     // Gửi liên hệ
     Route::post('/', [ContactController::class, 'store']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [ContactController::class, 'index']);
-        Route::get('{id}', [ContactController::class, 'showDetail']);
+        Route::get('{id}', [ContactController::class, 'detailContact']);
     });
 });

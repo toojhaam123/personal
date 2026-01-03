@@ -1,14 +1,24 @@
 import { NavLink, Link, useParams, useLocation } from "react-router-dom";
 import Logout from "./Logout";
+import useMeInfo from "../hooks/useMeInfo";
 function Navbar({ token, setStatus }) {
   const { username } = useParams();
   const base = `/${username}`;
   const location = useLocation();
+  const { me } = useMeInfo();
 
   return (
     <nav className="flex flex-col text-start gap-6">
       <NavLink
-        to={base}
+        to={"/"}
+        className={({ isActive }) =>
+          `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
+        }
+      >
+        <i className="fa-solid fa-home"></i> Trang chủ
+      </NavLink>
+      <NavLink
+        to={`${base}`}
         end
         className={({ isActive }) =>
           `hover:text-blue-600 ${isActive ? "text-blue-600" : " "}`
@@ -56,7 +66,7 @@ function Navbar({ token, setStatus }) {
       >
         <i className="fas fa-envelope"></i> Liên hệ
       </NavLink>
-      {token && (
+      {token && me.username === username && (
         <NavLink
           to={`${base}/notification`}
           className={({ isActive }) =>

@@ -90,7 +90,7 @@ class PortfolioController extends Controller
     }
 
     // Xem chi tiết dự án 
-    public function portfolioDetail(Request $request, $username, $slug)
+    public function portfolioDetail($username, $slug)
     {
         $detailPort = Portfolio::where('username', $username)->where('slug', $slug)->first();
         return response()->json($detailPort);

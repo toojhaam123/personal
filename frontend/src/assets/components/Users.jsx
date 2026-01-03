@@ -11,7 +11,7 @@ import Portfolio from "./pages/Portfolio";
 import PortfolioDetail from "./pages/PortfolioDetail";
 import Contact from "./pages/Contact";
 import Notification from "./pages/Notification";
-import Notification_Detail from "./pages/Notification_Detail";
+import NotificationDetail from "./pages/NotificationDetail";
 function Users({ token, setStatus }) {
   return (
     <div className="flex gap-5 w-full">
@@ -61,10 +61,10 @@ function Users({ token, setStatus }) {
               }
             ></Route>
             <Route
-              path="notification_detail/:id"
+              path="notification/detail/:id"
               element={
                 <ProtectRoute>
-                  <Notification_Detail />
+                  <NotificationDetail />
                 </ProtectRoute>
               }
             />

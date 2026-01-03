@@ -59,7 +59,7 @@ function FormAddPortfolio({
         }
       });
 
-      const res = await axiosPrivate.post(`${username}/portfolio`, data);
+      const res = await axiosPrivate.post(`${username}/portfolios`, data);
       setStatus({ type: "success", message: res.data.message });
       setPort((prev) => [res.data.data || res.data, ...prev]);
       // reset lại form

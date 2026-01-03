@@ -2,7 +2,6 @@ import { useState } from "react";
 import FormContact from "../../components/form/FormContact";
 function Contact({ setStatus }) {
   const [loading, setLoading] = useState(false);
-
   return (
     <section>
       <h1 className="font-bold text-red-600 text-3xl mb-4">

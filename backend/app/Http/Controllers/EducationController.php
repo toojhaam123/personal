@@ -44,7 +44,7 @@ class EducationController extends Controller
         if (!$edu) {
             return response()->json([
                 'success' => false,
-                'message' => "Không tìn thấy thông tin nào!",
+                'message' => "Không tìm thấy thông tin nào!",
             ], 404);
         }
         return $edu;

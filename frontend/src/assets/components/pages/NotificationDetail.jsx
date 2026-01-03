@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../../utils/axiosPrivate";
-export default function Notification_Details() {
+import axiosPrivate from "@/utils/axiosPrivate";
+export default function NotificationDetail() {
   const [loading, setLoading] = useState(false);
-  const { id } = useParams();
+  const { username, id } = useParams();
   const [notifactionDetail, setNotificationDetail] = useState(null);
   useEffect(() => {
     const fetchNotificationDetail = async () => {
       setLoading(true);
 
       try {
-        const res = await axiosInstance.get(`contacts/${id}`);
+        const res = await axiosPrivate.get(`${username}/contacts/${id}`);
         setNotificationDetail(res.data);
       } catch (error) {
-        console.log("Lỗi khi lấy chi tiết thông báo!", error);
+        console.log("Lỗi khi lấy chi tiết thông báo!", error.response?.data);
       } finally {
         setLoading(false);
       }
     };
     fetchNotificationDetail();
-  }, [id]);
-  if (!notifactionDetail) return <p>Đang tải...</p>;
+  }, [id, username]);
+
   return (
     <section>
       <h1 className="font-bold text-3xl text-red-600 mb-4">
@@ -33,15 +33,17 @@ export default function Notification_Details() {
               <i className="fa-solid fa-spinner fa-spin" /> Đang tải...
             </p>
           </>
+        ) : !notifactionDetail ? (
+          <p className="text-center">Không tìm thấy thông tin liên hệ!</p>
         ) : (
           <div className="text-start flex-[7] text-lg">
             <p>
-              <strong>Người gửi: </strong> {notifactionDetail.name} -{" "}
-              {notifactionDetail.email}
+              <strong>Người gửi: </strong> {notifactionDetail?.name} -{" "}
+              {notifactionDetail?.email}
             </p>
             <p>
               <strong>Nội dung: </strong>
-              {notifactionDetail.message}
+              {notifactionDetail?.message}
             </p>
           </div>
         )}

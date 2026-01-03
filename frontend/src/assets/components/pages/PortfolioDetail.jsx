@@ -17,7 +17,7 @@ function PortfolioDetail({ token, setStatus }) {
     const fetchPortfolioDetail = async () => {
       setLoading(true);
       try {
-        const res = await axiosPublic.get(`${username}/portfolio/${slug}`);
+        const res = await axiosPublic.get(`${username}/portfolios/${slug}`);
         setPortfolioDetail(res.data);
       } catch (e) {
         console.log("Lỗi khi lấy chi tiết dự án!", e.response?.data);
@@ -38,7 +38,7 @@ function PortfolioDetail({ token, setStatus }) {
 
     try {
       setLoading(true);
-      const res = await axiosPrivate.delete(`${username}/portfolio/${id}`);
+      const res = await axiosPrivate.delete(`${username}/portfolios/${id}`);
       if (res.data.success) {
         setStatus({
           type: "success",
