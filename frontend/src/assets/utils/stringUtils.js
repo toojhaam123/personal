@@ -1,8 +1,9 @@
-export function truncatetext(text, wordLimit = 20) {
+export function truncatetext(text, charLimit) {
   if (!text) return "";
-  const words = text.split(" ");
-  if (words.length <= wordLimit) {
+
+  // nếu độ dài của chuỗi nhỏ hơn giới hạn, trả về nguyên bản
+  if (text.length <= charLimit) {
     return text;
   }
-  return words.slice(0, wordLimit).join(" ") + "...";
+  return text.substring(0, charLimit).trim() + "...";
 }
