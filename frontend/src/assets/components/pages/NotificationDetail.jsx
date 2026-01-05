@@ -2,13 +2,11 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosPrivate from "@/utils/axiosPrivate";
 import { formatDateVN } from "@/assets/utils/dateUtils";
-import useMeInfo from "@/assets/hooks/useMeInfo";
 export default function NotificationDetail() {
   const [loading, setLoading] = useState(false);
   const { username, id } = useParams();
   const [notifactionDetail, setNotificationDetail] = useState(null);
   const navigate = useNavigate();
-  const { me } = useMeInfo();
 
   useEffect(() => {
     const fetchNotificationDetail = async () => {
@@ -33,11 +31,11 @@ export default function NotificationDetail() {
       </h1>
       {/*Nút quay lại trang danh sách thông báo*/}
       <button
-        className="flex items-center gap-1 text-slate-800 bg-gray-900 dark:hover:bg-blue-700 dark:text-slate-100 dark:hover:text-slate-100 transition-colors duration-500 mb-6"
+        className="flex items-center gap-1 text-slate-800 bg-gray-900 dark:text-slate-100 dark:hover:text-slate-100 transition-colors duration-500 mb-6"
         onClick={() => navigate(-1)}
       >
         {" "}
-        <i className="fa-solid fa-arrow-left"></i> Quay lại danh sách
+        <i className="fa-solid fa-arrow-left"></i>
       </button>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-[7]">
